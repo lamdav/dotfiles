@@ -41,6 +41,7 @@ brew "sdl2_ttf"
 brew "tmux"
 brew "tree"
 brew "unison"
+brew "wget"
 brew "yarn", args: ["without-node"]
 brew "zsh"
 brew "getantibody/tap/antibody"
