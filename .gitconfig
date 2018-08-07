@@ -1,0 +1,14 @@
+[user]
+	name = David Lam
+	email = dav_lam@ymail.com
+[alias]
+	s = status
+	co = checkout
+  ci = commit
+  graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  ls-alias = "!git config -l | grep alias | cut -c 7-"
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
