@@ -7,6 +7,7 @@
   ci = commit
   graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
   ls-alias = "!git config -l | grep alias | cut -c 7-"
+  logp = log --graph --pretty=format:'%Cred%h%Creset - %Cgreen%<(11,trunc)%cr%Creset - %C(bold blue)%<(12,trunc)%aN%Creset -%C(yellow)%d%Creset %s' --abbrev-commit
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f

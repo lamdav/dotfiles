@@ -21,6 +21,10 @@ source ~/.zshrc
 echo "setting up vim\n"
 rm -rf ~/.vimrc && cp .vimrc ~/
 
+# setup git configurations
+echo "setting up gitconfig\n"
+rm -rf ~/.gitconfig && cp .gitconfig ~/
+
 # setup iterm2 profile (dynamic)
 echo "setting up iterm2 profile\n"
 mkdir -p ~/Library/Application\ Support/iTerm2/DynamicProfiles
