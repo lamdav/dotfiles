@@ -3,4 +3,5 @@ chrissicool/zsh-256color
 desyncr/auto-ls
 mgryszko/jvm
 hlissner/zsh-autopair
-zsh-users/zsh-syntax-highlighting
+romkatv/powerlevel10k
+zdharma/fast-syntax-highlighting

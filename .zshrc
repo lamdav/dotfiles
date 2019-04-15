@@ -116,13 +116,20 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias editzsh="vim ~/.zshrc"
+alias refreshzsh="source ~/.zshrc"
 alias python="python3"
 alias pip="pip3"
 source <(antibody init)
 antibody bundle < ~/.zsh_plugins
 
+source ~/.purepower
 
 [ -s "/Users/lamdav/.jabba/jabba.sh" ] && source "/Users/lamdav/.jabba/jabba.sh"
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
+export PATH="$PATH:$HOME/.rvm/bin:/Users/lamdav/Library/Python/3.7/bin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+export PATH="$PATH:$HOME/anaconda3/bin"
+
+# heroku autocomplete setup
+HEROKU_AC_ZSH_SETUP_PATH=/Users/lamdav/Library/Caches/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;function gi() { curl -sLw n https://www.gitignore.io/api/$@ ;}
