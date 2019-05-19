@@ -1,7 +1,22 @@
-djui/alias-tips
-chrissicool/zsh-256color
+# OMZ plugins
+# NOTE: avoid plugins that rely on OMZ ecosystem
+robbyrussell/oh-my-zsh path:plugins/docker
+
+# Once frequently used:
+# robbyrussell/oh-my-zsh path:plugins/urltools
+# robbyrussell/oh-my-zsh path:plugins/web-search
+
+robbyrussell/oh-my-zsh path:plugins/wd
+robbyrussell/oh-my-zsh path:plugins/nvm
+robbyrussell/oh-my-zsh path:plugins/vundle
+robbyrussell/oh-my-zsh path:plugins/colored-man-pages
+robbyrussell/oh-my-zsh path:plugins/command-not-found
+
+zsh-users/zsh-completions
+
 desyncr/auto-ls
-mgryszko/jvm
 hlissner/zsh-autopair
+
+# LAST
 romkatv/powerlevel10k
 zdharma/fast-syntax-highlighting
