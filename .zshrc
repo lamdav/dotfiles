@@ -7,7 +7,7 @@ export ZSH=/Users/lamdav/.oh-my-zsh
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="steeef-lambda"
+ZSH_THEME=""
 
 # Set list of themes to load
 # Setting this variable when ZSH_THEME=random
@@ -62,7 +62,6 @@ plugins=(
   git
   gitfast
   git-extras
-  svn
   docker
   sudo
   brew
@@ -73,6 +72,7 @@ plugins=(
   wd
   python
   pip
+  pipenv
   npm
   node
   gradle
@@ -118,8 +118,6 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias editzsh="vim ~/.zshrc"
 alias refreshzsh="source ~/.zshrc"
-alias python="python3"
-alias pip="pip3"
 source <(antibody init)
 antibody bundle < ~/.zsh_plugins
 
@@ -133,3 +131,5 @@ export PATH="$PATH:$HOME/anaconda3/bin"
 
 # heroku autocomplete setup
 HEROKU_AC_ZSH_SETUP_PATH=/Users/lamdav/Library/Caches/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;function gi() { curl -sLw n https://www.gitignore.io/api/$@ ;}
+
+eval "$(pyenv init -)"

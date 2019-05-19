@@ -12,9 +12,11 @@ curl -sSL https://get.rvm.io | bash -s stable
 # install oh-my-zsh (zsh easy install)
 echo "installing zsh shell\n"
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+curl -L git.io/antigen > antigen.zsh
 rm -rf ~/.zshrc && cp .zshrc ~/
 mkdir -p ~/.oh-my-zsh/custom/themes
 cp steeef-lambda ~/.oh-my-zsh/custom/themes/steeef-lambda.zsh-theme
+rm -rf ~/.purepower && cp .purepower ~/
 source ~/.zshrc
 
 # setup vim
