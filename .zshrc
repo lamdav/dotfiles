@@ -12,7 +12,7 @@
 ## ALTERNATIVE DEBUG TOOL START
 # zmodload zsh/zprof
 
-export ZSH=/Users/lamdav/.oh-my-zsh
+export ZSH=$HOME/.oh-my-zsh
 
 # OMZ: theme selector
 ZSH_THEME=""
