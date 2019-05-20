@@ -34,3 +34,4 @@ colorscheme molokai
 syntax on
 autocmd FileType make setlocal noexpandtab
 
+:imap jj <Esc>
