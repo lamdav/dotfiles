@@ -1,4 +1,4 @@
-# DEBUGGING START
+## DEBUGGING START
 # zmodload zsh/datetime
 # setopt PROMPT_SUBST
 # PS4='+$EPOCHREALTIME %N:%i> '
@@ -40,6 +40,8 @@ alias loadjabba="source \"/Users/lamdav/.jabba/jabba.sh\""
 # lazy load: nvm
 export NVM_DIR="$HOME/.nvm"
 alias loadnvm="\. \"$HOME/.nvm/nvm.sh\""
+# lazy load: pyenv (called by powerlevel10k `pyenv`)
+# alias loadpyenv="eval \"$(pyenv init -)\""
 
 # antibody + powerline theme
 source ~/.zsh_plugins.sh
@@ -49,12 +51,11 @@ source ~/.purepower
 export PATH="$PATH:$HOME/.rvm/bin:/Users/lamdav/Library/Python/3.7/bin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 export PATH="$PATH:$HOME/anaconda3/bin"
 
+export TERM=xterm-256color
+
 # heroku autocomplete setup
-HEROKU_AC_ZSH_SETUP_PATH=/Users/lamdav/Library/Caches/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;function gi() { curl -sLw n https://www.gitignore.io/api/$@ ;}
+HEROKU_AC_ZSH_SETUP_PATH=/Users/lamdav/Library/Caches/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;
 
-# pyenv
-eval "$(pyenv init -)"
-
-# DEBUGGING END
+## DEBUGGING END
 # unsetopt XTRACE
 # exec 2>&3 3>&-
