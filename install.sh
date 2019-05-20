@@ -26,11 +26,11 @@ rm -rf ~/.vimrc && ln -sf .vimrc ~/.vimrc
 
 # setup git configurations
 echo "setting up gitconfig\n"
-rm -rf ~/.gitconfig && ln sf .gitconfig ~/.gitconfig
+rm -rf ~/.gitconfig && ln -sf .gitconfig ~/.gitconfig
 
 # setup iterm2 profile (dynamic)
 echo "setting up iterm2 profile\n"
 mkdir -p ~/Library/Application\ Support/iTerm2/DynamicProfiles
-cp iterm-profiles.json ~/Library/Application\ Support/iTerm2/DynamicProfiles/
+ln -sf iterm-profiles.json ~/Library/Application\ Support/iTerm2/DynamicProfiles/iterm-profiles.json
 # prompts user to add color scheme
 open firewatch.itermcolors
