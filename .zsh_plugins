@@ -7,10 +7,8 @@ robbyrussell/oh-my-zsh path:plugins/docker
 # robbyrussell/oh-my-zsh path:plugins/web-search
 
 robbyrussell/oh-my-zsh path:plugins/wd
-# robbyrussell/oh-my-zsh path:plugins/nvm
 robbyrussell/oh-my-zsh path:plugins/vundle
 robbyrussell/oh-my-zsh path:plugins/colored-man-pages
-robbyrussell/oh-my-zsh path:plugins/command-not-found
 
 zsh-users/zsh-completions
 
