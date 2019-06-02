@@ -74,8 +74,10 @@ source ~/.purepower
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:/usr/local/bin"
-export PATH="$PATH:$HOME/.rvm/bin:/Users/lamdav/Library/Python/3.7/bin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+export PATH="$PATH:$HOME/.rvm/bin"
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 export PATH="$PATH:$HOME/anaconda3/bin"
+export PATH="$PATH:$HOME/.cargo/bin"
 
 export TERM=xterm-256color
 
