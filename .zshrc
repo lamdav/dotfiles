@@ -66,7 +66,9 @@ for cmd in "${NODE_GLOBALS[@]}"; do
     eval "${cmd}(){ unset -f ${NODE_GLOBALS}; load_nvm; ${cmd} \$@ }"
 done
 # lazy load: pyenv (called by powerlevel10k `pyenv`)
-# alias loadpyenv="eval \"$(pyenv init -)\""
+load_pyenv() {
+  eval "$(pyenv init -)"
+}
 
 # antibody + powerline theme
 source ~/.zsh_plugins.sh
