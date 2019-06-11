@@ -78,6 +78,7 @@ export PATH="$PATH:$HOME/.rvm/bin"
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 export PATH="$PATH:$HOME/anaconda3/bin"
 export PATH="$PATH:$HOME/.cargo/bin"
+export PATH="$PATH:$HOME/go/bin"
 
 export TERM=xterm-256color
 
