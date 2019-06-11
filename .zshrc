@@ -55,11 +55,11 @@ alias updateplugins="antibody bundle < ~/.zsh_plugins > ~/.zsh_plugins.sh"
 # lazy load: jabba
 alias loadjabba="source \"/Users/lamdav/.jabba/jabba.sh\""
 # lazy load: nvm on call or global installs
+export NVM_DIR="$HOME/.nvm"
 load_nvm() {
-  export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 }
-declare -a NODE_GLOBALS=(`find ~/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
+declare -a NODE_GLOBALS=(`find $NVM_DIR/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
 E_GLOBALS+=("node")
 NODE_GLOBALS+=("nvm")
 for cmd in "${NODE_GLOBALS[@]}"; do
