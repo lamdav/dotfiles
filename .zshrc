@@ -84,9 +84,6 @@ export PATH="$PATH:$HOME/go/bin"
 
 export TERM=xterm-256color
 
-# heroku autocomplete setup
-HEROKU_AC_ZSH_SETUP_PATH=/Users/lamdav/Library/Caches/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;
-
 source ~/.zshrc_custom
 
 ## ALTERNATIVE DEBUG TOOL END
