@@ -81,6 +81,7 @@ export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/b
 export PATH="$PATH:$HOME/anaconda3/bin"
 export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/go/bin"
+export PATH="$PATH:$HOME/google-cloud-sdk/bin"
 
 export TERM=xterm-256color
 
@@ -92,3 +93,4 @@ source ~/.zshrc_custom
 ## DEBUGGING END
 # unsetopt XTRACE
 # exec 2>&3 3>&-
+
