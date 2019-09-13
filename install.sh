@@ -16,6 +16,7 @@ echo "installing zsh shell\n"
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 rm -rf ~/.zshrc && ln -sf $dir/.zshrc ~/.zshrc
 rm -rf ~/.zsh_plugins && ln -sf $dir/.zsh_plugins ~/.zsh_plugins
+rm -rf ~/.zlogin && ln -sf $dir/.zlogin ~/.zlogin
 mkdir -p ~/.oh-my-zsh/custom/themes
 ln -sf steeef-lambda.zsh-theme ~/.oh-my-zsh/custom/themes/steeef-lambda.zsh-theme
 rm -rf ~/.purepower && ln -sf $dir/.purepower ~/.purepower

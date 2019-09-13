@@ -29,14 +29,11 @@ HIST_STAMPS="yyyy-mm-dd"
 
 # OMZ: check zcoredump once a day
 autoload -Uz compinit
-typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
-if [ $(date +'%j') != $updated_at ]; then
-  compinit -i
+if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+  compinit
 else
-  compinit -C -i
+  compinit -C
 fi
-
-unset updated_at
 
 # OMZ: load OMZ ecosystem
 source $ZSH/oh-my-zsh.sh
@@ -55,20 +52,101 @@ alias updateplugins="antibody bundle < ~/.zsh_plugins > ~/.zsh_plugins.sh"
 # lazy load: jabba
 alias loadjabba="source \"/Users/lamdav/.jabba/jabba.sh\""
 # lazy load: nvm on call or global installs
-export NVM_DIR="$HOME/.nvm"
-load_nvm() {
-  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-}
-declare -a NODE_GLOBALS=(`find $NVM_DIR/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
-E_GLOBALS+=("node")
+NVM_DIR="$HOME/.nvm"
+
+# Skip adding binaries if there is no node version installed yet
+if [ -d $NVM_DIR/versions/node ]; then
+  NODE_GLOBALS=(`find $NVM_DIR/versions/node -maxdepth 3 \( -type l -o -type f \) -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
+fi
 NODE_GLOBALS+=("nvm")
+
+load_nvm () {
+  # Unset placeholder functions
+  for cmd in "${NODE_GLOBALS[@]}"; do unset -f ${cmd} &>/dev/null; done
+
+  # Load NVM
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+  # (Optional) Set the version of node to use from ~/.nvmrc if available
+  nvm use 2> /dev/null 1>&2 || true
+
+  # Do not reload nvm again
+  export NVM_LOADED=1
+}
+
 for cmd in "${NODE_GLOBALS[@]}"; do
-    eval "${cmd}(){ unset -f ${NODE_GLOBALS}; load_nvm; ${cmd} \$@ }"
+  # Skip defining the function if the binary is already in the PATH
+  if ! which ${cmd} &>/dev/null; then
+    eval "${cmd}() { unset -f ${cmd} &>/dev/null; [ -z \${NVM_LOADED+x} ] && load_nvm; ${cmd} \$@; }"
+  fi
 done
+
 # lazy load: pyenv (called by powerlevel10k `pyenv`)
 load_pyenv() {
   eval "$(pyenv init -)"
 }
+
+# https://stackoverflow.com/questions/1904860/how-to-remove-unreferenced-blobs-from-my-git-repo
+alias git-clean='git -c gc.reflogExpire=0 -c gc.reflogExpireUnreachable=0 -c gc.rerereresolved=0 -c gc.rerereunresolved=0 -c gc.pruneExpire=now gc "$@"'
+
+git-prune() {
+    # Delete local branches that squash-merged to `master`. Forked from https://github.com/not-an-aardvark/git-delete-squashed
+    git remote prune origin &&
+    git checkout -q master &&
+    git fetch origin &&
+    git fetch --tags -f &&
+    git merge --ff-only origin/master &&
+    git for-each-ref refs/heads/ "--format=%(refname:short)" | while read branch; do
+        mergeBase=$(git merge-base master $branch) &&
+        [[ $(
+                git cherry master $(
+                    git commit-tree $(
+                        git rev-parse $branch^{tree}
+                    ) -p $mergeBase -m _
+                )
+            ) == "-"*
+        ]] && git branch -D $branch;
+    done;
+    git prune
+}
+
+lazy_load() {
+    # Act as a stub to another shell function/command. When first run, it will load the actual function/command then execute it.
+    # E.g. This made my zsh load 0.8 seconds faster by loading `nvm` when "nvm", "npm" or "node" is used for the first time
+    # $1: space separated list of alias to release after the first load
+    # $2: file to source
+    # $3: name of the command to run after it's loaded
+    # $4+: argv to be passed to $3
+    echo "Lazy loading $1 ..."
+
+    # $1.split(' ') using the s flag. In bash, this can be simply ($1) #http://unix.stackexchange.com/questions/28854/list-elements-with-spaces-in-zsh
+    # Single line won't work: local names=("${(@s: :)${1}}"). Due to http://stackoverflow.com/questions/14917501/local-arrays-in-zsh   (zsh 5.0.8 (x86_64-apple-darwin15.0))
+    local -a names
+    if [[ -n "$ZSH_VERSION" ]]; then
+        names=("${(@s: :)${1}}")
+    else
+        names=($1)
+    fi
+    unalias "${names[@]}"
+    . $2
+    shift 2
+    $*
+}
+
+group_lazy_load() {
+    local script
+    script=$1
+    shift 1
+    for cmd in "$@"; do
+        alias $cmd="lazy_load \"$*\" $script $cmd"
+    done
+}
+
+export NVM_DIR=~/.nvm
+group_lazy_load $HOME/.nvm/nvm.sh node npm
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+group_lazy_load $HOME/.rvm/scripts/rvm rvm irb rake rails
 
 # antibody + powerline theme
 source ~/.zsh_plugins.sh
@@ -82,6 +160,7 @@ export PATH="$PATH:$HOME/anaconda3/bin"
 export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/go/bin"
 export PATH="$PATH:$HOME/google-cloud-sdk/bin"
+export PATH="$PATH:$HOME/.poetry/bin"
 
 export TERM=xterm-256color
 
