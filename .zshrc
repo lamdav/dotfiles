@@ -153,7 +153,8 @@ source ~/.zsh_plugins.sh
 source ~/.purepower
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:/usr/local/bin"
+export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/bin:$PATH"
 export PATH="$PATH:$HOME/.rvm/bin"
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 export PATH="$PATH:$HOME/anaconda3/bin"
