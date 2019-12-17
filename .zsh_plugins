@@ -1,7 +1,4 @@
 # OMZ plugins
-# NOTE: avoid plugins that rely on OMZ ecosystem
-robbyrussell/oh-my-zsh path:plugins/docker
-
 # Once frequently used:
 # robbyrussell/oh-my-zsh path:plugins/urltools
 # robbyrussell/oh-my-zsh path:plugins/web-search
@@ -18,3 +15,4 @@ hlissner/zsh-autopair
 # LAST
 romkatv/powerlevel10k
 zdharma/fast-syntax-highlighting
+

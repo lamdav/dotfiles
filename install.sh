@@ -19,7 +19,7 @@ rm -rf ~/.zsh_plugins && ln -sf $dir/.zsh_plugins ~/.zsh_plugins
 rm -rf ~/.zlogin && ln -sf $dir/.zlogin ~/.zlogin
 mkdir -p ~/.oh-my-zsh/custom/themes
 ln -sf steeef-lambda.zsh-theme ~/.oh-my-zsh/custom/themes/steeef-lambda.zsh-theme
-rm -rf ~/.purepower && ln -sf $dir/.purepower ~/.purepower
+rm -rf ~/.p10k.zsh && ln -sf $dir/.p10k.zsh ~/.p10k.zsh
 source ~/.zshrc
 updateplugins
 echo "run when completed: exec zsh\n"
