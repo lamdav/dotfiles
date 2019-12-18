@@ -150,7 +150,7 @@ group_lazy_load $HOME/.rvm/scripts/rvm rvm irb rake rails
 
 # antibody + powerline theme
 source ~/.zsh_plugins.sh
-source ~/.purepower
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="/usr/local/sbin:$PATH"
