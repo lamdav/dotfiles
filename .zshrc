@@ -174,7 +174,7 @@ export TERM=xterm-256color
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-source ~/.zshrc_custom
+[[ ! -f ~/.zshrc_custom ]] || source ~/.zshrc_custom
 
 ## ALTERNATIVE DEBUG TOOL END
 # zprof
