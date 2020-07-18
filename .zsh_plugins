@@ -3,9 +3,12 @@
 # robbyrussell/oh-my-zsh path:plugins/urltools
 # robbyrussell/oh-my-zsh path:plugins/web-search
 
-robbyrussell/oh-my-zsh path:plugins/wd
+# robbyrussell/oh-my-zsh path:plugins/wd
 robbyrussell/oh-my-zsh path:plugins/vundle
-robbyrussell/oh-my-zsh path:plugins/colored-man-pages
+# robbyrussell/oh-my-zsh path:plugins/colored-man-pages
+
+mfaerevaag/wd
+ael-code/zsh-colored-man-pages
 
 zsh-users/zsh-completions
 

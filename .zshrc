@@ -171,6 +171,10 @@ export PATH="$PATH:$HOME/.poetry/bin"
 
 export TERM=xterm-256color
 
+# avoid wd named dir exports. messes with dir prompt
+# https://github.com/ohmyzsh/ohmyzsh/issues/8996
+export WD_SKIP_EXPORT=1
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
