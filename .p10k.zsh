@@ -375,9 +375,15 @@
     if [[ -n $VCS_STATUS_LOCAL_BRANCH ]]; then
       res+="${clean}${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}"
       where=${(V)VCS_STATUS_LOCAL_BRANCH}
+      if [[ -n $VCS_STATUS_TAG ]]; then
+        where+="@${VCS_STATUS_TAG}"
+      fi
     elif [[ -n $VCS_STATUS_TAG ]]; then
       res+="${meta}#"
       where=${(V)VCS_STATUS_TAG}
+    else
+      res+="${meta}@"
+      where=${VCS_STATUS_COMMIT[1,8]}
     fi
 
     # If local branch name or tag is at most 32 characters long, show it in full.
