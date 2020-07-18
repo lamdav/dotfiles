@@ -15,3 +15,5 @@
 	required = true
 [url "git@git.unify.id:"]
 	insteadof = https://git.unify.id/
+[pull]
+	rebase = true
