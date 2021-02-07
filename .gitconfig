@@ -17,3 +17,5 @@
 	insteadof = https://git.unify.id/
 [pull]
 	rebase = true
+[init]
+	defaultBranch = master
