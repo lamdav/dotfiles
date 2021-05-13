@@ -4,7 +4,7 @@
 # robbyrussell/oh-my-zsh path:plugins/web-search
 
 # robbyrussell/oh-my-zsh path:plugins/wd
-robbyrussell/oh-my-zsh path:plugins/vundle
+ohmyzsh/ohmyzsh path:plugins/vundle
 # robbyrussell/oh-my-zsh path:plugins/colored-man-pages
 
 mfaerevaag/wd
