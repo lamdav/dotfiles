@@ -18,5 +18,5 @@ hlissner/zsh-autopair
 
 # LAST
 romkatv/powerlevel10k
-zdharma/fast-syntax-highlighting
+zdharma-continuum/fast-syntax-highlighting
 
