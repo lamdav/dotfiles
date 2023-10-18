@@ -5,7 +5,7 @@
 
 # robbyrussell/oh-my-zsh path:plugins/wd
 ohmyzsh/ohmyzsh path:plugins/vundle
-ohmyzsh/ohmyzsh path:plugins/bazel
+# ohmyzsh/ohmyzsh path:plugins/bazel
 # robbyrussell/oh-my-zsh path:plugins/colored-man-pages
 
 mfaerevaag/wd

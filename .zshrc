@@ -176,16 +176,17 @@ else
 fi
 
 # ssh
-export SSH_KEY_PATH="~/.ssh/rsa_id"
+export SSH_KEY_PATH="~/.ssh/id_ed25519"
 
 # Aliases
 alias editzsh="vim ~/.zshrc"
 # This will lose history but it avoid powerline theme prompt issues.
 alias refreshzsh="exec zsh"
+alias ll="ls -alh"
 benchmarkzsh() {
   for i in $(seq 1 10); do /usr/bin/time zsh -i -c exit; done
 }
-alias updateplugins="antibody bundle < ~/.zsh_plugins > ~/.zsh_plugins.sh"
+alias updateplugins="antidote bundle < ~/.zsh_plugins > ~/.zsh_plugins.sh"
 # lazy load: jabba
 alias loadjabba="source \"/Users/lamdav/.jabba/jabba.sh\""
 # lazy load: nvm on call or global installs
@@ -265,18 +266,19 @@ export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 group_lazy_load $HOME/.rvm/scripts/rvm rvm irb rake rails
 
 # antibody + powerline theme
-source ~/.zsh_plugins.sh
+# source ~/.zsh_plugins.sh
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="/opt/homebrew/sbin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
 export PATH="/usr/local/bin:$PATH"
 export PATH="$PATH:$HOME/.rvm/bin"
-export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-export PATH="$PATH:$HOME/anaconda3/bin"
 export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/go/bin"
 export PATH="$PATH:$HOME/google-cloud-sdk/bin"
-export PATH="$PATH:$HOME/.poetry/bin"
+# Created by `pipx` on 2023-08-31 03:08:35
+export PATH="$PATH:/Users/lamdav/.local/bin"
 
 export TERM=xterm-256color
 
@@ -284,10 +286,23 @@ export TERM=xterm-256color
 # https://github.com/ohmyzsh/ohmyzsh/issues/8996
 export WD_SKIP_EXPORT=1
 
+# Lazy-load antidote and generate the static load file only when needed
+zsh_plugins=${ZDOTDIR:-$HOME}/.zsh_plugins
+if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins} ]]; then
+  (
+    source /opt/homebrew/opt/antidote/share/antidote/antidote.zsh
+    antidote bundle <${zsh_plugins} >${zsh_plugins}.zsh
+  )
+fi
+source ${zsh_plugins}.zsh
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 [[ ! -f ~/.zshrc_custom ]] || source ~/.zshrc_custom
+
+# no homebrew analytics
+export HOMEBREW_NO_ANALYTICS=1
 
 ## ALTERNATIVE DEBUG TOOL END
 # zprof
@@ -295,4 +310,3 @@ export WD_SKIP_EXPORT=1
 ## DEBUGGING END
 # unsetopt XTRACE
 # exec 2>&3 3>&-
-

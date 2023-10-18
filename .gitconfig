@@ -1,6 +1,6 @@
 [user]
 	name = David Lam
-	email = dav_lam@ymail.com
+	email = david.lam@lamdav.com
 [alias]
 	s = status
 	co = checkout
@@ -15,9 +15,9 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-[url "git@git.unify.id:"]
-	insteadof = https://git.unify.id/
 [pull]
 	rebase = true
 [init]
 	defaultBranch = master
+[url "https://github.com/"]
+	insteadOf = git://github.com/

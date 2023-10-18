@@ -3,7 +3,7 @@
 export dir="$(pwd)"
 
 # install brew
-echo "installing homebrew\n"
+# echo "installing homebrew\n"
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew update && brew upgrade && brew bundle
 
@@ -37,4 +37,4 @@ echo "setting up iterm2 profile\n"
 mkdir -p ~/Library/Application\ Support/iTerm2/DynamicProfiles
 ln -sf $dir/iterm-profiles.json ~/Library/Application\ Support/iTerm2/DynamicProfiles/iterm-profiles.json
 # prompts user to add color scheme
-open firewatch.itermcolors
+# open firewatch.itermcolors

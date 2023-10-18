@@ -13,7 +13,7 @@
         "Blue Component": 0.7708259061200237
       },
       "Horizontal Spacing": 1,
-      "Normal Font": "FiraCodeNerdFontCompleteM-Retina 12",
+      "Normal Font": "FiraCode Nerd Font-Regular 12",
       "Bold Color": {
         "Green Component": 0.8980392156862745,
         "Red Component": 0.9019607843137255,
@@ -75,7 +75,7 @@
       "Sync Title": false,
       "Prompt Before Closing 2": false,
       "BM Growl": true,
-      "Command": "/usr/local/bin/zsh",
+      "Command": "/opt/homebrew/bin/zsh",
       "Description": "Default",
       "Mouse Reporting": true,
       "Screen": -1,
@@ -670,7 +670,7 @@
         "Blue Component": 0.4274509847164154
       },
       "Blur": true,
-      "Normal Font": "FiraCodeNerdFontCompleteM-Retina 12",
+      "Normal Font": "FiraCode Nerd Font-Regular 12",
       "Vertical Spacing": 1,
       "Ansi 7 Color": {
         "Green Component": 0.8980392156862745,
@@ -679,7 +679,7 @@
       },
       "Space": -1,
       "HotKey Window AutoHides": true,
-      "Command": "/usr/local/bin/zsh",
+      "Command": "/opt/homebrew/bin/zsh",
       "Terminal Type": "xterm-256color",
       "Horizontal Spacing": 1,
       "Option Key Sends": 0,
