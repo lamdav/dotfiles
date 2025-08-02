@@ -1,15 +1,3 @@
-## DEBUGGING START
-# zmodload zsh/datetime
-# setopt PROMPT_SUBST
-# PS4='+$EPOCHREALTIME %N:%i> '
-
-# logfile=$(mktemp zsh_profile.XXXXXXXX)
-# echo "Logging to $logfile"
-# exec 3>&2 2>$logfile
-
-# setopt XTRACE
-
-## ALTERNATIVE DEBUG TOOL START
 # zmodload zsh/zprof
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -182,7 +170,9 @@ export SSH_KEY_PATH="~/.ssh/id_ed25519"
 alias editzsh="vim ~/.zshrc"
 # This will lose history but it avoid powerline theme prompt issues.
 alias refreshzsh="exec zsh"
-alias ll="ls -alh"
+alias ls="eza --color=always --long --git --no-filesize --no-time --no-permissions --no-user"
+alias ll="eza --color=always --long --git"
+
 benchmarkzsh() {
   for i in $(seq 1 10); do /usr/bin/time zsh -i -c exit; done
 }
@@ -259,40 +249,31 @@ group_lazy_load() {
     done
 }
 
+# Consolidate lazy loading
 export NVM_DIR=~/.nvm
 group_lazy_load $HOME/.nvm/nvm.sh node npm
-
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 group_lazy_load $HOME/.rvm/scripts/rvm rvm irb rake rails
 
-# antibody + powerline theme
-# source ~/.zsh_plugins.sh
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="/opt/homebrew/sbin:$PATH"
-export PATH="/opt/homebrew/bin:$PATH"
-export PATH="/usr/local/sbin:$PATH"
-export PATH="/usr/local/bin:$PATH"
-export PATH="$PATH:$HOME/.rvm/bin"
-export PATH="$PATH:$HOME/.cargo/bin"
-export PATH="$PATH:$HOME/go/bin"
-export PATH="$PATH:$HOME/google-cloud-sdk/bin"
-# Created by `pipx` on 2023-08-31 03:08:35
-export PATH="$PATH:/Users/lamdav/.local/bin"
+# Consolidate PATH exports for better performance
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.rvm/bin:$HOME/.cargo/bin:$HOME/go/bin:/Users/lamdav/.local/bin"
+source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
+source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
 
 export TERM=xterm-256color
+export BAT_THEME=Dracula
 
 # avoid wd named dir exports. messes with dir prompt
 # https://github.com/ohmyzsh/ohmyzsh/issues/8996
 export WD_SKIP_EXPORT=1
 
+# Load antidote plugin manager
+source /opt/homebrew/opt/antidote/share/antidote/antidote.zsh
+
 # Lazy-load antidote and generate the static load file only when needed
 zsh_plugins=${ZDOTDIR:-$HOME}/.zsh_plugins
 if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins} ]]; then
-  (
-    source /opt/homebrew/opt/antidote/share/antidote/antidote.zsh
-    antidote bundle <${zsh_plugins} >${zsh_plugins}.zsh
-  )
+  antidote bundle <${zsh_plugins} >${zsh_plugins}.zsh
 fi
 source ${zsh_plugins}.zsh
 
@@ -304,9 +285,4 @@ source ${zsh_plugins}.zsh
 # no homebrew analytics
 export HOMEBREW_NO_ANALYTICS=1
 
-## ALTERNATIVE DEBUG TOOL END
 # zprof
-
-## DEBUGGING END
-# unsetopt XTRACE
-# exec 2>&3 3>&-
