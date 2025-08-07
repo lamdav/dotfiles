@@ -3,6 +3,16 @@ set -euo pipefail
 
 export dir="$(pwd)"
 
+# Check if Python interactive installer is available
+if command -v poetry &> /dev/null && [ -f "$dir/pyproject.toml" ]; then
+    echo "🐍 Python interactive installer detected!"
+    echo "For a better experience, you can use the interactive installer:"
+    echo "  poetry install && poetry run install-dotfiles"
+    echo ""
+    echo "Or continue with this bash script (press Enter to continue, Ctrl+C to exit):"
+    read -r
+fi
+
 # Check if Homebrew is installed, install if not
 if ! command -v brew &> /dev/null; then
     echo "Installing Homebrew..."
