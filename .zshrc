@@ -173,6 +173,9 @@ alias refreshzsh="exec zsh"
 alias ls="eza --color=always --long --git --no-filesize --no-time --no-permissions --no-user"
 alias ll="eza --color=always --long --git"
 
+# Fix eza completions - use ls completions for eza alias
+compdef _ls ls
+
 benchmarkzsh() {
   for i in $(seq 1 10); do /usr/bin/time zsh -i -c exit; done
 }
@@ -252,11 +255,10 @@ group_lazy_load() {
 # Consolidate lazy loading
 export NVM_DIR=~/.nvm
 group_lazy_load $HOME/.nvm/nvm.sh node npm
-group_lazy_load $HOME/.rvm/scripts/rvm rvm irb rake rails
 
 
 # Consolidate PATH exports for better performance
-export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.rvm/bin:$HOME/.cargo/bin:$HOME/go/bin:/Users/lamdav/.local/bin"
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.cargo/bin:$HOME/go/bin:/Users/lamdav/.local/bin"
 source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
 source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
 
@@ -286,3 +288,17 @@ source ${zsh_plugins}.zsh
 export HOMEBREW_NO_ANALYTICS=1
 
 # zprof
+
+alias claude="/Users/lamdav/.claude/local/claude"
+
+# Kitty shortcuts help - dynamically generated from kitty.conf
+alias kitty-help='
+echo "🐱 Kitty Terminal Shortcuts (from ~/.config/kitty/kitty.conf)"
+echo "================================================================"
+if [[ -f ~/.config/kitty/kitty.conf ]]; then
+  grep "^map " ~/.config/kitty/kitty.conf | sed "s/^map /  /" | sort
+else
+  echo "kitty.conf not found at ~/.config/kitty/kitty.conf"
+fi
+echo ""
+echo "For full documentation: https://sw.kovidgoyal.net/kitty/overview/"'

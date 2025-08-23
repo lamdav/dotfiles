@@ -3,15 +3,6 @@ set -euo pipefail
 
 export dir="$(pwd)"
 
-# Check if Python interactive installer is available
-if command -v poetry &> /dev/null && [ -f "$dir/pyproject.toml" ]; then
-    echo "🐍 Python interactive installer detected!"
-    echo "For a better experience, you can use the interactive installer:"
-    echo "  poetry install && poetry run install-dotfiles"
-    echo ""
-    echo "Or continue with this bash script (press Enter to continue, Ctrl+C to exit):"
-    read -r
-fi
 
 # Check if Homebrew is installed, install if not
 if ! command -v brew &> /dev/null; then
@@ -23,11 +14,6 @@ fi
 echo "Updating Homebrew and installing packages..."
 brew update && brew bundle --no-lock
 
-# Install RVM if not present
-if ! command -v rvm &> /dev/null; then
-    echo "Installing RVM..."
-    curl -sSL https://get.rvm.io | bash -s stable
-fi
 
 # Install Oh My Zsh if not present
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
@@ -63,6 +49,18 @@ if [ -f "$dir/iterm-profiles.json" ]; then
     echo "Setting up iTerm2 profile..."
     mkdir -p ~/Library/Application\ Support/iTerm2/DynamicProfiles
     ln -sf "$dir/iterm-profiles.json" ~/Library/Application\ Support/iTerm2/DynamicProfiles/iterm-profiles.json
+fi
+
+# Setup Kitty configuration
+if [ -f "$dir/kitty.conf" ]; then
+    echo "Setting up Kitty configuration..."
+    mkdir -p ~/.config/kitty
+    ln -sf "$dir/kitty.conf" ~/.config/kitty/kitty.conf
+    
+    # Link kitty customizations directory
+    if [ -d "$dir/kitty-customizations" ]; then
+        ln -sf "$dir/kitty-customizations" ~/.config/kitty/kitty-customizations
+    fi
 fi
 
 # Configure macOS system preferences for optimal development environment
@@ -156,4 +154,5 @@ echo "\nDotfiles installation complete!"
 echo "System preferences have been configured for optimal development workflow."
 echo "Run 'exec zsh' to reload your shell."
 echo "You may need to restart iTerm2 to see the new profile."
+echo "If using Kitty, your configuration has been linked to ~/.config/kitty/kitty.conf"
 echo "Some changes may require a system restart to take full effect."

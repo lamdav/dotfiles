@@ -104,6 +104,7 @@ def install(
     table.add_row("Vim Config", "Install", "Vim editor configuration")
     table.add_row("AeroSpace", "Install", "Window management")
     table.add_row("iTerm2", "Install", "Terminal profiles")
+    table.add_row("Kitty", "Install", "Kitty terminal configuration")
     table.add_row("System Prefs", "Skip" if skip_system else "Install", "macOS system preferences")
     
     console.print(table)
@@ -222,6 +223,23 @@ def install(
         if create_symlink(iterm_source, iterm_target, "iTerm2 profiles"):
             success_count += 1
     
+    # Kitty configuration
+    console.print("\n[bold cyan]🐱 Setting up Kitty terminal...[/bold cyan]")
+    kitty_source = DOTFILES_DIR / "kitty.conf"
+    if kitty_source.exists():
+        total_steps += 1
+        kitty_target = Path.home() / ".config" / "kitty" / "kitty.conf"
+        if create_symlink(kitty_source, kitty_target, "Kitty configuration"):
+            success_count += 1
+    
+    # Kitty tab bar script
+    tab_bar_source = DOTFILES_DIR / "tab_bar.py"
+    if tab_bar_source.exists():
+        total_steps += 1
+        tab_bar_target = Path.home() / ".config" / "kitty" / "tab_bar.py"
+        if create_symlink(tab_bar_source, tab_bar_target, "Kitty tab bar script"):
+            success_count += 1
+    
     # macOS system preferences
     if not skip_system:
         console.print("\n[bold cyan]⚙️  Configuring macOS system preferences...[/bold cyan]")
@@ -298,8 +316,10 @@ def install(
         "[bold]Next Steps:[/bold]\n"
         "• Run 'exec zsh' to reload your shell\n"
         "• Restart iTerm2 to see the new profile\n"
+        "• Launch Kitty to use the new terminal configuration\n"
         "• Some macOS changes may require a system restart\n"
-        "• Run 'updateplugins' to refresh Zsh plugins",
+        "• Run 'updateplugins' to refresh Zsh plugins\n"
+        "• For Kitty hotkey window (ctrl+`), set up a macOS shortcut in System Preferences",
         title="What's Next?",
         border_style="green"
     ))
@@ -321,6 +341,7 @@ def status() -> None:
         (".vimrc", "Vim configuration"),
         (".aerospace.toml", "AeroSpace configuration"),
         ("Library/Application Support/iTerm2/DynamicProfiles/iterm-profiles.json", "iTerm2 profiles"),
+        (".config/kitty/kitty.conf", "Kitty configuration"),
     ]
     
     for config_file, description in configs:

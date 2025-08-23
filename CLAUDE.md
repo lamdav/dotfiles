@@ -11,13 +11,13 @@ This is a comprehensive dotfiles configuration for a macOS development environme
 ### Shell Environment (.zshrc)
 - **Framework**: Oh My Zsh with antidote plugin manager
 - **Theme**: Powerlevel10k with custom configuration (.p10k.zsh)
-- **Performance**: Implements lazy loading for NVM, RVM, and PyEnv to maintain fast startup times
+- **Performance**: Implements lazy loading for NVM and PyEnv to maintain fast startup times
 - **Plugins**: Managed via .zsh_plugins file with automatic caching in .zsh_plugins.zsh
 
 ### Package Management (Brewfile)
 Manages 25+ CLI tools and development environments including:
 - Development tools: git, ripgrep, jq, helm, kubectl
-- Language runtimes: go, python, node (via nvm), ruby (via rvm)
+- Language runtimes: go, python, node (via nvm)
 - Productivity tools: bat, eza, tldr, tmux
 - GUI applications: aerospace, font-fira-code-nerd-font
 
@@ -28,9 +28,10 @@ AeroSpace configuration with i3-inspired keybindings:
 - Integration with iTerm2 and browser workflows
 
 ### Terminal Configuration
-- **iTerm2**: Dynamic profiles via iterm-profiles.json
-- **Color scheme**: Firewatch theme (firewatch.itermcolors)
-- **Font**: FiraCode Nerd Font for programming ligatures
+- **iTerm2**: Dynamic profiles via iterm-profiles.json (legacy support)
+- **Kitty**: Primary terminal with comprehensive configuration (kitty.conf)
+- **Color scheme**: Firewatch theme applied to both iTerm2 and Kitty
+- **Font**: FiraCode Nerd Font with ligatures enabled
 
 ## Key Commands
 
@@ -92,13 +93,35 @@ git untrack <file> # stop tracking changes
 ```bash
 # Lazy-loaded tools (automatically initialize on first use)
 nvm use <version>    # Node.js version management
-rvm use <version>    # Ruby version management
 pyenv global <version> # Python version management
 
 # Load tools manually if needed
 load_nvm
 load_pyenv
 loadjabba  # Java version management
+```
+
+### Terminal Usage (Kitty)
+```bash
+# View current terminal shortcuts
+kitty-help          # Shows all keybindings from kitty.conf
+
+# Key shortcuts (configured in kitty.conf)
+cmd+1-9             # Jump to tab 1-9
+cmd+0               # Jump to last tab
+cmd+t               # New tab (inherits current directory)
+cmd+w               # Close current pane (closes tab when last pane)
+cmd+d               # Split pane horizontally
+cmd+shift+d         # Split pane vertically
+cmd+k               # Clear screen and scrollback
+
+# Font control
+cmd+plus/minus      # Increase/decrease font size
+cmd+ctrl+0          # Reset font size to default
+
+# Pane management
+cmd+shift+w         # Close current pane
+cmd+shift+z         # Toggle pane zoom (fullscreen)
 ```
 
 ## File Relationships and Dependencies
@@ -110,6 +133,7 @@ The install.sh script creates symbolic links from this repository to home direct
 - .zsh_plugins → ~/.zsh_plugins
 - .aerospace.toml → ~/.aerospace.toml
 - iterm-profiles.json → ~/Library/Application Support/iTerm2/DynamicProfiles/
+- kitty.conf → ~/.config/kitty/kitty.conf
 
 ### Plugin System Flow
 1. .zsh_plugins defines plugin list
@@ -134,6 +158,12 @@ The install.sh script creates symbolic links from this repository to home direct
 - Verify Brewfile installations: `brew bundle check`
 - Reinstall Oh My Zsh if missing: `rm -rf ~/.oh-my-zsh && ./install.sh`
 - Regenerate plugin cache: `updateplugins`
+
+### Kitty Terminal Issues
+- Check config syntax: `kitty -c ~/.config/kitty/kitty.conf --version`
+- Verify symlink: `ls -la ~/.config/kitty/kitty.conf` should point to dotfiles/kitty.conf
+- Reload configuration: `cmd+shift+r` in Kitty or restart Kitty
+- Font issues: Ensure FiraCode Nerd Font is installed via Homebrew
 
 ### System Settings Not Applied
 - Some macOS preferences require restart to take effect
@@ -168,10 +198,27 @@ omz update
 ## Development Workflow Integration
 
 This configuration optimizes for:
-- **Multi-language development**: Supports Node.js, Python, Ruby, Go, Java
+- **Multi-language development**: Supports Node.js, Python, Go, Java
 - **Container workflows**: Includes kubectl, helm, k9s
 - **Git-heavy workflows**: Enhanced diff viewing and comprehensive aliases
-- **Terminal-centric development**: Vim, tmux, and efficient CLI tools
+- **Terminal-centric development**: Kitty terminal, vim, tmux, and efficient CLI tools
 - **Window management**: AeroSpace for organized workspace layouts
+- **Modern terminal features**: Kitty provides GPU acceleration, ligatures, and advanced pane management
+
+## Kitty Terminal Features
+
+### Configuration Highlights
+- **Firewatch color scheme** with carefully converted RGB values from iTerm2
+- **FiraCode Nerd Font** with full ligature support
+- **Dynamic shortcuts help**: `kitty-help` command reads current keybindings
+- **Pane management**: Split horizontally (`cmd+d`), vertically (`cmd+shift+d`), close with `cmd+w`
+- **Smart tab management**: New tabs inherit current working directory
+- **Performance optimized**: GPU acceleration and efficient rendering
+
+### Hotkey Window Setup
+For global hotkey access (ctrl+`), create a macOS keyboard shortcut:
+1. System Preferences → Keyboard → Shortcuts
+2. Add new shortcut with command: `/Applications/kitty.app/Contents/MacOS/kitty --single-instance --instance-group=hotkey`
+3. Assign ctrl+` as the keyboard shortcut
 
 The lazy loading system ensures fast shell startup while maintaining access to full development toolchain when needed.
