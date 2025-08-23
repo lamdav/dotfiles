@@ -1,0 +1,426 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Jean-Tinland/simple-bar/refs/heads/master/lib/schemas/config.json",
+  "global": {
+    "theme": "auto",
+    "compactMode": false,
+    "floatingBar": true,
+    "noBarBg": true,
+    "noColorInData": false,
+    "bottomBar": false,
+    "sideDecoration": false,
+    "inlineSpacesOptions": true,
+    "disableAnimations": false,
+    "spacesBackgroundColorAsForeground": false,
+    "widgetsBackgroundColorAsForeground": true,
+    "widgetMaxWidth": "160px",
+    "slidingAnimationPace": 4,
+    "font": "FiraCode Nerd Font, JetBrains Mono, Monaco, Menlo, monospace",
+    "fontSize": "12px",
+    "yabaiPath": "$(which yabai)",
+    "aerospacePath": "/opt/homebrew/bin/aerospace",
+    "flashspacePath": "$(which flashspace)",
+    "windowManager": "aerospace",
+    "shell": "bash",
+    "terminal": "kitty",
+    "disableNotifications": false,
+    "enableMissives": false,
+    "enableServer": true,
+    "serverSocketPort": 7777,
+    "yabaiServerRefresh": false,
+    "aerospaceServerRefresh": true,
+    "flashspaceServerRefresh": false,
+    "darkTheme": "firewatch-dark",
+    "lightTheme": "firewatch-light",
+    "noBar": false,
+    "widget": {
+      "maxWidth": "160px"
+    },
+    "spacesDisplay": {
+      "enabled": true,
+      "exclude": "",
+      "displayAllSpacesOnAllScreens": false,
+      "hideDuplicateAppsInSpaces": false,
+      "displayOnlyCurrent": false,
+      "hideEmptySpaces": false,
+      "showOptionsOnHover": true
+    },
+    "processName": {
+      "enabled": true,
+      "exclude": "",
+      "displayTitle": true,
+      "maxTitleWidth": "280px"
+    },
+    "time": {
+      "enabled": true,
+      "exclude": "",
+      "showDayOfWeek": false,
+      "format": "HH:mm"
+    },
+    "dateDisplay": {
+      "enabled": false,
+      "exclude": "",
+      "shortDateFormat": true,
+      "locale": "en-US"
+    },
+    "battery": {
+      "enabled": true,
+      "exclude": "",
+      "showPercentage": true,
+      "hideWhenCharging": false,
+      "hideWhenFull": true,
+      "toggleCaffeinate": false,
+      "caffeinate": false
+    },
+    "wifi": {
+      "enabled": true,
+      "exclude": "",
+      "hideWhenDisconnected": false,
+      "toggleWifi": false,
+      "networkName": false
+    },
+    "mic": {
+      "enabled": true,
+      "exclude": "",
+      "toggleMic": false
+    },
+    "sound": {
+      "enabled": true,
+      "exclude": "",
+      "showPercentage": false
+    },
+    "weather": {
+      "enabled": false,
+      "exclude": "",
+      "refreshFrequency": 1800000,
+      "unit": "°C",
+      "hideLocation": false,
+      "hideGradient": false,
+      "customLocation": ""
+    },
+    "netstats": {
+      "enabled": false,
+      "exclude": "",
+      "refreshFrequency": 2000,
+      "displayAsGraph": false
+    },
+    "cpu": {
+      "enabled": true,
+      "exclude": "",
+      "refreshFrequency": 2000,
+      "showUsage": true,
+      "showTemperature": false
+    },
+    "memory": {
+      "enabled": true,
+      "exclude": "",
+      "refreshFrequency": 2000,
+      "displayAsGraph": false
+    },
+    "keyboard": {
+      "enabled": false,
+      "exclude": "",
+      "showFlags": false
+    },
+    "spotify": {
+      "enabled": false,
+      "exclude": "",
+      "showSpecter": false,
+      "refreshFrequency": 2000
+    },
+    "music": {
+      "enabled": false,
+      "exclude": "",
+      "showSpecter": false,
+      "refreshFrequency": 2000
+    }
+  },
+  "themes": {
+    "lightTheme": "SolarizedLight",
+    "darkTheme": "SpaceDuck",
+    "colorMain": "",
+    "colorMainAlt": "",
+    "colorMinor": "",
+    "colorAccent": "",
+    "colorRed": "",
+    "colorGreen": "",
+    "colorYellow": "",
+    "colorOrange": "",
+    "colorBlue": "",
+    "colorMagenta": "",
+    "colorCyan": "",
+    "colorBlack": "",
+    "colorWhite": "",
+    "colorForeground": "",
+    "colorBackground": "",
+    "firewatch-dark": {
+      "name": "Firewatch Dark",
+      "kind": "dark",
+      "main": "#1e2027",
+      "mainAlt": "#2e3642",
+      "minor": "#58606f",
+      "accent": "#44a8b6",
+      "red": "#d9537a",
+      "green": "#5ab977",
+      "yellow": "#dfb563",
+      "orange": "#dfb563",
+      "blue": "#4d89c4",
+      "magenta": "#d55119",
+      "cyan": "#44a8b6",
+      "white": "#e6e5ff",
+      "fg": "#9ba2b2",
+      "bg": "#1e2027"
+    },
+    "firewatch-light": {
+      "name": "Firewatch Light",
+      "kind": "light",
+      "main": "#f8f8f2",
+      "mainAlt": "#e6e5ff",
+      "minor": "#9ba2b2",
+      "accent": "#44a8b6",
+      "red": "#d9537a",
+      "green": "#5ab977",
+      "yellow": "#dfb563",
+      "orange": "#dfb563",
+      "blue": "#4d89c4",
+      "magenta": "#d55119",
+      "cyan": "#44a8b6",
+      "white": "#1e2027",
+      "fg": "#1e2027",
+      "bg": "#f8f8f2"
+    }
+  },
+  "process": {
+    "showOnDisplay": "",
+    "displayOnlyCurrent": true,
+    "centered": false,
+    "showCurrentSpaceMode": false,
+    "hideWindowTitle": false,
+    "displayOnlyIcon": true,
+    "expandAllProcesses": false,
+    "displaySkhdMode": false,
+    "displayStackIndex": false,
+    "displayOnlyCurrentStack": false
+  },
+  "spacesDisplay": {
+    "showOnDisplay": "",
+    "exclusions": "",
+    "titleExclusions": "",
+    "spacesExclusions": "",
+    "exclusionsAsRegex": false,
+    "displayAllSpacesOnAllScreens": false,
+    "hideDuplicateAppsInSpaces": false,
+    "displayStickyWindowsSeparately": false,
+    "hideCreateSpaceButton": false,
+    "hideEmptySpaces": true,
+    "showOptionsOnHover": false,
+    "switchSpacesWithoutYabai": false,
+    "showOnlyFlashspaceSpaceIndex": false,
+    "hideFlashspaceAppIcons": false,
+    "customAeroSpaceDisplayIndexes": {}
+  },
+  "widgets": {
+    "processWidget": true,
+    "githubWidget": false,
+    "weatherWidget": false,
+    "netstatsWidget": false,
+    "cpuWidget": false,
+    "gpuWidget": false,
+    "memoryWidget": false,
+    "batteryWidget": false,
+    "wifiWidget": false,
+    "vpnWidget": false,
+    "zoomWidget": false,
+    "soundWidget": false,
+    "micWidget": false,
+    "dateWidget": true,
+    "timeWidget": true,
+    "keyboardWidget": false,
+    "spotifyWidget": true,
+    "cryptoWidget": false,
+    "stockWidget": false,
+    "youtubeMusicWidget": false,
+    "musicWidget": false,
+    "mpdWidget": false,
+    "browserTrackWidget": false
+  },
+  "githubWidgetOptions": {
+    "refreshFrequency": 600000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "hideWhenNoNotification": false,
+    "notificationUrl": "https://github.com/notifications",
+    "ghBinaryPath": "/opt/homebrew/bin/gh"
+  },
+  "weatherWidgetOptions": {
+    "refreshFrequency": 1800000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "unit": "C",
+    "hideLocation": false,
+    "hideGradient": false,
+    "customLocation": ""
+  },
+  "netstatsWidgetOptions": {
+    "refreshFrequency": 2000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "displayAsGraph": false
+  },
+  "cpuWidgetOptions": {
+    "refreshFrequency": 2000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "displayAsGraph": false,
+    "cpuMonitorApp": "Activity Monitor"
+  },
+  "gpuWidgetOptions": {
+    "refreshFrequency": 3000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "displayAsGraph": false,
+    "gpuMacmonBinaryPath": "/opt/homebrew/bin/macmon"
+  },
+  "memoryWidgetOptions": {
+    "refreshFrequency": 4000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "memoryMonitorApp": "Activity Monitor"
+  },
+  "batteryWidgetOptions": {
+    "refreshFrequency": 10000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "toggleCaffeinateOnClick": false,
+    "caffeinateOption": ""
+  },
+  "networkWidgetOptions": {
+    "refreshFrequency": 20000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "networkDevice": "en0",
+    "hideWifiIfDisabled": false,
+    "toggleWifiOnClick": true,
+    "hideNetworkName": true
+  },
+  "vpnWidgetOptions": {
+    "refreshFrequency": 8000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "vpnConnectionName": "",
+    "vpnShowConnectionName": false
+  },
+  "zoomWidgetOptions": {
+    "refreshFrequency": 5000,
+    "showOnDisplay": "",
+    "showVideo": true,
+    "showMic": true
+  },
+  "soundWidgetOptions": {
+    "refreshFrequency": 20000,
+    "showOnDisplay": "",
+    "showIcon": true
+  },
+  "micWidgetOptions": {
+    "refreshFrequency": 20000,
+    "showOnDisplay": "",
+    "showIcon": true
+  },
+  "dateWidgetOptions": {
+    "refreshFrequency": 30000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "shortDateFormat": true,
+    "locale": "en-US",
+    "calendarApp": ""
+  },
+  "timeWidgetOptions": {
+    "refreshFrequency": 1000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "hour12": false,
+    "dayProgress": true,
+    "showSeconds": false
+  },
+  "keyboardWidgetOptions": {
+    "refreshFrequency": 20000,
+    "showOnDisplay": "",
+    "showIcon": true
+  },
+  "cryptoWidgetOptions": {
+    "refreshFrequency": 300000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "denomination": "usd",
+    "identifiers": "bitcoin,ethereum,celo",
+    "precision": 5
+  },
+  "stockWidgetOptions": {
+    "refreshFrequency": 900000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "yahooFinanceApiKey": "YOUR_API_KEY",
+    "symbols": "AAPL,TSLA",
+    "showSymbol": true,
+    "showCurrency": true,
+    "showMarketPrice": true,
+    "showMarketChange": false,
+    "showMarketPercent": true,
+    "showColor": true
+  },
+  "spotifyWidgetOptions": {
+    "refreshFrequency": 10000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "showSpecter": true,
+    "showSpotifyMetadata": true
+  },
+  "youtubeMusicWidgetOptions": {
+    "refreshFrequency": 10000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "showSpecter": true,
+    "youtubeMusicPort": 26538
+  },
+  "musicWidgetOptions": {
+    "refreshFrequency": 10000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "showSpecter": true
+  },
+  "mpdWidgetOptions": {
+    "refreshFrequency": 10000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "showSpecter": true,
+    "mpdBinaryPath": "/opt/homebrew/bin/mpc",
+    "mpdPort": "6600",
+    "mpdHost": "127.0.0.1",
+    "mpdFormatString": "%title%[ - %artist%]|[%file%]"
+  },
+  "browserTrackWidgetOptions": {
+    "refreshFrequency": 10000,
+    "showOnDisplay": "",
+    "showIcon": true,
+    "showSpecter": true
+  },
+  "userWidgets": {
+    "userWidgetsList": {}
+  },
+  "customStyles": {
+    "styles": "/* your custom css styles here */",
+    "theme": "user",
+    "userStyles": [
+      ".simple-bar { font-family: 'FiraCode Nerd Font', monospace; font-size: 11px; }",
+      ".data-widget { border-radius: 20px !important; padding: 8px 16px !important; margin: 0 4px !important; }",
+      ".spaces { margin: 0 4px; }",
+      ".spaces__separator { display: none; }",
+      ".battery, .time, .date-display, .wifi, .spotify, .cpu, .memory, .github, .weather, .netstats, .sound, .mic, .keyboard { border-radius: 20px !important; padding: 8px 16px !important; margin: 0 4px !important; }",
+      ".simple-bar__spaces-display .space { border-radius: 20px; margin: 0 3px; transition: all 0.2s ease; padding: 6px 12px; }",
+      ".simple-bar__process { font-weight: 500; border-radius: 20px; padding: 6px 16px; }",
+      ".simple-bar__data { border-radius: 20px; padding: 6px 14px; margin: 0 3px; }",
+      "@media (max-width: 1920px) and (min-width: 1728px) { .simple-bar { padding: 0 8px; } }",
+      ".simple-bar__spaces-display .space--focused { background-color: #44a8b6; color: #1e2027; }",
+      ".simple-bar__spaces-display .space:not(.space--focused) { background-color: #2e3642; color: #9ba2b2; }"
+    ]
+  }
+}

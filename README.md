@@ -5,10 +5,11 @@ A comprehensive dotfiles configuration for macOS development environments with b
 ## Features
 
 ### Core Components
-- **Shell Environment**: Zsh with Oh My Zsh framework and Powerlevel10k theme
+- **Shell Environment**: Modular Zsh configuration with Oh My Zsh framework and Powerlevel10k theme
 - **Package Management**: Homebrew with 25+ development tools and CLI utilities
-- **Window Management**: AeroSpace configuration with i3-inspired keybindings
-- **Terminal**: iTerm2 profiles with Firewatch color scheme and FiraCode Nerd Font
+- **Window Management**: AeroSpace with dedicated workspaces and i3-inspired keybindings
+- **Terminal**: Kitty (primary) and iTerm2 with Firewatch theme and FiraCode Nerd Font
+- **Status Bar**: simple-bar with Übersicht integration and AeroSpace workspace indicators
 - **Editor**: Vim configuration optimized for development
 - **Git**: Enhanced configuration with custom aliases and delta integration
 - **System Preferences**: Automated macOS settings for developer workflow
@@ -127,18 +128,40 @@ The installer automatically configures macOS for optimal development:
 ### File Structure
 ```
 .
-├── installer/           # Python CLI installer
-├── pyproject.toml      # Poetry configuration
-├── install.sh          # Bash installer
-├── .zshrc              # Shell configuration
-├── .zsh_plugins        # Plugin definitions
-├── .p10k.zsh          # Powerlevel10k theme config
-├── .gitconfig         # Git configuration with aliases
-├── .vimrc             # Vim editor settings
-├── .aerospace.toml    # Window manager config
-├── Brewfile           # Package definitions
-├── iterm-profiles.json # Terminal profiles
-└── CLAUDE.md          # AI assistant instructions
+├── installer/              # Python CLI installer
+├── pyproject.toml         # Poetry configuration  
+├── install.sh             # Bash installer
+├── Brewfile               # Package definitions
+├── steeef-lambda.zsh-theme # Custom zsh theme
+├── CLAUDE.md             # AI assistant instructions
+│
+├── aerospace/            # Window management
+│   └── .aerospace.toml   # AeroSpace configuration
+├── git/                  # Git configuration
+│   └── .gitconfig       # Git aliases and settings
+├── iterm/                # iTerm2 terminal
+│   ├── iterm-profiles.json # Terminal profiles
+│   └── firewatch.itermcolors # Color scheme
+├── kitty/                # Kitty terminal (primary)
+│   ├── kitty.conf       # Configuration
+│   └── kitty-customizations/ # Extensions
+├── ubersicht/            # Status bar
+│   └── simple-bar/
+│       └── simplebarrc  # simple-bar configuration
+├── vim/                  # Vim editor
+│   └── .vimrc           # Vim configuration
+└── zsh/                  # Modular shell configuration
+    ├── .zshrc           # Main shell config
+    ├── .zsh_plugins     # Plugin definitions
+    ├── .zlogin         # Login shell setup
+    ├── .p10k.zsh       # Powerlevel10k theme
+    ├── aliases.zsh     # Command aliases
+    ├── completion.zsh  # Completion system
+    ├── environment.zsh # Environment variables
+    ├── integrations.zsh # External integrations
+    ├── keybindings.zsh # Key bindings
+    ├── lazy-loading.zsh # Performance optimizations
+    └── options.zsh     # Zsh options
 ```
 
 ## Troubleshooting

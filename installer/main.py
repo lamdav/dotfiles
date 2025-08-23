@@ -139,19 +139,7 @@ def install(
     # Shell configuration
     if not skip_shell:
         console.print("\n[bold cyan]🐚 Setting up shell configuration...[/bold cyan]")
-        total_steps += 4
-        
-        # Install RVM if not present
-        if not check_command_exists("rvm"):
-            console.print("Installing RVM...")
-            if run_command(
-                "curl -sSL https://get.rvm.io | bash -s stable",
-                "Installing RVM..."
-            ):
-                success_count += 1
-        else:
-            console.print("[green]✓ RVM already installed[/green]")
-            success_count += 1
+        total_steps += 3
         
         # Install Oh My Zsh if not present
         oh_my_zsh_dir = Path.home() / ".oh-my-zsh"
@@ -187,6 +175,21 @@ def install(
         if theme_source.exists():
             if create_symlink(theme_source, theme_target, "Custom Zsh theme"):
                 success_count += 1
+        
+        # Modular zsh configuration
+        zsh_modules_dir = DOTFILES_DIR / "zsh"
+        if zsh_modules_dir.exists():
+            console.print("Setting up modular Zsh configuration...")
+            zsh_config_dir = Path.home() / ".config" / "zsh"
+            zsh_config_dir.mkdir(parents=True, exist_ok=True)
+            
+            module_count = 0
+            for module_file in zsh_modules_dir.glob("*.zsh"):
+                target_module = zsh_config_dir / module_file.name
+                if create_symlink(module_file, target_module, f"Zsh module: {module_file.name}"):
+                    module_count += 1
+            
+            console.print(f"[green]✓ {module_count} Zsh modules configured[/green]")
     
     # Git configuration
     console.print("\n[bold cyan]🔧 Setting up Git configuration...[/bold cyan]")
@@ -232,12 +235,12 @@ def install(
         if create_symlink(kitty_source, kitty_target, "Kitty configuration"):
             success_count += 1
     
-    # Kitty tab bar script
-    tab_bar_source = DOTFILES_DIR / "tab_bar.py"
-    if tab_bar_source.exists():
+    # Kitty customizations directory
+    kitty_custom_source = DOTFILES_DIR / "kitty-customizations"
+    if kitty_custom_source.exists():
         total_steps += 1
-        tab_bar_target = Path.home() / ".config" / "kitty" / "tab_bar.py"
-        if create_symlink(tab_bar_source, tab_bar_target, "Kitty tab bar script"):
+        kitty_custom_target = Path.home() / ".config" / "kitty" / "kitty-customizations"
+        if create_symlink(kitty_custom_source, kitty_custom_target, "Kitty customizations"):
             success_count += 1
     
     # macOS system preferences

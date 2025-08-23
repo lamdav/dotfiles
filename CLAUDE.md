@@ -4,15 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a comprehensive dotfiles configuration for a macOS development environment. The setup includes shell configuration (zsh), terminal customization (iTerm2), window management (AeroSpace), editor setup (vim), and automated package management via Homebrew.
+This is a comprehensive dotfiles configuration for a macOS development environment. The setup includes modular shell configuration (zsh/), terminal customization (iTerm2/Kitty), window management (AeroSpace), editor setup (vim), status bar (simple-bar), and automated package management via Homebrew.
 
 ## Core Architecture
 
-### Shell Environment (.zshrc)
+### Shell Environment (zsh/)
 - **Framework**: Oh My Zsh with antidote plugin manager
-- **Theme**: Powerlevel10k with custom configuration (.p10k.zsh)
-- **Performance**: Implements lazy loading for NVM and PyEnv to maintain fast startup times
-- **Plugins**: Managed via .zsh_plugins file with automatic caching in .zsh_plugins.zsh
+- **Configuration**: Modular zsh setup with `.zshrc`, `.zsh_plugins`, `.zlogin`, and `.p10k.zsh` in `zsh/` directory
+- **Modules**: Split into focused modules (options, completion, keybindings, environment, lazy-loading, aliases, integrations)
+- **Theme**: Powerlevel10k with custom configuration (zsh/.p10k.zsh)
+- **Performance**: Implements lazy loading for NVM, PyEnv, and Java (JABBA) to maintain fast startup times
+- **Plugins**: Managed via zsh/.zsh_plugins file with automatic caching
 
 ### Package Management (Brewfile)
 Manages 25+ CLI tools and development environments including:
@@ -21,17 +23,27 @@ Manages 25+ CLI tools and development environments including:
 - Productivity tools: bat, eza, tldr, tmux
 - GUI applications: aerospace, font-fira-code-nerd-font
 
-### Window Management (.aerospace.toml)
+### Window Management (aerospace/)
 AeroSpace configuration with i3-inspired keybindings:
-- Workspaces 1-6 with focused applications
+- Workspaces 1-9 plus dedicated workspaces (S=Spotify, F=Finder, M=Mail)
 - Custom resize modes and movement commands
-- Integration with iTerm2 and browser workflows
+- Auto-assignment rules for applications to workspaces
+- Integration with simple-bar for real-time workspace updates
 
-### Terminal Configuration
-- **iTerm2**: Dynamic profiles via iterm-profiles.json (legacy support)
-- **Kitty**: Primary terminal with comprehensive configuration (kitty.conf)
-- **Color scheme**: Firewatch theme applied to both iTerm2 and Kitty
-- **Font**: FiraCode Nerd Font with ligatures enabled
+### Terminal Configuration (kitty/ & iterm/)
+- **Kitty**: Primary terminal with comprehensive configuration in `kitty/kitty.conf`
+  - Custom tab bar with process icons
+  - Split pane management and session handling
+  - Performance optimized with GPU acceleration
+- **iTerm2**: Legacy support with profiles in `iterm/iterm-profiles.json`
+- **Color scheme**: Firewatch theme applied consistently across terminals
+- **Font**: FiraCode Nerd Font with full ligature support
+
+### Status Bar (ubersicht/simple-bar/)
+- **simple-bar**: Custom Übersicht widget with Firewatch theme integration
+- **Features**: AeroSpace workspace indicators, system metrics, battery, time
+- **Styling**: Pill-shaped widgets with consistent color scheme
+- **Auto-refresh**: Syncs with AeroSpace workspace changes
 
 ## Key Commands
 
@@ -126,20 +138,54 @@ cmd+shift+z         # Toggle pane zoom (fullscreen)
 
 ## File Relationships and Dependencies
 
-### Symlink Architecture
-The install.sh script creates symbolic links from this repository to home directory:
-- .zshrc → ~/.zshrc
-- .gitconfig → ~/.gitconfig
-- .zsh_plugins → ~/.zsh_plugins
-- .aerospace.toml → ~/.aerospace.toml
-- iterm-profiles.json → ~/Library/Application Support/iTerm2/DynamicProfiles/
-- kitty.conf → ~/.config/kitty/kitty.conf
+### Directory Structure and Symlinks
+The install.sh script creates symbolic links from organized directories to home:
+
+**Organized Structure:**
+```
+├── aerospace/          # Window management
+│   └── .aerospace.toml
+├── git/               # Git configuration  
+│   └── .gitconfig
+├── iterm/             # iTerm2 profiles and colors
+│   ├── iterm-profiles.json
+│   └── firewatch.itermcolors
+├── kitty/             # Kitty terminal configuration
+│   ├── kitty.conf
+│   └── kitty-customizations/
+├── ubersicht/         # Status bar configuration
+│   └── simple-bar/
+│       └── simplebarrc
+├── vim/               # Vim editor configuration
+│   └── .vimrc
+└── zsh/               # Modular shell configuration
+    ├── .zshrc
+    ├── .zsh_plugins
+    ├── .zlogin
+    ├── .p10k.zsh
+    └── *.zsh modules
+```
+
+**Symlinks Created:**
+- zsh/.zshrc → ~/.zshrc
+- git/.gitconfig → ~/.gitconfig  
+- zsh/.zsh_plugins → ~/.zsh_plugins
+- aerospace/.aerospace.toml → ~/.aerospace.toml
+- iterm/iterm-profiles.json → ~/Library/Application Support/iTerm2/DynamicProfiles/
+- kitty/kitty.conf → ~/.config/kitty/kitty.conf
+- ubersicht/simple-bar/simplebarrc → ~/.simplebarrc
+- vim/.vimrc → ~/.vimrc
 
 ### Plugin System Flow
-1. .zsh_plugins defines plugin list
+1. zsh/.zsh_plugins defines plugin list
 2. antidote generates .zsh_plugins.zsh (cached)
-3. .zshrc sources the cached file for performance
-4. Plugins are auto-updated when .zsh_plugins changes
+3. zsh/.zshrc sources the cached file for performance
+4. Plugins are auto-updated when zsh/.zsh_plugins changes
+
+### Modular Zsh Configuration
+1. zsh/.zshrc loads modules in order: options → completion → keybindings → environment → lazy-loading → aliases → integrations
+2. Each module is self-contained and focused on specific functionality
+3. ~/.config/zsh/ contains symlinks to all zsh/*.zsh modules for easy management
 
 ### Performance Optimizations
 - **Conditional loading**: Tools only load when first accessed

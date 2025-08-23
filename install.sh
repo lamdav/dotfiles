@@ -22,44 +22,53 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
 fi
 # Create symbolic links for shell configuration
 echo "Setting up shell configuration..."
-ln -sf "$dir/.zshrc" ~/.zshrc
-ln -sf "$dir/.zsh_plugins" ~/.zsh_plugins
-[ -f "$dir/.zlogin" ] && ln -sf "$dir/.zlogin" ~/.zlogin
+ln -sf "$dir/zsh/.zshrc" ~/.zshrc
+ln -sf "$dir/zsh/.zsh_plugins" ~/.zsh_plugins
+[ -f "$dir/zsh/.zlogin" ] && ln -sf "$dir/zsh/.zlogin" ~/.zlogin
 mkdir -p ~/.oh-my-zsh/custom/themes
 ln -sf "$dir/steeef-lambda.zsh-theme" ~/.oh-my-zsh/custom/themes/steeef-lambda.zsh-theme
-[ -f "$dir/.p10k.zsh" ] && ln -sf "$dir/.p10k.zsh" ~/.p10k.zsh
+[ -f "$dir/zsh/.p10k.zsh" ] && ln -sf "$dir/zsh/.p10k.zsh" ~/.p10k.zsh
+
+# Link modular zsh configuration
+mkdir -p ~/.config/zsh
+if [ -d "$dir/zsh" ]; then
+    for config_file in "$dir/zsh"/*.zsh; do
+        [ -f "$config_file" ] && ln -sf "$config_file" ~/.config/zsh/
+    done
+fi
 
 # Setup vim configuration
-if [ -f "$dir/.vimrc" ]; then
+if [ -f "$dir/vim/.vimrc" ]; then
     echo "Setting up vim configuration..."
-    ln -sf "$dir/.vimrc" ~/.vimrc
+    ln -sf "$dir/vim/.vimrc" ~/.vimrc
 fi
 
 # Setup Aerospace configuration
-if [ -f "$dir/.aerospace.toml" ]; then
-    ln -sf "$dir/.aerospace.toml" ~/.aerospace.toml
+if [ -f "$dir/aerospace/.aerospace.toml" ]; then
+    echo "Setting up Aerospace configuration..."
+    ln -sf "$dir/aerospace/.aerospace.toml" ~/.aerospace.toml
 fi
 
 # Setup git configuration
 echo "Setting up git configuration..."
-ln -sf "$dir/.gitconfig" ~/.gitconfig
+ln -sf "$dir/git/.gitconfig" ~/.gitconfig
 
-# Setup iTerm2 profile
-if [ -f "$dir/iterm-profiles.json" ]; then
+# Setup iTerm2 profile and colors
+if [ -f "$dir/iterm/iterm-profiles.json" ]; then
     echo "Setting up iTerm2 profile..."
     mkdir -p ~/Library/Application\ Support/iTerm2/DynamicProfiles
-    ln -sf "$dir/iterm-profiles.json" ~/Library/Application\ Support/iTerm2/DynamicProfiles/iterm-profiles.json
+    ln -sf "$dir/iterm/iterm-profiles.json" ~/Library/Application\ Support/iTerm2/DynamicProfiles/iterm-profiles.json
 fi
 
 # Setup Kitty configuration
-if [ -f "$dir/kitty.conf" ]; then
+if [ -f "$dir/kitty/kitty.conf" ]; then
     echo "Setting up Kitty configuration..."
     mkdir -p ~/.config/kitty
-    ln -sf "$dir/kitty.conf" ~/.config/kitty/kitty.conf
+    ln -sf "$dir/kitty/kitty.conf" ~/.config/kitty/kitty.conf
     
     # Link kitty customizations directory
-    if [ -d "$dir/kitty-customizations" ]; then
-        ln -sf "$dir/kitty-customizations" ~/.config/kitty/kitty-customizations
+    if [ -d "$dir/kitty/kitty-customizations" ]; then
+        ln -sf "$dir/kitty/kitty-customizations" ~/.config/kitty/kitty-customizations
     fi
 fi
 
@@ -155,4 +164,68 @@ echo "System preferences have been configured for optimal development workflow."
 echo "Run 'exec zsh' to reload your shell."
 echo "You may need to restart iTerm2 to see the new profile."
 echo "If using Kitty, your configuration has been linked to ~/.config/kitty/kitty.conf"
+
+# Setup simple-bar configuration
+if [ -f "$dir/ubersicht/simple-bar/simplebarrc" ]; then
+    echo "Setting up simple-bar configuration..."
+    ln -sf "$dir/ubersicht/simple-bar/simplebarrc" ~/.simplebarrc
+fi
+
+# Optional: Set up Übersicht and simple-bar
+echo ""
+read -p "Would you like to set up Übersicht and simple-bar with Firewatch theme? (y/n): " -n 1 -r
+echo ""
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    # Check if Übersicht is installed, install if needed
+    if ! ls /Applications/ | grep -i "übersicht\\|uebersicht" > /dev/null; then
+        echo "📥 Übersicht not found. Installing via Homebrew..."
+        
+        if command -v brew &> /dev/null; then
+            brew install --cask ubersicht
+            echo "✅ Übersicht installed successfully"
+        else
+            echo "❌ Homebrew not found. Please install Homebrew first or download Übersicht manually"
+            echo "   Manual download: https://tracesof.net/uebersicht/"
+            exit 1
+        fi
+    fi
+
+    # Check if simple-bar is installed
+    SIMPLE_BAR_DIR="$HOME/Library/Application Support/Übersicht/widgets/simple-bar"
+    if [ ! -d "$SIMPLE_BAR_DIR" ]; then
+        echo "📥 Simple-bar not found. Installing..."
+        
+        # Create widgets directory if it doesn't exist
+        mkdir -p "$(dirname "$SIMPLE_BAR_DIR")"
+        
+        # Clone simple-bar
+        if command -v git &> /dev/null; then
+            git clone https://github.com/Jean-Tinland/simple-bar "$SIMPLE_BAR_DIR"
+            echo "✅ Simple-bar installed successfully"
+        else
+            echo "❌ Git not found. Please install git or download simple-bar manually"
+            exit 1
+        fi
+    fi
+
+    # Refresh Übersicht
+    echo "🔄 Refreshing Übersicht..."
+    osascript -e 'tell application id "tracesOf.Uebersicht" to refresh' 2>/dev/null || {
+        echo "⚠️  Could not refresh Übersicht automatically. Please:"
+        echo "   1. Open Übersicht"
+        echo "   2. Click the menu bar icon"  
+        echo "   3. Click 'Refresh all Widgets'"
+    }
+
+    # Setup completion
+    echo "✅ Simple-bar setup complete!"
+    echo ""
+    echo "📋 Configuration Summary:"
+    echo "   • Theme: Firewatch Custom (matches your terminal)"
+    echo "   • Colors: Dark theme with cyan accents (#44a8b6)"
+    echo "   • Font: FiraCode Nerd Font (matches your terminal)"
+    echo "   • Widgets: Spaces, App, Clock, Battery, System Info"
+    echo "   • AeroSpace: Auto-refresh on workspace changes"
+fi
+
 echo "Some changes may require a system restart to take full effect."
