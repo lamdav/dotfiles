@@ -29,15 +29,31 @@ else
   ZSH_CONFIG_DIR="$(dirname "${(%):-%x}")/zsh"
 fi
 
-# Load configuration modules in order
+# Homebrew completions are set up in environment.zsh module
+
+# =============================================================================
+# MODULAR CONFIGURATION LOADING SEQUENCE
+# =============================================================================
+# 
+# Load order is critical - modules have dependencies:
+# 1. options:      Basic zsh options and behavior (no dependencies)
+# 2. environment:  PATH, FPATH, exports (sets base FPATH)
+# 3. plugins:      Initialize plugin manager and load plugins (adds to FPATH)
+# 4. completion:   Initialize completion system (requires complete FPATH)
+# 5. keybindings:  Key bindings (requires completion system)
+# 6. lazy-loading: Lazy load functions (requires environment)
+# 7. aliases:      Aliases and functions (requires all tools available)
+# 8. integrations: External tool integrations (requires everything else)
+
 zsh_modules=(
-  "options"      # ZSH options and behavior
-  "completion"   # Completion system setup
-  "keybindings"  # Key bindings configuration  
-  "environment"  # Environment variables and PATH
-  "lazy-loading" # Lazy loading functions
-  "aliases"      # Aliases and utility functions
-  "integrations" # External tool integrations
+  "01_options"      
+  "02_environment"  
+  "03_plugins"
+  "04_completion"   
+  "05_keybindings"  
+  "06_lazy-loading" 
+  "10_aliases"      
+  "99_integrations" 
 )
 
 # Source each module with error handling

@@ -54,11 +54,7 @@ typeset -U path=(
 # EXTERNAL INTEGRATIONS
 # =============================================================================
 
-# Google Cloud SDK (if installed via Homebrew)
+# Google Cloud SDK PATH (completion moved to integrations module)
 if [[ -f "/opt/homebrew/share/google-cloud-sdk/path.zsh.inc" ]]; then
   source "/opt/homebrew/share/google-cloud-sdk/path.zsh.inc"
-fi
-
-if [[ -f "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc" ]]; then
-  source "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc"
 fi

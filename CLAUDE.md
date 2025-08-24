@@ -11,10 +11,18 @@ This is a comprehensive dotfiles configuration for a macOS development environme
 ### Shell Environment (zsh/)
 - **Framework**: Oh My Zsh with antidote plugin manager
 - **Configuration**: Modular zsh setup with `.zshrc`, `.zsh_plugins`, `.zlogin`, and `.p10k.zsh` in `zsh/` directory
-- **Modules**: Split into focused modules (options, completion, keybindings, environment, lazy-loading, aliases, integrations)
+- **Modules**: Split into numbered modules with explicit load order:
+  - `01_options.zsh` - Basic zsh options and behavior (no dependencies)
+  - `02_environment.zsh` - PATH, FPATH, exports (must set FPATH before compinit)
+  - `03_completion.zsh` - Completion system setup (requires FPATH)
+  - `04_keybindings.zsh` - Key bindings (requires completion system)
+  - `05_lazy-loading.zsh` - Lazy load functions (requires environment)
+  - `10_aliases.zsh` - Aliases and functions (requires all tools available)
+  - `99_integrations.zsh` - External tools (requires everything else)
 - **Theme**: Powerlevel10k with custom configuration (zsh/.p10k.zsh)
 - **Performance**: Implements lazy loading for NVM, PyEnv, and Java (JABBA) to maintain fast startup times
 - **Plugins**: Managed via zsh/.zsh_plugins file with automatic caching
+- **Completions**: Homebrew completions automatically available for all CLI tools
 
 ### Package Management (Brewfile)
 Manages 25+ CLI tools and development environments including:
@@ -163,7 +171,13 @@ The install.sh script creates symbolic links from organized directories to home:
     ├── .zsh_plugins
     ├── .zlogin
     ├── .p10k.zsh
-    └── *.zsh modules
+    ├── 01_options.zsh
+    ├── 02_environment.zsh
+    ├── 03_completion.zsh
+    ├── 04_keybindings.zsh
+    ├── 05_lazy-loading.zsh
+    ├── 10_aliases.zsh
+    └── 99_integrations.zsh
 ```
 
 **Symlinks Created:**
@@ -175,6 +189,7 @@ The install.sh script creates symbolic links from organized directories to home:
 - kitty/kitty.conf → ~/.config/kitty/kitty.conf
 - ubersicht/simple-bar/simplebarrc → ~/.simplebarrc
 - vim/.vimrc → ~/.vimrc
+- zsh/01_*.zsh → ~/.config/zsh/ (all numbered module files)
 
 ### Plugin System Flow
 1. zsh/.zsh_plugins defines plugin list
@@ -182,10 +197,15 @@ The install.sh script creates symbolic links from organized directories to home:
 3. zsh/.zshrc sources the cached file for performance
 4. Plugins are auto-updated when zsh/.zsh_plugins changes
 
-### Modular Zsh Configuration
-1. zsh/.zshrc loads modules in order: options → completion → keybindings → environment → lazy-loading → aliases → integrations
-2. Each module is self-contained and focused on specific functionality
-3. ~/.config/zsh/ contains symlinks to all zsh/*.zsh modules for easy management
+### Modular Zsh Configuration Load Order
+1. **Critical Dependencies**: FPATH must be set before compinit, so environment loads before completion
+2. **Load Sequence**: 01_options → 02_environment → 03_completion → 04_keybindings → 05_lazy-loading → 10_aliases → 99_integrations
+3. **Module Isolation**: Each numbered module is self-contained and focused on specific functionality
+4. **Symlink Management**: ~/.config/zsh/ contains symlinks to all numbered zsh modules for easy management
+5. **Numbering Convention**: 
+   - 01-05: Core system setup (sequential dependencies)
+   - 10+: User tools and aliases (flexible spacing for future additions)
+   - 99: Final integrations that depend on everything else
 
 ### Performance Optimizations
 - **Conditional loading**: Tools only load when first accessed

@@ -125,7 +125,9 @@ defaults write com.apple.screencapture type -string "png"
 defaults write com.apple.screencapture disable-shadow -bool true
 # Enable full keyboard access for all controls (important for accessibility and keyboard navigation)
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
-# Show battery percentage in menu bar
+# Hide menu bar (since simple-bar provides all info)
+defaults write NSGlobalDomain _HIHideMenuBar -bool true
+# Show battery percentage in menu bar (for fallback when simple-bar isn't running)
 defaults write com.apple.menuextra.battery ShowPercent -string "YES"
 # Enable font smoothing for external monitors
 defaults write NSGlobalDomain AppleFontSmoothing -int 2

@@ -38,3 +38,33 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
         rpc rpcuser rpm rtkit scard shutdown squid sshd statd svn sync tftp \
         usbmux uucp vcsa wwwrun xfs '_*'
 zstyle '*' single-ignored show
+
+# SSH completion from ~/.ssh/config
+zstyle ':completion:*:(ssh|scp|rsync):*' hosts $([ -f ~/.ssh/config ] && awk '/^Host / { for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i }' ~/.ssh/config)
+zstyle ':completion:*:ssh:*' group-order hosts-domain hosts-host users
+
+# =============================================================================
+# EXTERNAL TOOL COMPLETIONS
+# =============================================================================
+
+# Google Cloud SDK completion (PATH is loaded in environment module)
+if [[ -f "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc" ]]; then
+  source "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc"
+fi
+
+# Register completions for commonly used tools
+# Simple, reliable approach that just works
+
+# Plugin completions (functions created in plugins module)
+if (( $+functions[_wd] )); then
+  compdef _wd wd
+fi
+
+# Homebrew completions that need explicit registration
+completion_tools=(bat eza rg fd)
+for tool in "${completion_tools[@]}"; do
+  if command -v "$tool" >/dev/null 2>&1; then
+    autoload -U "_$tool" 2>/dev/null && compdef "_$tool" "$tool"
+  fi
+done
+unset completion_tools tool

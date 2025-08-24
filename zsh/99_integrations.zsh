@@ -37,23 +37,6 @@ if [[ "$TERM" == "xterm-kitty" ]] && [[ -f "${HOME}/.config/kitty/kitty.conf" ]]
 fi
 
 # =============================================================================
-# ANTIDOTE PLUGIN MANAGER
-# =============================================================================
-
-if [[ -f "/opt/homebrew/opt/antidote/share/antidote/antidote.zsh" ]]; then
-  source "/opt/homebrew/opt/antidote/share/antidote/antidote.zsh"
-  
-  # Lazy-load antidote and generate the static load file only when needed
-  zsh_plugins=${ZDOTDIR:-$HOME}/.zsh_plugins
-  if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins} ]]; then
-    antidote bundle <${zsh_plugins} >${zsh_plugins}.zsh
-  fi
-  source ${zsh_plugins}.zsh
-else
-  echo "Warning: Antidote not found. Install with: brew install antidote"
-fi
-
-# =============================================================================
 # POWERLEVEL10K CONFIGURATION
 # =============================================================================
 

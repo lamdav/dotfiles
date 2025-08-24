@@ -6,16 +6,9 @@
 
 # Enhanced ls with eza (if available)
 if command -v eza >/dev/null 2>&1; then
-  # Clear any existing ls alias first
-  unalias ls 2>/dev/null || true
-  
-  # Use functions instead of aliases to avoid completion conflicts
-  ls() { eza --color=always --long --git --no-filesize --no-time --no-permissions --no-user "$@"; }
-  ll() { eza --color=always --long --git "$@"; }
-  tree() { eza --tree "$@"; }
-  
-  # Disable completion for ls function completely to avoid _eza errors
-  compdef -d ls
+  alias ls='eza --color=always --long --git --no-filesize --no-time --no-permissions --no-user'
+  alias ll='eza --color=always --long --git'
+  alias tree='eza --tree'
 else
   # Fallback to regular ls with colors
   alias ls="ls -la --color=auto"
