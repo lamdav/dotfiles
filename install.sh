@@ -219,6 +219,18 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo "   3. Click 'Refresh all Widgets'"
     }
 
+    # Setup aerospace-mode widget symlink
+    echo "Setting up AeroSpace mode indicator widget..."
+    WIDGETS_DIR="$HOME/Library/Application Support/Übersicht/widgets"
+    mkdir -p "$WIDGETS_DIR"
+    
+    # Remove any existing aerospace-mode.jsx file
+    rm -f "$WIDGETS_DIR/aerospace-mode.jsx"
+    
+    # Create symlink to dotfiles version
+    ln -sf "$dir/ubersicht/aerospace-mode.jsx" "$WIDGETS_DIR/aerospace-mode.jsx"
+    echo "✅ AeroSpace mode widget linked successfully"
+
     # Setup completion
     echo "✅ Simple-bar setup complete!"
     echo ""
@@ -228,6 +240,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "   • Font: FiraCode Nerd Font (matches your terminal)"
     echo "   • Widgets: Spaces, App, Clock, Battery, System Info"
     echo "   • AeroSpace: Auto-refresh on workspace changes"
+    echo "   • AeroSpace Mode Indicator: Shows current mode (main/media/resize/service)"
 fi
 
 echo "Some changes may require a system restart to take full effect."

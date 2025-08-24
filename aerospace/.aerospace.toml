@@ -180,38 +180,44 @@ run = 'layout floating'
     alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#mode
-    alt-shift-semicolon = 'mode service'
+    alt-shift-semicolon = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set service', 'mode service']
 
-    alt-shift-r = 'mode resize'
+    alt-shift-r = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set resize', 'mode resize']
+    alt-shift-quote = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set media', 'mode media']
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 [mode.service.binding]
-    esc = ['reload-config', 'mode main']
-    r = ['flatten-workspace-tree', 'mode main'] # reset layout
-    f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
-    backspace = ['close-all-windows-but-current', 'mode main']
+    esc = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'reload-config', 'mode main']
+    r = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'flatten-workspace-tree', 'mode main'] # reset layout
+    # f = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
+    backspace = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'close-all-windows-but-current', 'mode main']
 
     # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
     #s = ['layout sticky tiling', 'mode main']
 
-    alt-shift-h = ['join-with left', 'mode main']
-    alt-shift-j = ['join-with down', 'mode main']
-    alt-shift-k = ['join-with up', 'mode main']
-    alt-shift-l = ['join-with right', 'mode main']
-
-    down = 'volume down'
-    up = 'volume up'
-    shift-down = ['volume set 0', 'mode main']
-
+    alt-shift-h = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'join-with left', 'mode main']
+    alt-shift-j = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'join-with down', 'mode main']
+    alt-shift-k = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'join-with up', 'mode main']
+    alt-shift-l = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'join-with right', 'mode main']
 
 [mode.resize.binding]
     h = 'resize width -50'
     j = 'resize height +50'
     k = 'resize height -50'
     l = 'resize width +50'
-    enter = 'mode main'
-    esc = 'mode main'
+    enter = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'mode main']
+    esc = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'mode main']
+
+# 'media' binding mode declaration for Spotify/media control
+[mode.media.binding]
+    # Alternative controls (don't exit mode)  
+    alt-space = 'exec-and-forget osascript -e "tell application \"Spotify\" to playpause"'
+    alt-h = 'exec-and-forget osascript -e "tell application \"Spotify\" to previous track"'
+    alt-l = 'exec-and-forget osascript -e "tell application \"Spotify\" to next track"'
+    
+    # Exit media mode
+    esc = ['exec-and-forget ~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'mode main']
 
 # Auto-assign apps to dedicated workspaces
 [[on-window-detected]]

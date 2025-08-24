@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Jean-Tinland/simple-bar/refs/heads/master/lib/schemas/config.json",
   "global": {
-    "theme": "auto",
-    "compactMode": false,
+    "theme": "dark",
+    "compactMode": true,
     "floatingBar": true,
     "noBarBg": true,
     "noColorInData": false,
@@ -10,7 +10,7 @@
     "sideDecoration": false,
     "inlineSpacesOptions": true,
     "disableAnimations": false,
-    "spacesBackgroundColorAsForeground": false,
+    "spacesBackgroundColorAsForeground": true,
     "widgetsBackgroundColorAsForeground": true,
     "widgetMaxWidth": "160px",
     "slidingAnimationPace": 4,
@@ -29,7 +29,7 @@
     "yabaiServerRefresh": false,
     "aerospaceServerRefresh": true,
     "flashspaceServerRefresh": false,
-    "darkTheme": "firewatch-dark",
+    "darkTheme": "SpaceDuck",
     "lightTheme": "firewatch-light",
     "noBar": false,
     "widget": {
@@ -226,7 +226,7 @@
     "cpuWidget": false,
     "gpuWidget": false,
     "memoryWidget": false,
-    "batteryWidget": false,
+    "batteryWidget": true,
     "wifiWidget": false,
     "vpnWidget": false,
     "zoomWidget": false,
@@ -241,7 +241,8 @@
     "youtubeMusicWidget": false,
     "musicWidget": false,
     "mpdWidget": false,
-    "browserTrackWidget": false
+    "browserTrackWidget": false,
+    "aerospaceMode": true
   },
   "githubWidgetOptions": {
     "refreshFrequency": 600000,
@@ -404,11 +405,18 @@
     "showSpecter": true
   },
   "userWidgets": {
-    "userWidgetsList": {}
+    "userWidgetsList": {
+      "aerospaceMode": {
+        "enabled": true,
+        "refreshFrequency": 1000,
+        "showOnDisplay": "",
+        "command": "~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh get"
+      }
+    }
   },
   "customStyles": {
-    "styles": "/* your custom css styles here */",
-    "theme": "user",
+    "styles": ":root {\n  --bar-radius: 12px;\n  --item-radius: 4px;\n  --bar-inner-margin: 6px ;\n  --item-inner-margin: 3px 12px;\n  --item-outer-margin: 0 0 0 6px;\n}",
+    "theme": "dark",
     "userStyles": [
       ".simple-bar { font-family: 'FiraCode Nerd Font', monospace; font-size: 11px; }",
       ".data-widget { border-radius: 20px !important; padding: 8px 16px !important; margin: 0 4px !important; }",

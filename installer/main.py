@@ -243,6 +243,70 @@ def install(
         if create_symlink(kitty_custom_source, kitty_custom_target, "Kitty customizations"):
             success_count += 1
     
+    # Übersicht and simple-bar setup
+    console.print("\n[bold cyan]📊 Setting up Übersicht and simple-bar...[/bold cyan]")
+    
+    if interactive and Confirm.ask(
+        "[yellow]Set up Übersicht with simple-bar and AeroSpace mode indicator?[/yellow]", 
+        default=True
+    ):
+        total_steps += 3
+        
+        # Check and install Übersicht
+        if not (Path("/Applications/Übersicht.app").exists() or 
+               Path("/Applications/Uebersicht.app").exists()):
+            console.print("Installing Übersicht via Homebrew...")
+            if run_command("brew install --cask ubersicht", "Installing Übersicht..."):
+                success_count += 1
+        else:
+            console.print("[green]✓ Übersicht already installed[/green]")
+            success_count += 1
+        
+        # Install simple-bar
+        simple_bar_dir = Path.home() / "Library/Application Support/Übersicht/widgets/simple-bar"
+        if not simple_bar_dir.exists():
+            console.print("Installing simple-bar...")
+            simple_bar_parent = simple_bar_dir.parent
+            simple_bar_parent.mkdir(parents=True, exist_ok=True)
+            if run_command(
+                f"git clone https://github.com/Jean-Tinland/simple-bar '{simple_bar_dir}'",
+                "Installing simple-bar..."
+            ):
+                success_count += 1
+        else:
+            console.print("[green]✓ Simple-bar already installed[/green]")
+            success_count += 1
+        
+        # Setup simple-bar configuration
+        simplebarrc_source = DOTFILES_DIR / "ubersicht" / "simple-bar" / "simplebarrc"
+        if simplebarrc_source.exists():
+            simplebarrc_target = Path.home() / ".simplebarrc"
+            create_symlink(simplebarrc_source, simplebarrc_target, "Simple-bar configuration")
+        
+        # Setup aerospace-mode widget
+        widgets_dir = Path.home() / "Library/Application Support/Übersicht/widgets"
+        widgets_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Remove any existing aerospace-mode.jsx file
+        existing_widget = widgets_dir / "aerospace-mode.jsx"
+        if existing_widget.exists():
+            existing_widget.unlink()
+        
+        # Create symlink to dotfiles version
+        aerospace_mode_source = DOTFILES_DIR / "ubersicht" / "aerospace-mode.jsx"
+        if aerospace_mode_source.exists():
+            if create_symlink(aerospace_mode_source, existing_widget, "AeroSpace mode indicator"):
+                success_count += 1
+        
+        # Refresh Übersicht
+        console.print("Refreshing Übersicht...")
+        refresh_success = run_command(
+            'osascript -e \'tell application id "tracesOf.Uebersicht" to refresh\'',
+            "Refreshing Übersicht widgets..."
+        )
+        if not refresh_success:
+            console.print("[yellow]⚠️  Could not refresh Übersicht automatically. Please refresh manually.[/yellow]")
+    
     # macOS system preferences
     if not skip_system:
         console.print("\n[bold cyan]⚙️  Configuring macOS system preferences...[/bold cyan]")
