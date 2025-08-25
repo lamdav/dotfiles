@@ -4,7 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a comprehensive dotfiles configuration for a macOS development environment. The setup includes modular shell configuration (zsh/), terminal customization (iTerm2/Kitty), window management (AeroSpace), editor setup (vim), status bar (simple-bar), and automated package management via Homebrew.
+This is a comprehensive dotfiles configuration for macOS and Ubuntu development environments. The setup includes modular shell configuration (zsh/), terminal customization (iTerm2/Kitty), window management (AeroSpace), editor setup (vim), status bar (simple-bar), and automated package management via Homebrew (macOS) or APT (Ubuntu).
+
+**Supported Platforms:**
+- macOS (full feature set including AeroSpace, Übersicht, iTerm2, system preferences)
+- Ubuntu/Debian (core development tools, shell configuration, terminal setup)
 
 ## Core Architecture
 
@@ -70,16 +74,44 @@ exec zsh
 benchmarkzsh
 ```
 
-**System Settings Configuration**
-The install.sh script automatically configures macOS system preferences for optimal development:
+## Installation Architecture
+
+The installer supports both shell script and Python implementations with a modular, class-based architecture.
+
+### Python Installer (Recommended)
+Located in `installer/`, the Python installer provides a clean, modular architecture:
+
+**Core Components:**
+- `interfaces.py` - Abstract base classes defining contracts
+- `system_manager.py` - OS detection and command execution
+- `package_managers.py` - Platform-specific package installation (Homebrew/APT)
+- `symlink_manager.py` - Configuration file linking and management
+- `macos_manager.py` - macOS-specific operations (AeroSpace, Übersicht, system preferences)
+- `dotfiles_installer.py` - Main orchestrator implementing the installation flow
+- `main.py` - CLI interface using Typer
+
+**Key Features:**
+- **Cross-platform support** - Detects macOS vs Ubuntu and adapts accordingly
+- **Interactive command handling** - Properly manages password prompts for brew/sudo commands
+- **Modular design** - Each class has a single responsibility
+- **Rich output** - Progress indicators, status tables, and colored output
+- **Übersicht widget management** - Automatic restart to recognize new widgets
+
+### Shell Installer (Legacy)
+The `install.sh` script provides a bash-based installation with similar functionality but less sophisticated error handling.
+
+**System Settings Configuration (macOS Only)**
+The installers automatically configure macOS system preferences for optimal development:
 
 - **UI/UX**: Dark mode, auto-hide dock (left side), Finder enhancements (show hidden files, extensions, path bar)
 - **Input Devices**: Disable natural scrolling, enable tap-to-click, faster keyboard repeat rates, disable auto-capitalization
 - **Developer Tools**: Screenshots to Downloads folder (PNG format, no shadows), battery percentage, font smoothing
 - **Security**: Immediate password requirement, firewall enabled, Activity Monitor shows all processes
-- **Applications**: TextEdit in plain text mode, Chrome/Safari developer settings enabled
+- **Applications**: TextEdit in plain text mode (Safari preferences skipped due to sandboxing)
 
 ### Package Management
+
+**macOS (Homebrew):**
 ```bash
 # Install/update all packages
 brew bundle
@@ -89,6 +121,18 @@ brew bundle dump --force
 
 # Clean up unused packages
 brew bundle cleanup
+```
+
+**Ubuntu/Debian (APT):**
+```bash
+# Update package lists
+sudo apt update
+
+# Install development tools
+sudo apt install git curl wget python3 nodejs zsh bat ripgrep jq tree tmux
+
+# Upgrade all packages
+sudo apt upgrade
 ```
 
 ### Git Workflow (Custom Aliases)
