@@ -32,7 +32,7 @@ setopt no_case_glob             # case insensitive globbing
 setopt numeric_glob_sort        # sort filenames numerically when it makes sense
 
 # Error handling and safety
-setopt correct                   # try to correct spelling of commands
+unsetopt correct                 # disable spelling correction of commands
 setopt no_clobber               # don't overwrite existing files with > redirect
 
 # Job control
