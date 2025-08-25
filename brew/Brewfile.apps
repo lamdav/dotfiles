@@ -1,0 +1,21 @@
+
+# Productivity Apps
+cask "raycast"
+cask "1password"
+cask "visual-studio-code"
+cask "claude"
+
+# Cloud Storage
+cask "dropbox"
+
+# Networking
+cask "tailscale"
+
+# Browsers
+cask "google-chrome"
+
+# Terminal
+cask "kitty"
+
+# Entertainment
+cask "spotify"

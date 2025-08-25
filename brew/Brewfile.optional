@@ -1,0 +1,7 @@
+
+# Optional Communication Apps
+cask "slack"
+cask "discord"
+
+# Optional System Tools
+brew "mas"

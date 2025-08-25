@@ -1,0 +1,34 @@
+
+# Core Development Tools
+brew "git"
+brew "git-lfs" 
+brew "git-delta"
+brew "docker"
+
+# Language Ecosystems
+brew "python"
+brew "pyenv"
+brew "go"
+brew "node"
+brew "nvm"  
+brew "yarn"
+
+# Shell
+brew "zsh"
+brew "antidote"
+
+# CLI Utilities
+brew "bat"
+brew "btop"
+brew "curl"
+brew "eza"
+brew "httpie"
+brew "ripgrep"
+brew "rsync"
+brew "zoxide"
+brew "jq"
+brew "tree"
+brew "tldr"
+brew "coreutils"
+brew "wget"
+brew "tmux"

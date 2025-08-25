@@ -1,0 +1,8 @@
+
+# Window Management & Status Bar
+cask "aerospace"
+cask "ubersicht"
+
+# Fonts
+cask "font-fira-code"
+cask "font-fira-code-nerd-font"
