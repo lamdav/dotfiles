@@ -207,7 +207,9 @@ class DotfilesInstaller(Installer):
         table.add_column("Status", style="green")
         table.add_column("Description")
 
-        package_manager = "Homebrew" if os_type == OSType.MACOS else "APT (Ubuntu/Debian)"
+        package_manager = (
+            "Homebrew" if os_type == OSType.MACOS else "APT (Ubuntu/Debian)"
+        )
         table.add_row(
             "Packages",
             "Skip" if skip_packages else "Install",
