@@ -3,16 +3,82 @@ set -euo pipefail
 
 export dir="$(pwd)"
 
+# Detect operating system (macOS or Ubuntu)
+detect_os() {
+    case "$(uname -s)" in
+        Darwin*)
+            echo "macos"
+            ;;
+        Linux*)
+            # Assume Ubuntu/Debian for Linux systems
+            echo "ubuntu"
+            ;;
+        *)
+            echo "unsupported"
+            ;;
+    esac
+}
 
-# Check if Homebrew is installed, install if not
-if ! command -v brew &> /dev/null; then
-    echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
+OS=$(detect_os)
+echo "Detected OS: $OS"
 
-# Update and install packages
-echo "Updating Homebrew and installing packages..."
-brew update && brew bundle --no-lock
+# Package management based on OS
+install_packages() {
+    case "$OS" in
+        macos)
+            # Check if Homebrew is installed, install if not
+            if ! command -v brew &> /dev/null; then
+                echo "Installing Homebrew..."
+                /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            fi
+
+            # Update and install packages
+            echo "Updating Homebrew and installing packages..."
+            brew update
+
+            # Install packages from modular Brewfiles
+            echo "Installing development tools..."
+            [ -f brew/Brewfile.devtools ] && brew bundle --file=brew/Brewfile.devtools
+
+            echo "Installing Kubernetes tools..."
+            [ -f brew/Brewfile.k8s ] && brew bundle --file=brew/Brewfile.k8s
+
+            echo "Installing media tools..."
+            [ -f brew/Brewfile.media ] && brew bundle --file=brew/Brewfile.media
+
+            echo "Installing GUI applications..."
+            [ -f brew/Brewfile.gui ] && brew bundle --file=brew/Brewfile.gui
+
+            echo "Installing applications..."
+            [ -f brew/Brewfile.apps ] && brew bundle --file=brew/Brewfile.apps
+
+            echo "Optional packages available in brew/Brewfile.optional (run manually if desired)"
+            ;;
+        ubuntu)
+            echo "Installing packages for Ubuntu/Debian..."
+            sudo apt update
+            
+            # Core development tools
+            sudo apt install -y git git-lfs curl wget python3 python3-pip nodejs npm zsh
+            sudo apt install -y bat ripgrep jq tree tmux rsync coreutils
+            
+            # Install exa (eza alternative for older Ubuntu versions)
+            if ! command -v eza &> /dev/null; then
+                sudo apt install -y exa || echo "exa not available, skipping"
+            fi
+            
+            echo "Note: Some macOS-specific apps (Aerospace, Kitty GUI apps) are not available on Linux"
+            ;;
+        unsupported)
+            echo "Error: Unsupported OS detected."
+            echo "This installer only supports macOS and Ubuntu/Debian systems."
+            exit 1
+            ;;
+    esac
+}
+
+# Install packages based on detected OS
+install_packages
 
 
 # Install Oh My Zsh if not present
@@ -53,14 +119,7 @@ fi
 echo "Setting up git configuration..."
 ln -sf "$dir/git/.gitconfig" ~/.gitconfig
 
-# Setup iTerm2 profile and colors
-if [ -f "$dir/iterm/iterm-profiles.json" ]; then
-    echo "Setting up iTerm2 profile..."
-    mkdir -p ~/Library/Application\ Support/iTerm2/DynamicProfiles
-    ln -sf "$dir/iterm/iterm-profiles.json" ~/Library/Application\ Support/iTerm2/DynamicProfiles/iterm-profiles.json
-fi
-
-# Setup Kitty configuration
+# Setup terminal configurations
 if [ -f "$dir/kitty/kitty.conf" ]; then
     echo "Setting up Kitty configuration..."
     mkdir -p ~/.config/kitty
@@ -72,8 +131,17 @@ if [ -f "$dir/kitty/kitty.conf" ]; then
     fi
 fi
 
-# Configure macOS system preferences for optimal development environment
-echo "Configuring macOS system preferences..."
+# macOS-specific configurations
+if [ "$OS" = "macos" ]; then
+    # Setup iTerm2 profile and colors (macOS only)
+    if [ -f "$dir/iterm/iterm-profiles.json" ]; then
+        echo "Setting up iTerm2 profile..."
+        mkdir -p ~/Library/Application\ Support/iTerm2/DynamicProfiles
+        ln -sf "$dir/iterm/iterm-profiles.json" ~/Library/Application\ Support/iTerm2/DynamicProfiles/iterm-profiles.json
+    fi
+
+    # Configure macOS system preferences for optimal development environment
+    echo "Configuring macOS system preferences..."
 
 # UI/UX Settings - Dark mode, dock behavior, and Finder preferences
 echo "Setting up UI/UX preferences..."
@@ -151,9 +219,8 @@ defaults write com.apple.TextEdit PlainTextEncoding -int 4
 defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
 # Chrome: Disable the all too sensitive backswipe on trackpads
 defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
-# Safari: Enable develop menu and web inspector
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+# Note: Safari preferences are skipped due to sandboxing restrictions in modern macOS
+# To enable Safari developer menu, go to Safari > Preferences > Advanced > Show Develop menu
 
 # Restart affected applications to apply changes
 echo "Restarting applications to apply changes..."
@@ -167,17 +234,17 @@ echo "Run 'exec zsh' to reload your shell."
 echo "You may need to restart iTerm2 to see the new profile."
 echo "If using Kitty, your configuration has been linked to ~/.config/kitty/kitty.conf"
 
-# Setup simple-bar configuration
-if [ -f "$dir/ubersicht/simple-bar/simplebarrc" ]; then
-    echo "Setting up simple-bar configuration..."
-    ln -sf "$dir/ubersicht/simple-bar/simplebarrc" ~/.simplebarrc
-fi
+    # Setup simple-bar configuration (macOS only)
+    if [ -f "$dir/ubersicht/simple-bar/simplebarrc" ]; then
+        echo "Setting up simple-bar configuration..."
+        ln -sf "$dir/ubersicht/simple-bar/simplebarrc" ~/.simplebarrc
+    fi
 
-# Optional: Set up Übersicht and simple-bar
-echo ""
-read -p "Would you like to set up Übersicht and simple-bar with Firewatch theme? (y/n): " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+    # Optional: Set up Übersicht and simple-bar (macOS only)
+    echo ""
+    read -p "Would you like to set up Übersicht and simple-bar with Firewatch theme? (y/n): " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
     # Check if Übersicht is installed, install if needed
     if ! ls /Applications/ | grep -i "übersicht\\|uebersicht" > /dev/null; then
         echo "📥 Übersicht not found. Installing via Homebrew..."
@@ -210,14 +277,16 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         fi
     fi
 
-    # Refresh Übersicht
-    echo "🔄 Refreshing Übersicht..."
-    osascript -e 'tell application id "tracesOf.Uebersicht" to refresh' 2>/dev/null || {
-        echo "⚠️  Could not refresh Übersicht automatically. Please:"
-        echo "   1. Open Übersicht"
-        echo "   2. Click the menu bar icon"  
-        echo "   3. Click 'Refresh all Widgets'"
+    # Restart Übersicht to recognize new widgets
+    echo "🔄 Restarting Übersicht to recognize new widgets..."
+    pkill -f Übersicht 2>/dev/null || true
+    sleep 2
+    open -a Übersicht 2>/dev/null || {
+        echo "⚠️  Could not restart Übersicht automatically. Please:"
+        echo "   1. Force-quit Übersicht (if running)"
+        echo "   2. Reopen Übersicht"
     }
+    echo "✅ Übersicht restarted. New widgets should now be visible."
 
     # Setup aerospace-mode widget symlink
     echo "Setting up AeroSpace mode indicator widget..."
@@ -243,4 +312,15 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "   • AeroSpace Mode Indicator: Shows current mode (main/media/resize/service)"
 fi
 
-echo "Some changes may require a system restart to take full effect."
+    echo "Some macOS changes may require a system restart to take full effect."
+fi
+
+echo "Dotfiles installation complete!"
+if [ "$OS" = "macos" ]; then
+    echo "System preferences have been configured for optimal development workflow."
+    echo "You may need to restart iTerm2 to see the new profile."
+fi
+echo "Run 'exec zsh' to reload your shell."
+if [ -f ~/.config/kitty/kitty.conf ]; then
+    echo "Kitty configuration has been linked to ~/.config/kitty/kitty.conf"
+fi
