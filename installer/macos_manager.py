@@ -92,11 +92,17 @@ class ConcreteMacOSManager(MacOSManager):
                 console.print("Installing simple-bar...")
                 simple_bar_parent = simple_bar_dir.parent
                 simple_bar_parent.mkdir(parents=True, exist_ok=True)
-                if system_manager.run_command(
-                    f"git clone https://github.com/Jean-Tinland/simple-bar '{simple_bar_dir}'",
-                    "Installing simple-bar...",
-                ):
-                    success_count += 1
+                
+                # Check if git is available before attempting clone
+                if not system_manager.check_command_exists("git"):
+                    console.print("[red]✗ Git is required to install simple-bar but is not available[/red]")
+                    console.print("[yellow]Please install git first or run with --skip-packages=false[/yellow]")
+                else:
+                    if system_manager.run_command(
+                        f"git clone https://github.com/Jean-Tinland/simple-bar '{simple_bar_dir}'",
+                        "Installing simple-bar...",
+                    ):
+                        success_count += 1
             else:
                 console.print("[green]✓ Simple-bar already installed[/green]")
                 success_count += 1
