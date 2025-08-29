@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
-from typing import List, Tuple
 
 from rich.console import Console
 from rich.panel import Panel
