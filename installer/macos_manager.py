@@ -49,6 +49,53 @@ class ConcreteMacOSManager(MacOSManager):
             )
         return True  # Not an error if config doesn't exist
 
+    def setup_kitty_quick_access(self, system_manager: SystemManager) -> bool:
+        """Register Kitty quick-access-terminal (hotkey window) with macOS."""
+        console.print("\n[bold cyan]⚡ Setting up Kitty quick-access-terminal...[/bold cyan]")
+
+        if not system_manager.check_command_exists("kitten"):
+            console.print("[yellow]Kitty not installed, skipping quick-access-terminal setup[/yellow]")
+            return True
+
+        # Run kitten quick-access-terminal once to register with macOS
+        console.print("Registering quick-access-terminal service...")
+        import subprocess
+        import time
+
+        try:
+            # Start the quick-access-terminal in the background
+            proc = subprocess.Popen(
+                ["kitten", "quick-access-terminal"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            time.sleep(2)  # Give it time to register
+
+            # Kill the process
+            proc.terminate()
+            try:
+                proc.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+
+            # Also kill any remaining quick-access-terminal processes
+            subprocess.run(
+                ["pkill", "-f", "quick-access-terminal"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+
+            console.print("[green]✓ Kitty quick-access-terminal registered[/green]")
+            console.print("\n[yellow]To complete setup:[/yellow]")
+            console.print("  1. Open System Settings → Keyboard → Keyboard Shortcuts → Services")
+            console.print("  2. Scroll to 'General' section and find 'Quick access to kitty'")
+            console.print("  3. Check the box to enable it")
+            console.print("  4. Click 'Add Shortcut' and press: [bold]Ctrl + `[/bold] (Control + backtick)")
+            return True
+        except Exception as e:
+            console.print(f"[red]✗ Failed to register quick-access-terminal: {e}[/red]")
+            return False
+
     def setup_ubersicht(
         self,
         dotfiles_dir: Path,

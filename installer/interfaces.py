@@ -101,6 +101,11 @@ class MacOSManager(ABC):
         pass
 
     @abstractmethod
+    def setup_kitty_quick_access(self, system_manager: SystemManager) -> bool:
+        """Register Kitty quick-access-terminal (hotkey window) with macOS."""
+        pass
+
+    @abstractmethod
     def setup_ubersicht(
         self,
         dotfiles_dir: Path,

@@ -105,6 +105,11 @@ class DotfilesInstaller(Installer):
                 success_count += 1
             total_steps += 1
 
+            # Kitty quick-access-terminal setup
+            if self.macos_manager.setup_kitty_quick_access(self.system_manager):
+                success_count += 1
+            total_steps += 1
+
             # Übersicht setup
             ubersicht_success, ubersicht_steps = self.macos_manager.setup_ubersicht(
                 self.dotfiles_dir, self.system_manager, interactive

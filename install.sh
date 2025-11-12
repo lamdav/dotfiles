@@ -140,6 +140,23 @@ if [ "$OS" = "macos" ]; then
         ln -sf "$dir/iterm/iterm-profiles.json" ~/Library/Application\ Support/iTerm2/DynamicProfiles/iterm-profiles.json
     fi
 
+    # Setup Kitty quick-access-terminal (hotkey window)
+    if command -v kitten &> /dev/null; then
+        echo "Registering Kitty quick-access-terminal..."
+        # Run once to register the service with macOS
+        kitten quick-access-terminal &
+        sleep 2
+        # Kill the window that was just opened
+        pkill -f "quick-access-terminal" 2>/dev/null || true
+
+        echo "✅ Kitty quick-access-terminal registered"
+        echo "   To complete setup:"
+        echo "   1. Open System Settings → Keyboard → Keyboard Shortcuts → Services"
+        echo "   2. Scroll to 'General' section and find 'Quick access to kitty'"
+        echo "   3. Check the box to enable it"
+        echo "   4. Click 'Add Shortcut' and press: Ctrl + \` (Control + backtick)"
+    fi
+
     # Configure macOS system preferences for optimal development environment
     echo "Configuring macOS system preferences..."
 

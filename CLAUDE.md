@@ -86,7 +86,7 @@ Located in `installer/`, the Python installer provides a clean, modular architec
 - `system_manager.py` - OS detection and command execution
 - `package_managers.py` - Platform-specific package installation (Homebrew/APT)
 - `symlink_manager.py` - Configuration file linking and management
-- `macos_manager.py` - macOS-specific operations (AeroSpace, Übersicht, system preferences)
+- `macos_manager.py` - macOS-specific operations (AeroSpace, Übersicht, Kitty quick-access-terminal, system preferences)
 - `dotfiles_installer.py` - Main orchestrator implementing the installation flow
 - `main.py` - CLI interface using Typer
 
@@ -108,6 +108,7 @@ The installers automatically configure macOS system preferences for optimal deve
 - **Developer Tools**: Screenshots to Downloads folder (PNG format, no shadows), battery percentage, font smoothing
 - **Security**: Immediate password requirement, firewall enabled, Activity Monitor shows all processes
 - **Applications**: TextEdit in plain text mode (Safari preferences skipped due to sandboxing)
+- **Kitty Quick-Access Terminal**: Registers the `kitten quick-access-terminal` service for Quake-style dropdown terminal (requires manual keyboard shortcut assignment in System Settings)
 
 ### Package Management
 
@@ -325,10 +326,24 @@ This configuration optimizes for:
 - **Smart tab management**: New tabs inherit current working directory
 - **Performance optimized**: GPU acceleration and efficient rendering
 
-### Hotkey Window Setup
-For global hotkey access (ctrl+`), create a macOS keyboard shortcut:
-1. System Preferences → Keyboard → Shortcuts
-2. Add new shortcut with command: `/Applications/kitty.app/Contents/MacOS/kitty --single-instance --instance-group=hotkey`
-3. Assign ctrl+` as the keyboard shortcut
+### Hotkey Window Setup (Quake/Guake-style Dropdown)
+Kitty provides a built-in quick-access-terminal kitten that creates a Quake-style dropdown terminal from the top of the screen.
+
+**Automatic Setup:**
+The installer automatically registers the quick-access-terminal service during installation.
+
+**Manual Setup (if needed):**
+1. Run `kitten quick-access-terminal` once - this registers the service with macOS
+2. Close the window that appears (or run the command again to hide it)
+3. Open System Settings → Keyboard → Keyboard Shortcuts → Services
+4. Scroll to the "General" section and find "Quick access to kitty"
+5. Check the box to enable it
+6. Click "Add Shortcut" and press: **Ctrl + `** (Control + backtick)
+
+**Important Notes:**
+- This setup was chosen to avoid interference with AeroSpace window management
+- The quick-access-terminal appears at the top of the screen and auto-hides when not in use
+- Running `kitten quick-access-terminal` again toggles the window visibility
+- Do NOT use Automator or other workarounds - Kitty's built-in kitten is the correct solution
 
 The lazy loading system ensures fast shell startup while maintaining access to full development toolchain when needed.
