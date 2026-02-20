@@ -392,6 +392,7 @@ require("lazy").setup({
         { "<leader>h", group = "hunks" },
         { "<leader>c", group = "code" },
         { "<leader>b", group = "buffer" },
+        { "<leader>x", group = "trouble" },
       })
     end,
   },
@@ -479,6 +480,54 @@ require("lazy").setup({
         markdown   = { "prettier" },
       },
       -- format_on_save = { timeout_ms = 500, lsp_fallback = true },
+    },
+  },
+
+  -- -------------------------------------------------------------------------
+  -- Trouble (diagnostics panel)
+  -- -------------------------------------------------------------------------
+  {
+    "folke/trouble.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    cmd = "Trouble",
+    keys = {
+      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>",                        desc = "Diagnostics" },
+      { "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",           desc = "Buffer diagnostics" },
+      { "<leader>xl", "<cmd>Trouble loclist toggle<cr>",                            desc = "Location list" },
+      { "<leader>xq", "<cmd>Trouble qflist toggle<cr>",                             desc = "Quickfix list" },
+      { "<leader>xs", "<cmd>Trouble lsp_document_symbols toggle win.position=right<cr>", desc = "Symbols" },
+    },
+    opts = { use_diagnostic_signs = true },
+  },
+
+  -- -------------------------------------------------------------------------
+  -- Todo comments
+  -- -------------------------------------------------------------------------
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    event = { "BufReadPost", "BufNewFile" },
+    keys = {
+      { "]t",         function() require("todo-comments").jump_next() end, desc = "Next TODO" },
+      { "[t",         function() require("todo-comments").jump_prev() end, desc = "Prev TODO" },
+      { "<leader>ft", "<cmd>TodoTelescope<cr>",                            desc = "Find TODOs" },
+    },
+    opts = {},
+  },
+
+  -- -------------------------------------------------------------------------
+  -- Oil (filesystem editing)
+  -- -------------------------------------------------------------------------
+  {
+    "stevearc/oil.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    keys = {
+      { "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
+    },
+    opts = {
+      default_file_explorer = false,  -- keep neo-tree as default
+      view_options = { show_hidden = true },
+      float = { padding = 2 },
     },
   },
 
