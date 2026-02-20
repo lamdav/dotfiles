@@ -165,10 +165,14 @@ class DotfilesInstaller(Installer):
 
         configs = [
             ("zsh/.zshrc", ".zshrc", "Zsh configuration"),
+            ("zsh/.p10k.zsh", ".p10k.zsh", "Powerlevel10k theme"),
             ("git/.gitconfig", ".gitconfig", "Git configuration"),
+            ("git/.gitignore_global", ".gitignore_global", "Global gitignore"),
             ("vim/.vimrc", ".vimrc", "Vim configuration"),
             ("nvim", ".config/nvim", "Neovim configuration"),
             ("kitty/kitty.conf", ".config/kitty/kitty.conf", "Kitty configuration"),
+            ("mise/config.toml", ".config/mise/config.toml", "mise config"),
+            ("direnv/direnvrc", ".config/direnv/direnvrc", "direnv config"),
         ]
 
         # Add macOS-specific configs

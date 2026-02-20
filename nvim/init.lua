@@ -258,7 +258,6 @@ require("lazy").setup({
           map("n", "K",          vim.lsp.buf.hover,          opts)
           map("n", "<leader>rn", vim.lsp.buf.rename,         opts)
           map("n", "<leader>ca", vim.lsp.buf.code_action,    opts)
-          map("n", "<leader>cf", vim.lsp.buf.format,         opts)
           map("i", "<C-k>",      vim.lsp.buf.signature_help, opts)
         end,
       })
@@ -448,6 +447,39 @@ require("lazy").setup({
     "echasnovski/mini.surround",
     version = "*",
     opts = {},
+  },
+
+  -- -------------------------------------------------------------------------
+  -- Formatting (conform.nvim)
+  -- -------------------------------------------------------------------------
+  {
+    "stevearc/conform.nvim",
+    event = { "BufWritePre" },
+    cmd = { "ConformInfo" },
+    keys = {
+      {
+        "<leader>cf",
+        function()
+          require("conform").format({ async = true, lsp_fallback = true })
+        end,
+        desc = "Format file",
+      },
+    },
+    opts = {
+      formatters_by_ft = {
+        lua        = { "stylua" },
+        python     = { "ruff_format", "black" },
+        go         = { "gofmt", "goimports" },
+        javascript = { "prettier" },
+        typescript = { "prettier" },
+        javascriptreact = { "prettier" },
+        typescriptreact = { "prettier" },
+        json       = { "prettier" },
+        yaml       = { "prettier" },
+        markdown   = { "prettier" },
+      },
+      -- format_on_save = { timeout_ms = 500, lsp_fallback = true },
+    },
   },
 
 }, {

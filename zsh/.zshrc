@@ -41,19 +41,17 @@ fi
 # 3. plugins:      Initialize plugin manager and load plugins (adds to FPATH)
 # 4. completion:   Initialize completion system (requires complete FPATH)
 # 5. keybindings:  Key bindings (requires completion system)
-# 6. lazy-loading: Lazy load functions (requires environment)
-# 7. aliases:      Aliases and functions (requires all tools available)
-# 8. integrations: External tool integrations (requires everything else)
+# 6. aliases:      Aliases and functions (requires all tools available)
+# 7. integrations: External tool integrations (requires everything else)
 
 zsh_modules=(
-  "01_options"      
-  "02_environment"  
+  "01_options"
+  "02_environment"
   "03_plugins"
-  "04_completion"   
-  "05_keybindings"  
-  "06_lazy-loading" 
-  "10_aliases"      
-  "99_integrations" 
+  "04_completion"
+  "05_keybindings"
+  "10_aliases"
+  "99_integrations"
 )
 
 # Source each module with error handling

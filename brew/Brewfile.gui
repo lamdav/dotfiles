@@ -1,5 +1,7 @@
 
 # Window Management & Status Bar
+tap "FelixKratz/formulae"
+brew "borders"           # window borders for AeroSpace
 cask "aerospace"
 cask "ubersicht"
 

@@ -112,11 +112,18 @@ class ConcreteSymlinkManager(SymlinkManager):
         return success_count, total_steps
 
     def setup_git_config(self, dotfiles_dir: Path) -> bool:
-        """Set up git configuration symlink."""
+        """Set up git configuration symlinks."""
         console.print("\n[bold cyan]🔧 Setting up Git configuration...[/bold cyan]")
         git_source = dotfiles_dir / "git" / ".gitconfig"
         git_target = Path.home() / ".gitconfig"
-        return self.create_symlink(git_source, git_target, "Git configuration")
+        ok = self.create_symlink(git_source, git_target, "Git configuration")
+
+        ignore_source = dotfiles_dir / "git" / ".gitignore_global"
+        if ignore_source.exists():
+            ignore_target = Path.home() / ".gitignore_global"
+            self.create_symlink(ignore_source, ignore_target, "Global gitignore")
+
+        return ok
 
     def setup_vim_config(self, dotfiles_dir: Path) -> bool:
         """Set up vim configuration symlink."""
