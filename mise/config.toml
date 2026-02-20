@@ -1,0 +1,11 @@
+[tools]
+node    = "lts"      # LTS for stability
+python  = "latest"
+go      = "latest"
+java    = "temurin-21"  # LTS, replaces jabba
+
+[settings]
+experimental = false
+jobs         = 4         # parallel installs
+verbose      = false
+yes          = false     # don't auto-confirm destructive actions

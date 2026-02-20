@@ -28,6 +28,15 @@ if command -v rg >/dev/null 2>&1; then
   alias grep='rg'
 fi
 
+if command -v btop >/dev/null 2>&1; then
+  alias top='btop'
+fi
+
+if command -v nvim >/dev/null 2>&1; then
+  alias vim='nvim'
+  alias vi='nvim'
+fi
+
 # =============================================================================
 # GIT ALIASES
 # =============================================================================
@@ -95,7 +104,7 @@ benchmarkzsh() {
 # Update shell plugins
 updateplugins() {
   if command -v antidote >/dev/null 2>&1; then
-    antidote bundle < ~/.zsh_plugins > ~/.zsh_plugins.zsh
+    antidote bundle < ~/.zsh_plugins >| ~/.zsh_plugins.zsh
     echo "✅ Plugins updated. Run 'refreshzsh' to reload."
   else
     echo "❌ Antidote not found"

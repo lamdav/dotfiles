@@ -13,6 +13,10 @@
 	l = log --oneline
 	b = branch
 	ca = commit --amend
+	amend = commit --amend --no-edit
+	unstage = reset HEAD --
+	undo = reset --soft HEAD~1
+	cleanup = !git branch --merged | grep -v '\\*\\|master\\|main\\|develop' | xargs -n 1 git branch -d
 	cp = cherry-pick
 	f = fetch
 	p = push
@@ -24,6 +28,14 @@
 	required = true
 [pull]
 	rebase = true
+[push]
+	autoSetupRemote = true
+[fetch]
+	prune = true
+[rebase]
+	autostash = true
+[rerere]
+	enabled = true
 [init]
 	defaultBranch = master
 [url "https://github.com/"]
@@ -43,4 +55,6 @@
   conflictstyle = diff3
 [diff]
   colorMoved = default
+[includeIf "gitdir:~/work/"]
+  path = ~/.gitconfig-work
 

@@ -93,6 +93,21 @@ class DotfilesInstaller(Installer):
             success_count += 1
         total_steps += 1
 
+        # Neovim configuration
+        if self.symlink_manager.setup_nvim_config(self.dotfiles_dir):
+            success_count += 1
+        total_steps += 1
+
+        # mise configuration
+        if self.symlink_manager.setup_mise_config(self.dotfiles_dir):
+            success_count += 1
+        total_steps += 1
+
+        # direnv configuration
+        if self.symlink_manager.setup_direnv_config(self.dotfiles_dir):
+            success_count += 1
+        total_steps += 1
+
         # macOS-specific configurations
         if os_type == OSType.MACOS and self.macos_manager:
             # AeroSpace configuration
@@ -152,6 +167,7 @@ class DotfilesInstaller(Installer):
             ("zsh/.zshrc", ".zshrc", "Zsh configuration"),
             ("git/.gitconfig", ".gitconfig", "Git configuration"),
             ("vim/.vimrc", ".vimrc", "Vim configuration"),
+            ("nvim", ".config/nvim", "Neovim configuration"),
             ("kitty/kitty.conf", ".config/kitty/kitty.conf", "Kitty configuration"),
         ]
 
@@ -190,9 +206,9 @@ class DotfilesInstaller(Installer):
         # Check tools
         console.print("\n[bold cyan]Installed Tools:[/bold cyan]")
         tools = (
-            ["brew", "git", "zsh", "vim"]
+            ["brew", "git", "zsh", "nvim", "mise", "fzf", "direnv"]
             if self.system_manager.get_os_type() == OSType.MACOS
-            else ["git", "zsh", "vim", "apt"]
+            else ["git", "zsh", "nvim", "mise", "fzf", "direnv", "apt"]
         )
         for tool in tools:
             status = (
@@ -226,6 +242,7 @@ class DotfilesInstaller(Installer):
         )
         table.add_row("Git Config", "Install", "Git configuration and aliases")
         table.add_row("Vim Config", "Install", "Vim editor configuration")
+        table.add_row("Neovim Config", "Install", "Neovim with lazy.nvim")
 
         if os_type == OSType.MACOS:
             table.add_row("AeroSpace", "Install", "Window management (macOS only)")

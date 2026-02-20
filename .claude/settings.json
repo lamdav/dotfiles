@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/lamdav/configs/dotfiles/.claude/hooks/check-edit-path.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/lamdav/configs/dotfiles/.claude/hooks/verify-symlinks.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

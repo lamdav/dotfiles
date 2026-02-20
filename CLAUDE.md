@@ -1,349 +1,317 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with this repository.
 
 ## Repository Overview
 
-This is a comprehensive dotfiles configuration for macOS and Ubuntu development environments. The setup includes modular shell configuration (zsh/), terminal customization (iTerm2/Kitty), window management (AeroSpace), editor setup (vim), status bar (simple-bar), and automated package management via Homebrew (macOS) or APT (Ubuntu).
+Comprehensive dotfiles for macOS (primary) and Ubuntu. Covers modular zsh, Kitty terminal, AeroSpace window management, Neovim, status bar (simple-bar/Übersicht), and automated package management.
 
-**Supported Platforms:**
-- macOS (full feature set including AeroSpace, Übersicht, iTerm2, system preferences)
-- Ubuntu/Debian (core development tools, shell configuration, terminal setup)
+**Supported Platforms:** macOS (full), Ubuntu/Debian (core tools + shell)
 
-## Core Architecture
+---
 
-### Shell Environment (zsh/)
-- **Framework**: Oh My Zsh with antidote plugin manager
-- **Configuration**: Modular zsh setup with `.zshrc`, `.zsh_plugins`, `.zlogin`, and `.p10k.zsh` in `zsh/` directory
-- **Modules**: Split into numbered modules with explicit load order:
-  - `01_options.zsh` - Basic zsh options and behavior (no dependencies)
-  - `02_environment.zsh` - PATH, FPATH, exports (must set FPATH before compinit)
-  - `03_completion.zsh` - Completion system setup (requires FPATH)
-  - `04_keybindings.zsh` - Key bindings (requires completion system)
-  - `05_lazy-loading.zsh` - Lazy load functions (requires environment)
-  - `10_aliases.zsh` - Aliases and functions (requires all tools available)
-  - `99_integrations.zsh` - External tools (requires everything else)
-- **Theme**: Powerlevel10k with custom configuration (zsh/.p10k.zsh)
-- **Performance**: Implements lazy loading for NVM, PyEnv, and Java (JABBA) to maintain fast startup times
-- **Plugins**: Managed via zsh/.zsh_plugins file with automatic caching
-- **Completions**: Homebrew completions automatically available for all CLI tools
+## Directory Structure & Symlinks
 
-### Package Management (Brewfile)
-Manages 25+ CLI tools and development environments including:
-- Development tools: git, ripgrep, jq, helm, kubectl
-- Language runtimes: go, python, node (via nvm)
-- Productivity tools: bat, eza, tldr, tmux
-- GUI applications: aerospace, font-fira-code-nerd-font
-
-### Window Management (aerospace/)
-AeroSpace configuration with i3-inspired keybindings:
-- Workspaces 1-9 plus dedicated workspaces (S=Spotify, F=Finder, M=Mail)
-- Custom resize modes and movement commands
-- Auto-assignment rules for applications to workspaces
-- Integration with simple-bar for real-time workspace updates
-
-### Terminal Configuration (kitty/ & iterm/)
-- **Kitty**: Primary terminal with comprehensive configuration in `kitty/kitty.conf`
-  - Custom tab bar with process icons
-  - Split pane management and session handling
-  - Performance optimized with GPU acceleration
-- **iTerm2**: Legacy support with profiles in `iterm/iterm-profiles.json`
-- **Color scheme**: Firewatch theme applied consistently across terminals
-- **Font**: FiraCode Nerd Font with full ligature support
-
-### Status Bar (ubersicht/simple-bar/)
-- **simple-bar**: Custom Übersicht widget with Firewatch theme integration
-- **Features**: AeroSpace workspace indicators, system metrics, battery, time
-- **Styling**: Pill-shaped widgets with consistent color scheme
-- **Auto-refresh**: Syncs with AeroSpace workspace changes
-
-## Key Commands
-
-### Installation and Setup
-```bash
-# Initial setup (run from repository root)
-./install.sh
-
-# Update shell plugins
-updateplugins
-
-# Reload shell configuration
-exec zsh
-
-# Benchmark shell startup time
-benchmarkzsh
 ```
-
-## Installation Architecture
-
-The installer supports both shell script and Python implementations with a modular, class-based architecture.
-
-### Python Installer (Recommended)
-Located in `installer/`, the Python installer provides a clean, modular architecture:
-
-**Core Components:**
-- `interfaces.py` - Abstract base classes defining contracts
-- `system_manager.py` - OS detection and command execution
-- `package_managers.py` - Platform-specific package installation (Homebrew/APT)
-- `symlink_manager.py` - Configuration file linking and management
-- `macos_manager.py` - macOS-specific operations (AeroSpace, Übersicht, Kitty quick-access-terminal, system preferences)
-- `dotfiles_installer.py` - Main orchestrator implementing the installation flow
-- `main.py` - CLI interface using Typer
-
-**Key Features:**
-- **Cross-platform support** - Detects macOS vs Ubuntu and adapts accordingly
-- **Interactive command handling** - Properly manages password prompts for brew/sudo commands
-- **Modular design** - Each class has a single responsibility
-- **Rich output** - Progress indicators, status tables, and colored output
-- **Übersicht widget management** - Automatic restart to recognize new widgets
-
-### Shell Installer (Legacy)
-The `install.sh` script provides a bash-based installation with similar functionality but less sophisticated error handling.
-
-**System Settings Configuration (macOS Only)**
-The installers automatically configure macOS system preferences for optimal development:
-
-- **UI/UX**: Dark mode, auto-hide dock (left side), Finder enhancements (show hidden files, extensions, path bar)
-- **Input Devices**: Disable natural scrolling, enable tap-to-click, faster keyboard repeat rates, disable auto-capitalization
-- **Developer Tools**: Screenshots to Downloads folder (PNG format, no shadows), battery percentage, font smoothing
-- **Security**: Immediate password requirement, firewall enabled, Activity Monitor shows all processes
-- **Applications**: TextEdit in plain text mode (Safari preferences skipped due to sandboxing)
-- **Kitty Quick-Access Terminal**: Registers the `kitten quick-access-terminal` service for Quake-style dropdown terminal (requires manual keyboard shortcut assignment in System Settings)
-
-### Package Management
-
-**macOS (Homebrew):**
-```bash
-# Install/update all packages
-brew bundle
-
-# Add new package to Brewfile
-brew bundle dump --force
-
-# Clean up unused packages
-brew bundle cleanup
-```
-
-**Ubuntu/Debian (APT):**
-```bash
-# Update package lists
-sudo apt update
-
-# Install development tools
-sudo apt install git curl wget python3 nodejs zsh bat ripgrep jq tree tmux
-
-# Upgrade all packages
-sudo apt upgrade
-```
-
-### Git Workflow (Custom Aliases)
-```bash
-# Quick status and operations
-git s          # status
-git co <branch> # checkout
-git ci         # commit
-git l          # log --oneline
-git b          # branch
-
-# Advanced logging
-git graph      # graphical log with colors
-git logp       # compact log with author info
-
-# File tracking (useful for sensitive files)
-git track <file>   # resume tracking
-git untrack <file> # stop tracking changes
-```
-
-### Development Environment Management
-```bash
-# Lazy-loaded tools (automatically initialize on first use)
-nvm use <version>    # Node.js version management
-pyenv global <version> # Python version management
-
-# Load tools manually if needed
-load_nvm
-load_pyenv
-loadjabba  # Java version management
-```
-
-### Terminal Usage (Kitty)
-```bash
-# View current terminal shortcuts
-kitty-help          # Shows all keybindings from kitty.conf
-
-# Key shortcuts (configured in kitty.conf)
-cmd+1-9             # Jump to tab 1-9
-cmd+0               # Jump to last tab
-cmd+t               # New tab (inherits current directory)
-cmd+w               # Close current pane (closes tab when last pane)
-cmd+d               # Split pane horizontally
-cmd+shift+d         # Split pane vertically
-cmd+k               # Clear screen and scrollback
-
-# Font control
-cmd+plus/minus      # Increase/decrease font size
-cmd+ctrl+0          # Reset font size to default
-
-# Pane management
-cmd+shift+w         # Close current pane
-cmd+shift+z         # Toggle pane zoom (fullscreen)
-```
-
-## File Relationships and Dependencies
-
-### Directory Structure and Symlinks
-The install.sh script creates symbolic links from organized directories to home:
-
-**Organized Structure:**
-```
-├── aerospace/          # Window management
-│   └── .aerospace.toml
-├── git/               # Git configuration  
-│   └── .gitconfig
-├── iterm/             # iTerm2 profiles and colors
-│   ├── iterm-profiles.json
-│   └── firewatch.itermcolors
-├── kitty/             # Kitty terminal configuration
-│   ├── kitty.conf
-│   └── kitty-customizations/
-├── ubersicht/         # Status bar configuration
-│   └── simple-bar/
-│       └── simplebarrc
-├── vim/               # Vim editor configuration
-│   └── .vimrc
-└── zsh/               # Modular shell configuration
-    ├── .zshrc
-    ├── .zsh_plugins
+dotfiles/
+├── aerospace/          → ~/.aerospace.toml
+├── direnv/
+│   └── direnvrc        → ~/.config/direnv/direnvrc
+├── git/
+│   ├── .gitconfig      → ~/.gitconfig
+│   └── .gitconfig-work → ~/.gitconfig-work  (work email override, see [includeIf])
+├── iterm/              → ~/Library/Application Support/iTerm2/DynamicProfiles/
+├── kitty/
+│   ├── kitty.conf      → ~/.config/kitty/kitty.conf
+│   └── kitty-customizations/ → ~/.config/kitty/kitty-customizations/
+├── mise/
+│   └── config.toml     → ~/.config/mise/config.toml
+├── nvim/
+│   └── init.lua        → ~/.config/nvim/  (symlink to whole dir)
+├── ubersicht/simple-bar/simplebarrc → ~/.simplebarrc
+├── vim/
+│   └── .vimrc          → ~/.vimrc
+└── zsh/
+    ├── .zshrc          → ~/.zshrc
+    ├── .zsh_plugins    → ~/.zsh_plugins
+    ├── .p10k.zsh       → ~/.p10k.zsh
     ├── .zlogin
-    ├── .p10k.zsh
-    ├── 01_options.zsh
-    ├── 02_environment.zsh
-    ├── 03_completion.zsh
-    ├── 04_keybindings.zsh
-    ├── 05_lazy-loading.zsh
-    ├── 10_aliases.zsh
-    └── 99_integrations.zsh
+    └── 01-99_*.zsh     → ~/.config/zsh/ (all numbered modules)
 ```
 
-**Symlinks Created:**
-- zsh/.zshrc → ~/.zshrc
-- git/.gitconfig → ~/.gitconfig  
-- zsh/.zsh_plugins → ~/.zsh_plugins
-- aerospace/.aerospace.toml → ~/.aerospace.toml
-- iterm/iterm-profiles.json → ~/Library/Application Support/iTerm2/DynamicProfiles/
-- kitty/kitty.conf → ~/.config/kitty/kitty.conf
-- ubersicht/simple-bar/simplebarrc → ~/.simplebarrc
-- vim/.vimrc → ~/.vimrc
-- zsh/01_*.zsh → ~/.config/zsh/ (all numbered module files)
+---
 
-### Plugin System Flow
-1. zsh/.zsh_plugins defines plugin list
-2. antidote generates .zsh_plugins.zsh (cached)
-3. zsh/.zshrc sources the cached file for performance
-4. Plugins are auto-updated when zsh/.zsh_plugins changes
+## Shell Architecture (zsh/)
 
-### Modular Zsh Configuration Load Order
-1. **Critical Dependencies**: FPATH must be set before compinit, so environment loads before completion
-2. **Load Sequence**: 01_options → 02_environment → 03_completion → 04_keybindings → 05_lazy-loading → 10_aliases → 99_integrations
-3. **Module Isolation**: Each numbered module is self-contained and focused on specific functionality
-4. **Symlink Management**: ~/.config/zsh/ contains symlinks to all numbered zsh modules for easy management
-5. **Numbering Convention**: 
-   - 01-05: Core system setup (sequential dependencies)
-   - 10+: User tools and aliases (flexible spacing for future additions)
-   - 99: Final integrations that depend on everything else
+**Framework:** Oh My Zsh + antidote plugin manager + Powerlevel10k
 
-### Performance Optimizations
-- **Conditional loading**: Tools only load when first accessed
-- **Plugin caching**: antidote generates static load files
-- **PATH consolidation**: Single export instead of multiple appends
-- **Completion caching**: zcompdump regenerated daily
+### Module Load Order (critical — do not reorder)
+
+| File | Purpose | Key constraint |
+|------|---------|---------------|
+| `01_options.zsh` | History, globbing, safety (`no_clobber`) | No deps |
+| `02_environment.zsh` | PATH, FPATH, exports, tool env vars | Must set FPATH before compinit |
+| `03_plugins.zsh` | antidote init + plugin load | Adds to FPATH; use `>|` not `>` for cache writes |
+| `04_completion.zsh` | compinit + completion config | Requires complete FPATH |
+| `05_keybindings.zsh` | Key bindings | Requires completion system |
+| `06_lazy-loading.zsh` | Generic lazy_load/group_lazy_load helpers | Version tools now handled by mise |
+| `10_aliases.zsh` | Aliases + shell functions | Requires tools on PATH |
+| `99_integrations.zsh` | mise, fzf, zoxide, direnv, p10k, kitty | Runs last |
+
+**Important:** `no_clobber` is set in `01_options.zsh`. Any redirect that writes to an existing file must use `>|` instead of `>`. This applies in `03_plugins.zsh` and the `updateplugins` function.
+
+### Active Plugins (zsh/.zsh_plugins)
+- `mfaerevaag/wd` — warp directory bookmarks
+- `ael-code/zsh-colored-man-pages`
+- `zsh-users/zsh-completions`
+- `zsh-users/zsh-autosuggestions` — highlight: `#6272a4` (Dracula comment), strategy: history→completion
+- `desyncr/auto-ls`
+- `hlissner/zsh-autopair`
+- `romkatv/powerlevel10k` — LAST group
+- `zdharma-continuum/fast-syntax-highlighting` — LAST group
+
+To update: `updateplugins && exec zsh`
+
+### Modern Command Aliases
+
+| Typed | Runs | Tool |
+|-------|------|------|
+| `cd` | zoxide smart cd (falls back for `cd -`, `cd ~`) | zoxide `--cmd cd` |
+| `ls` / `ll` | eza with git status | eza |
+| `tree` | eza --tree | eza |
+| `cat` | bat --style=plain | bat |
+| `find` | fd | fd |
+| `grep` | rg | ripgrep |
+| `top` | btop | btop |
+| `vim` / `vi` | nvim | neovim |
+
+Use `cdi` for interactive directory picker (fzf-powered zoxide).
+
+### Key Shell Functions
+- `updateplugins` — regenerate antidote cache
+- `benchmarkzsh` — 10-run startup benchmark
+- `mkcd <dir>` — mkdir + cd
+- `extract <file>` — universal archive extractor
+- `kitty-help` — print all kitty keybindings
+- `ksave/kload/ksplit/knotify/ktheme` — kitty session helpers
+
+---
+
+## Version Management (mise)
+
+mise replaces nvm, pyenv, and jabba entirely.
+
+**Global config:** `mise/config.toml` → `~/.config/mise/config.toml`
+
+```toml
+[tools]
+node   = "lts"
+python = "latest"
+go     = "latest"
+java   = "temurin-21"
+```
+
+**Common commands:**
+```bash
+mise install                  # install all tools from config
+mise use node@20              # switch version in current project
+mise use --global python@3.12 # switch global version
+mise ls                       # list installed versions
+mise exec -- node script.js   # run with mise-managed runtime
+```
+
+**Per-project:** add `.mise.toml` to project root. direnv's `use mise` activates it automatically.
+
+---
+
+## Neovim (nvim/)
+
+Config: `nvim/init.lua` → `~/.config/nvim/` (whole directory symlinked)
+
+**Plugin manager:** lazy.nvim (auto-bootstraps on first launch)
+
+**Key plugins:**
+- `Mofiqul/dracula.nvim` — colorscheme (matches `BAT_THEME=Dracula`)
+- `nvim-telescope/telescope.nvim` + `telescope-fzf-native` — fuzzy finding
+- `nvim-treesitter` — syntax, indent
+- `neovim/nvim-lspconfig` + `mason` + `mason-lspconfig` — LSP servers
+- `nvim-cmp` + `luasnip` — completion
+- `lewis6991/gitsigns.nvim` — git hunk indicators
+- `nvim-neo-tree/neo-tree.nvim` — file explorer
+- `nvim-lualine/lualine.nvim` — statusline
+- `folke/which-key.nvim` — keymap hints
+
+**LSP servers (auto-installed by mason):** `gopls`, `pyright`, `ts_ls`, `yamlls`, `lua_ls`, `dockerls`
+
+**LSP setup uses Neovim 0.11 API:** `vim.lsp.config()` + `vim.lsp.enable()` — NOT `require('lspconfig').server.setup()`
+
+**Leader key:** `<Space>`
+
+Key mappings:
+```
+<leader>ff  Telescope find files
+<leader>fg  Telescope live grep
+<leader>fb  Telescope buffers
+<leader>fr  Recent files
+<leader>e   Neo-tree toggle
+gd / gr / K  LSP: definition / references / hover
+<leader>rn  LSP rename
+<leader>ca  LSP code action
+<leader>cf  Format file
+]h / [h     Next/prev git hunk
+<leader>hs  Stage hunk
+```
+
+**First launch:** open `nvim`, run `:Lazy sync` to install plugins, then `:MasonToolsInstall` if LSP servers didn't auto-install.
+
+---
+
+## Git Configuration (git/)
+
+**Aliases:**
+```bash
+git s           # status
+git co          # checkout
+git ci          # commit
+git amend       # commit --amend --no-edit
+git unstage     # reset HEAD --
+git undo        # reset --soft HEAD~1
+git cleanup     # delete merged branches
+git graph       # visual log
+git logp        # compact log
+git l           # log --oneline
+git f/p/pl      # fetch/push/pull
+git track/untrack  # manage assume-unchanged
+```
+
+**Settings:** `pull.rebase=true`, `push.autoSetupRemote=true`, `fetch.prune=true`, `rebase.autostash=true`, `rerere.enabled=true`
+
+**Work profile:** repos under `~/work/` auto-load `~/.gitconfig-work` via `[includeIf]`. Edit `git/.gitconfig-work` to set work email.
+
+**Pager:** delta with side-by-side, line numbers, navigate mode
+
+---
+
+## direnv (direnv/)
+
+Config: `direnv/direnvrc` → `~/.config/direnv/direnvrc`
+
+Provides layout helpers usable in `.envrc` files:
+```bash
+layout python   # creates/activates .venv
+layout node     # adds node_modules/.bin to PATH
+layout go       # sets project-local GOPATH
+use mise        # activates .mise.toml (built-in direnv 2.32+)
+```
+
+After editing `.envrc`: `direnv allow`
+
+---
+
+## Package Management (brew/)
+
+Modular Brewfiles — run each explicitly:
+```bash
+brew bundle --file brew/Brewfile.devtools   # core tools (fzf, fd, gh, mise, nvim, direnv...)
+brew bundle --file brew/Brewfile.k8s        # helm, kubectx, k9s
+brew bundle --file brew/Brewfile.gui        # aerospace, ubersicht, fonts
+brew bundle --file brew/Brewfile.apps       # raycast, 1password, vscode, chrome...
+brew bundle --file brew/Brewfile.optional   # slack, discord
+```
+
+**Key tools in devtools:** git, git-delta, gh, mise, neovim, fzf, fd, ripgrep, bat, eza, zoxide, direnv, btop, jq, httpie, tmux
+
+---
+
+## FZF Integration
+
+Keybindings (active in shell):
+- `Ctrl+R` — fuzzy history search
+- `Ctrl+T` — fuzzy file picker (uses fd, respects .gitignore)
+- `Alt+C` — fuzzy cd (uses fd, dirs only)
+
+Default options: `--height 40% --layout=reverse --border`
+
+Uses `fd` as backend: hidden files included, `.git` excluded.
+
+---
+
+## AeroSpace (aerospace/)
+
+i3-inspired tiling WM. Workspaces: 1-9, S (Spotify), F (Finder), M (Mail).
+
+Key bindings (all `alt+`):
+- `h/j/k/l` — focus window
+- `shift+h/j/k/l` — move window
+- `1-9`, `s/f/m` — switch workspace
+- `shift+1-9`, `shift+s/f/m` — move window to workspace
+- `shift+;` — service mode
+- `shift+r` — resize mode
+- `shift+'` — media mode (Spotify controls)
+- `tab` — back-and-forth workspace
+
+Integrates with simple-bar via `exec-on-workspace-change`.
+
+---
+
+## Kitty Terminal (kitty/)
+
+Color scheme: Firewatch. Font: FiraCode Nerd Font with ligatures.
+
+Key shortcuts: `cmd+t` new tab, `cmd+d` split horizontal, `cmd+shift+d` split vertical, `cmd+w` close pane, `cmd+1-9` jump to tab, `cmd+k` clear+scrollback.
+
+Hotkey window (Quake-style): `ctrl+\`` — registered via `kitten quick-access-terminal`.
+
+---
+
+## Installer (installer/)
+
+Python installer (recommended):
+```bash
+python installer/main.py install          # full install
+python installer/main.py install --skip-packages  # symlinks only
+python installer/main.py status           # check symlink status
+```
+
+Components installed:
+- Shell config (zsh, oh-my-zsh, plugins, p10k)
+- Git + Neovim + Vim configs
+- mise + direnv configs
+- Kitty config + customizations
+- macOS only: AeroSpace, iTerm2, Übersicht, system preferences, Kitty hotkey window
+
+---
 
 ## Troubleshooting
 
-### Shell Performance Issues
-- Run `benchmarkzsh` to measure startup time
-- Uncomment zprof lines in .zshrc for detailed profiling
-- Check plugin load times in .zsh_plugins.zsh
+| Problem | Fix |
+|---------|-----|
+| Shell startup slow | `benchmarkzsh`, uncomment zprof in `.zshrc` |
+| Plugins not loading | `updateplugins && exec zsh` |
+| `file exists` error on redirect | Check for `>` vs `>|` — `no_clobber` is set |
+| mise tool not found | `mise install`, check `mise ls` |
+| direnv not loading | `direnv allow` in project dir |
+| Neovim plugins missing | Open nvim, run `:Lazy sync` |
+| LSP not working | `:Mason`, install server; check `:LspInfo` |
+| Kitty config error | `kitty --config ~/.config/kitty/kitty.conf --version` |
+| Git delta not showing | `git show` — verify delta is on PATH |
+| Symlink broken | `python installer/main.py status` |
 
-### Missing Tools
-- Verify Brewfile installations: `brew bundle check`
-- Reinstall Oh My Zsh if missing: `rm -rf ~/.oh-my-zsh && ./install.sh`
-- Regenerate plugin cache: `updateplugins`
-
-### Kitty Terminal Issues
-- Check config syntax: `kitty -c ~/.config/kitty/kitty.conf --version`
-- Verify symlink: `ls -la ~/.config/kitty/kitty.conf` should point to dotfiles/kitty.conf
-- Reload configuration: `cmd+shift+r` in Kitty or restart Kitty
-- Font issues: Ensure FiraCode Nerd Font is installed via Homebrew
-
-### System Settings Not Applied
-- Some macOS preferences require restart to take effect
-- Applications are automatically restarted during install (Dock, Finder, SystemUIServer)
-- For trackpad settings, log out and back in or restart the system
-- Check System Preferences to verify settings were applied correctly
-
-### Git Configuration Issues
-- Test delta integration: `git show` should display enhanced diffs
-- Verify aliases: `git ls-alias` lists all custom commands
+---
 
 ## Maintenance
 
-### Regular Updates
 ```bash
-# Update Homebrew packages
+# Full update
 brew update && brew upgrade
-
-# Update shell plugins
 updateplugins && exec zsh
 
-# Update Oh My Zsh framework
-omz update
+# Update neovim plugins
+nvim --headless "+Lazy sync" +qa
+
+# Update mise tools
+mise self-update && mise upgrade
+
+# Update gh
+gh extension upgrade --all
 ```
-
-### Adding New Configurations
-1. Add files to repository root
-2. Update install.sh with appropriate symlinks
-3. Test installation on clean environment
-4. Update this documentation if needed
-
-## Development Workflow Integration
-
-This configuration optimizes for:
-- **Multi-language development**: Supports Node.js, Python, Go, Java
-- **Container workflows**: Includes kubectl, helm, k9s
-- **Git-heavy workflows**: Enhanced diff viewing and comprehensive aliases
-- **Terminal-centric development**: Kitty terminal, vim, tmux, and efficient CLI tools
-- **Window management**: AeroSpace for organized workspace layouts
-- **Modern terminal features**: Kitty provides GPU acceleration, ligatures, and advanced pane management
-
-## Kitty Terminal Features
-
-### Configuration Highlights
-- **Firewatch color scheme** with carefully converted RGB values from iTerm2
-- **FiraCode Nerd Font** with full ligature support
-- **Dynamic shortcuts help**: `kitty-help` command reads current keybindings
-- **Pane management**: Split horizontally (`cmd+d`), vertically (`cmd+shift+d`), close with `cmd+w`
-- **Smart tab management**: New tabs inherit current working directory
-- **Performance optimized**: GPU acceleration and efficient rendering
-
-### Hotkey Window Setup (Quake/Guake-style Dropdown)
-Kitty provides a built-in quick-access-terminal kitten that creates a Quake-style dropdown terminal from the top of the screen.
-
-**Automatic Setup:**
-The installer automatically registers the quick-access-terminal service during installation.
-
-**Manual Setup (if needed):**
-1. Run `kitten quick-access-terminal` once - this registers the service with macOS
-2. Close the window that appears (or run the command again to hide it)
-3. Open System Settings → Keyboard → Keyboard Shortcuts → Services
-4. Scroll to the "General" section and find "Quick access to kitty"
-5. Check the box to enable it
-6. Click "Add Shortcut" and press: **Ctrl + `** (Control + backtick)
-
-**Important Notes:**
-- This setup was chosen to avoid interference with AeroSpace window management
-- The quick-access-terminal appears at the top of the screen and auto-hides when not in use
-- Running `kitten quick-access-terminal` again toggles the window visibility
-- Do NOT use Automator or other workarounds - Kitty's built-in kitten is the correct solution
-
-The lazy loading system ensures fast shell startup while maintaining access to full development toolchain when needed.

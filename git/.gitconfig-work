@@ -1,0 +1,7 @@
+# Work-specific git configuration
+# This file is included automatically for repos under ~/work/
+# Copy to ~/.gitconfig-work and fill in your details.
+
+[user]
+	name = David Lam
+	email = your.work.email@company.com

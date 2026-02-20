@@ -1,27 +1,31 @@
 
 # Core Development Tools
 brew "git"
-brew "git-lfs" 
+brew "git-lfs"
 brew "git-delta"
 brew "docker"
+brew "gh"
 
-# Language Ecosystems
-brew "python"
-brew "pyenv"
+# Language Ecosystems (managed by mise)
+brew "mise"
 brew "go"
-brew "node"
-brew "nvm"  
 brew "yarn"
 
 # Shell
 brew "zsh"
 brew "antidote"
 
+# Editor
+brew "neovim"
+
 # CLI Utilities
 brew "bat"
 brew "btop"
 brew "curl"
+brew "direnv"
 brew "eza"
+brew "fd"
+brew "fzf"
 brew "httpie"
 brew "ripgrep"
 brew "rsync"

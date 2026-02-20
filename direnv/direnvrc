@@ -1,0 +1,42 @@
+# Global direnv configuration
+# Sourced before every .envrc
+
+# -----------------------------------------------------------------------------
+# mise integration
+# Use `use mise` in any .envrc to activate tools from .mise.toml
+# (built-in since direnv 2.32.0)
+# -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Python virtual environment helper
+# Usage in .envrc:  layout python
+# Creates/activates .venv in the project root
+# -----------------------------------------------------------------------------
+layout_python() {
+  local python="${1:-python3}"
+  unset PYTHONHOME
+  local venv_dir="${PWD}/.venv"
+  if [[ ! -d "$venv_dir" ]]; then
+    log_status "Creating virtualenv at .venv..."
+    "$python" -m venv "$venv_dir"
+  fi
+  export VIRTUAL_ENV="$venv_dir"
+  PATH_add "$venv_dir/bin"
+}
+
+# -----------------------------------------------------------------------------
+# Node helper — activates local node_modules/.bin
+# Usage in .envrc:  layout node
+# -----------------------------------------------------------------------------
+layout_node() {
+  PATH_add node_modules/.bin
+}
+
+# -----------------------------------------------------------------------------
+# Go helper — sets GOPATH to project-local .gopath
+# Usage in .envrc:  layout go
+# -----------------------------------------------------------------------------
+layout_go() {
+  export GOPATH="$PWD/.gopath"
+  PATH_add "$GOPATH/bin"
+}

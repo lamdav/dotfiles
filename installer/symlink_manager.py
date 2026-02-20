@@ -127,6 +127,33 @@ class ConcreteSymlinkManager(SymlinkManager):
             return self.create_symlink(vim_source, vim_target, "Vim configuration")
         return True  # Not an error if vim config doesn't exist
 
+    def setup_mise_config(self, dotfiles_dir: Path) -> bool:
+        """Set up mise global configuration symlink."""
+        console.print("\n[bold cyan]🔧 Setting up mise configuration...[/bold cyan]")
+        mise_source = dotfiles_dir / "mise" / "config.toml"
+        if mise_source.exists():
+            mise_target = Path.home() / ".config" / "mise" / "config.toml"
+            return self.create_symlink(mise_source, mise_target, "mise global config")
+        return True
+
+    def setup_direnv_config(self, dotfiles_dir: Path) -> bool:
+        """Set up direnv global configuration symlink."""
+        console.print("\n[bold cyan]🔧 Setting up direnv configuration...[/bold cyan]")
+        direnv_source = dotfiles_dir / "direnv" / "direnvrc"
+        if direnv_source.exists():
+            direnv_target = Path.home() / ".config" / "direnv" / "direnvrc"
+            return self.create_symlink(direnv_source, direnv_target, "direnv global config")
+        return True
+
+    def setup_nvim_config(self, dotfiles_dir: Path) -> bool:
+        """Set up Neovim configuration symlink."""
+        console.print("\n[bold cyan]📝 Setting up Neovim configuration...[/bold cyan]")
+        nvim_source = dotfiles_dir / "nvim"
+        if nvim_source.exists():
+            nvim_target = Path.home() / ".config" / "nvim"
+            return self.create_symlink(nvim_source, nvim_target, "Neovim configuration")
+        return True  # Not an error if nvim config doesn't exist
+
     def setup_kitty_config(self, dotfiles_dir: Path) -> Tuple[int, int]:
         """Set up kitty configuration symlinks. Returns (success_count, total_steps)."""
         console.print("\n[bold cyan]🐱 Setting up Kitty terminal...[/bold cyan]")
