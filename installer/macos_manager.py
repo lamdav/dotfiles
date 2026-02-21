@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import shlex
 from pathlib import Path
 from typing import Tuple
 
@@ -26,9 +27,22 @@ class ConcreteMacOSManager(MacOSManager):
         aerospace_source = dotfiles_dir / "aerospace" / ".aerospace.toml"
         if aerospace_source.exists():
             aerospace_target = Path.home() / ".aerospace.toml"
-            return self.symlink_manager.create_symlink(
+            ok = self.symlink_manager.create_symlink(
                 aerospace_source, aerospace_target, "AeroSpace configuration"
             )
+
+            # Symlink the mode-tracker script to ~/.config/ubersicht/simple-bar/
+            tracker_source = dotfiles_dir / "ubersicht" / "simple-bar" / "aerospace-mode-tracker.sh"
+            if tracker_source.exists():
+                ubersicht_config_dir = Path.home() / ".config" / "ubersicht" / "simple-bar"
+                ubersicht_config_dir.mkdir(parents=True, exist_ok=True)
+                self.symlink_manager.create_symlink(
+                    tracker_source,
+                    ubersicht_config_dir / "aerospace-mode-tracker.sh",
+                    "AeroSpace mode tracker script",
+                )
+
+            return ok
         return True  # Not an error if config doesn't exist
 
     def setup_iterm_config(self, dotfiles_dir: Path) -> bool:
@@ -149,8 +163,8 @@ class ConcreteMacOSManager(MacOSManager):
                         "[yellow]Please install git first or run with --skip-packages=false[/yellow]"
                     )
                 else:
-                    if system_manager.run_command(
-                        f"git clone https://github.com/Jean-Tinland/simple-bar '{simple_bar_dir}'",
+                    if system_manager.run_interactive_command(
+                        f"git clone https://github.com/Jean-Tinland/simple-bar {shlex.quote(str(simple_bar_dir))}",
                         "Installing simple-bar...",
                     ):
                         success_count += 1
@@ -169,25 +183,29 @@ class ConcreteMacOSManager(MacOSManager):
                 )
 
             # Setup aerospace-mode widget
+            # Cannot symlink: file contains __HOME__ placeholder that must be
+            # substituted with the actual home directory at install time.
             widgets_dir = Path.home() / "Library/Application Support/Übersicht/widgets"
             widgets_dir.mkdir(parents=True, exist_ok=True)
 
-            # Remove any existing aerospace-mode.jsx file
-            existing_widget = widgets_dir / "aerospace-mode.jsx"
-            if existing_widget.exists():
-                existing_widget.unlink()
-
-            # Create symlink to dotfiles version
             aerospace_mode_source = dotfiles_dir / "ubersicht" / "aerospace-mode.jsx"
+            aerospace_mode_target = widgets_dir / "aerospace-mode.jsx"
             if aerospace_mode_source.exists():
-                if self.symlink_manager.create_symlink(
-                    aerospace_mode_source, existing_widget, "AeroSpace mode indicator"
-                ):
+                try:
+                    template = aerospace_mode_source.read_text()
+                    content = template.replace("__HOME__", str(Path.home()))
+                    if aerospace_mode_target.is_symlink():
+                        aerospace_mode_target.unlink()
+                    aerospace_mode_target.write_text(content)
+                    console.print("[green]✓ AeroSpace mode indicator configured[/green]")
                     success_count += 1
+                except Exception as e:
+                    console.print(f"[red]✗ Failed to configure AeroSpace mode indicator: {e}[/red]")
 
             # Restart Übersicht to recognize new widgets
             console.print("Restarting Übersicht to recognize new widgets...")
-            system_manager.run_command("pkill -f Übersicht", "Stopping Übersicht...")
+            # pkill returns 1 if no process matched (app not running) — that's fine
+            system_manager.run_command("pkill -f Uebersicht || pkill -f Übersicht || true", "Stopping Übersicht...")
             system_manager.run_command("open -a Übersicht", "Starting Übersicht...")
             console.print(
                 "[green]✓ Übersicht restarted. New widgets should now be visible.[/green]"

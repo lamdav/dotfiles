@@ -114,14 +114,40 @@ class ConcreteSymlinkManager(SymlinkManager):
     def setup_git_config(self, dotfiles_dir: Path) -> bool:
         """Set up git configuration symlinks."""
         console.print("\n[bold cyan]🔧 Setting up Git configuration...[/bold cyan]")
+
+        # ~/.gitconfig is machine-managed (work/local config) and is never overwritten.
+        # We symlink our personal dotfiles config to ~/.config/git/.gitconfig-local
+        # and ensure ~/.gitconfig includes it.
+        git_config_dir = Path.home() / ".config" / "git"
+        git_config_dir.mkdir(parents=True, exist_ok=True)
         git_source = dotfiles_dir / "git" / ".gitconfig"
-        git_target = Path.home() / ".gitconfig"
-        ok = self.create_symlink(git_source, git_target, "Git configuration")
+        git_target = git_config_dir / ".gitconfig-local"
+        ok = self.create_symlink(git_source, git_target, "Git personal config (via include)")
+
+        # Append [include] to ~/.gitconfig if not already present
+        global_gitconfig = Path.home() / ".gitconfig"
+        include_block = '[include]\n\tpath = ~/.config/git/.gitconfig-local\n'
+        if global_gitconfig.exists():
+            contents = global_gitconfig.read_text()
+            if "~/.config/git/.gitconfig-local" not in contents:
+                global_gitconfig.write_text(contents.rstrip() + "\n\n" + include_block)
+                console.print("[green]✓ Appended [include] to ~/.gitconfig[/green]")
+            else:
+                console.print("[green]✓ ~/.gitconfig already includes personal config[/green]")
+        else:
+            global_gitconfig.write_text(include_block)
+            console.print("[yellow]⚠ ~/.gitconfig not found — created with [include] only[/yellow]")
 
         ignore_source = dotfiles_dir / "git" / ".gitignore_global"
         if ignore_source.exists():
             ignore_target = Path.home() / ".gitignore_global"
             self.create_symlink(ignore_source, ignore_target, "Global gitignore")
+
+        # Symlink context-specific git configs into ~/.config/git/
+        for name in (".gitconfig-personal",):
+            src = dotfiles_dir / "git" / name
+            if src.exists():
+                self.create_symlink(src, git_config_dir / name, f"Git config: {name}")
 
         return ok
 
@@ -185,6 +211,14 @@ class ConcreteSymlinkManager(SymlinkManager):
             if self.create_symlink(
                 kitty_custom_source, kitty_custom_target, "Kitty customizations"
             ):
+                success_count += 1
+            total_steps += 1
+
+        # tab_bar.py must be at the kitty config root (not in a subdirectory)
+        tab_bar_source = dotfiles_dir / "kitty" / "kitty-customizations" / "tab_bar.py"
+        if tab_bar_source.exists():
+            tab_bar_target = Path.home() / ".config" / "kitty" / "tab_bar.py"
+            if self.create_symlink(tab_bar_source, tab_bar_target, "Kitty tab bar"):
                 success_count += 1
             total_steps += 1
 
