@@ -72,6 +72,7 @@ class ConcreteSymlinkManager(SymlinkManager):
             ("zsh/.zshrc", ".zshrc", "Zsh configuration"),
             ("zsh/.zsh_plugins", ".zsh_plugins", "Zsh plugins"),
             ("zsh/.p10k.zsh", ".p10k.zsh", "Powerlevel10k theme"),
+            ("zsh/.zlogin", ".zlogin", "Zsh login script"),
         ]
 
         for source_path, target_file, description in shell_configs:
