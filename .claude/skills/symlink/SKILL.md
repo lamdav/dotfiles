@@ -16,12 +16,12 @@ The user may pass an optional argument via $ARGUMENTS:
 
 ### status (default)
 ```bash
-cd ~/configs/dotfiles && python3 installer/main.py status
+cd ~/personal/dotfiles && python3 installer/main.py status
 ```
 
 ### repair
 ```bash
-cd ~/configs/dotfiles && python3 installer/main.py install --skip-packages --skip-system
+cd ~/personal/dotfiles && python3 installer/main.py install --skip-packages --skip-system
 ```
 
 ### specific config — manual checks
