@@ -108,6 +108,12 @@ class DotfilesInstaller(Installer):
             success_count += 1
         total_steps += 1
 
+        # borders configuration (macOS only)
+        if os_type == OSType.MACOS:
+            if self.symlink_manager.setup_borders_config(self.dotfiles_dir):
+                success_count += 1
+            total_steps += 1
+
         # macOS-specific configurations
         if os_type == OSType.MACOS and self.macos_manager:
             # AeroSpace configuration
@@ -179,6 +185,11 @@ class DotfilesInstaller(Installer):
         if self.system_manager.get_os_type() == OSType.MACOS:
             configs.extend(
                 [
+                    (
+                        "borders/bordersrc",
+                        ".config/borders/bordersrc",
+                        "borders config",
+                    ),
                     (
                         "aerospace/.aerospace.toml",
                         ".aerospace.toml",

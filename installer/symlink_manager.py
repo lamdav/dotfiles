@@ -188,6 +188,15 @@ class ConcreteSymlinkManager(SymlinkManager):
             return self.create_symlink(nvim_source, nvim_target, "Neovim configuration")
         return True  # Not an error if nvim config doesn't exist
 
+    def setup_borders_config(self, dotfiles_dir: Path) -> bool:
+        """Set up borders window border configuration symlink."""
+        console.print("\n[bold cyan]🔲 Setting up borders configuration...[/bold cyan]")
+        borders_source = dotfiles_dir / "borders" / "bordersrc"
+        if borders_source.exists():
+            borders_target = Path.home() / ".config" / "borders" / "bordersrc"
+            return self.create_symlink(borders_source, borders_target, "borders config")
+        return True
+
     def setup_kitty_config(self, dotfiles_dir: Path) -> Tuple[int, int]:
         """Set up kitty configuration symlinks. Returns (success_count, total_steps)."""
         console.print("\n[bold cyan]🐱 Setting up Kitty terminal...[/bold cyan]")

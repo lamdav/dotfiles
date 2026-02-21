@@ -1,0 +1,12 @@
+#!/bin/bash
+# borders configuration
+# Symlinked to ~/.config/borders/bordersrc
+# Docs: https://github.com/FelixKratz/borders
+
+options=(
+    --active_color   0xff66b2b2   # teal — matches Dracula cyan
+    --inactive_color 0xff494d64   # muted purple — Dracula selection
+    --width          5.0
+)
+
+borders "${options[@]}"
