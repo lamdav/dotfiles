@@ -28,7 +28,11 @@ dotfiles/
 │   └── config.toml     → ~/.config/mise/config.toml
 ├── nvim/
 │   └── init.lua        → ~/.config/nvim/  (symlink to whole dir)
-├── ubersicht/simple-bar/simplebarrc → ~/.simplebarrc
+├── ubersicht/
+│   ├── simple-bar/simplebarrc  → ~/.simplebarrc
+│   ├── simple-bar/aerospace-mode-tracker.sh → ~/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh
+│   └── aerospace-mode.jsx      → COPIED (not symlinked) to ~/Library/Application Support/Übersicht/widgets/
+│                                  Contains __HOME__ placeholder substituted at install time
 ├── vim/
 │   └── .vimrc          → ~/.vimrc
 └── zsh/
@@ -252,6 +256,28 @@ Key bindings (all `alt+`):
 
 Integrates with simple-bar via `exec-on-workspace-change`.
 
+**Useful CLI commands:**
+```bash
+aerospace reload-config                    # reload after config changes
+aerospace focus left/right/up/down         # focus window programmatically
+aerospace list-windows --workspace focused # list windows on current workspace
+aerospace list-windows --all               # list all windows across workspaces
+aerospace mode main                        # force-reset to main mode
+```
+
+### Known Conflicts (check if hotkeys stop working)
+
+**skhd** — If migrating from a yabai setup, skhd may still be running with bindings that intercept `alt+h/j/k/l` before AeroSpace sees them. Diagnose: `pgrep skhd`. Fix: `brew services stop skhd` or `brew uninstall skhd`.
+
+**iTerm2 GlobalKeyMap** — iTerm2 can register global key intercepts even when it is not the focused app. Option+H and Option+L are commonly mapped to Emacs word-navigation escape sequences. Check: `defaults read com.googlecode.iterm2 GlobalKeyMap`. Fix: remove conflicting entries via iTerm2 → Preferences → Keys → Key Bindings.
+
+**Diagnosis approach** when a binding does nothing (mouse doesn't move, no visible effect):
+1. `aerospace list-mode` (or check `/tmp/aerospace-current-mode`) — confirm you are in `main` mode
+2. `aerospace focus left` from terminal — if CLI works but hotkey doesn't, the key is being intercepted
+3. Temporarily rebind the key to `workspace 1` and test — if workspace doesn't switch, key never reaches AeroSpace
+4. `pgrep skhd` — check for skhd
+5. `defaults read com.googlecode.iterm2 GlobalKeyMap` — check iTerm2 global keys
+
 ---
 
 ## Kitty Terminal (kitty/)
@@ -280,6 +306,9 @@ Components installed:
 - Kitty config + customizations
 - macOS only: AeroSpace, iTerm2, Übersicht, system preferences, Kitty hotkey window
 
+**Template files** (copied with substitution, not symlinked):
+- `ubersicht/aerospace-mode.jsx` — contains `__HOME__` placeholder replaced with the actual home directory at install time. Do not symlink this file; run the installer to redeploy after edits.
+
 ---
 
 ## Troubleshooting
@@ -296,6 +325,9 @@ Components installed:
 | Kitty config error | `kitty --config ~/.config/kitty/kitty.conf --version` |
 | Git delta not showing | `git show` — verify delta is on PATH |
 | Symlink broken | `python installer/main.py status` |
+| AeroSpace hotkeys don't work (mouse doesn't move) | Key is intercepted before AeroSpace. Check: `pgrep skhd` (yabai leftover — `brew services stop skhd`); `defaults read com.googlecode.iterm2 GlobalKeyMap` (remove conflicting iTerm2 global bindings) |
+| AeroSpace hotkeys work via CLI but not keyboard | Same as above — another process has a CGEventTap for that key combination |
+| simple-bar mode indicator always shows "main" | `aerospace-mode.jsx` has wrong home path. Re-run installer or: `sed "s|__HOME__|$HOME|g" ~/personal/dotfiles/ubersicht/aerospace-mode.jsx > ~/Library/Application\ Support/Übersicht/widgets/aerospace-mode.jsx` |
 
 ---
 
