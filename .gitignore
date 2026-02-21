@@ -2,6 +2,7 @@ zsh_profile.*
 
 # Claude Code local settings (user-specific session permissions)
 .claude/settings.local.json
+.claude/settings.local.json.bak
 
 # Python cache files
 __pycache__/
