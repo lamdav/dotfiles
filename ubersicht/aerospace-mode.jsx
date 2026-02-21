@@ -3,7 +3,7 @@
 
 export const refreshFrequency = 1000;
 
-export const command = "/Users/lamdav/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh get";
+export const command = "__HOME__/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh get";
 
 export const render = ({ output }) => {
   const mode = output ? output.trim() : 'main';

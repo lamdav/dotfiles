@@ -8,6 +8,7 @@ AEROSPACE_MODE_FILE="/tmp/aerospace-current-mode"
 # Function to set mode
 set_mode() {
     echo "$1" > "$AEROSPACE_MODE_FILE"
+    osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "simple-bar-index-jsx"' &>/dev/null &
 }
 
 # Function to get current mode

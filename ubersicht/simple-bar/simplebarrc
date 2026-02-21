@@ -18,7 +18,6 @@
     "fontSize": "12px",
     "yabaiPath": "$(which yabai)",
     "aerospacePath": "/opt/homebrew/bin/aerospace",
-    "flashspacePath": "$(which flashspace)",
     "windowManager": "aerospace",
     "shell": "bash",
     "terminal": "kitty",
@@ -28,6 +27,7 @@
     "serverSocketPort": 7777,
     "yabaiServerRefresh": false,
     "aerospaceServerRefresh": true,
+    "flashspacePath": "$(which flashspace)",
     "flashspaceServerRefresh": false,
     "darkTheme": "SpaceDuck",
     "lightTheme": "firewatch-light",
@@ -191,6 +191,7 @@
   },
   "process": {
     "showOnDisplay": "",
+    "displayForFocusedSpace": false,
     "displayOnlyCurrent": true,
     "centered": false,
     "showCurrentSpaceMode": false,
@@ -214,9 +215,9 @@
     "hideEmptySpaces": true,
     "showOptionsOnHover": false,
     "switchSpacesWithoutYabai": false,
+    "customAeroSpaceDisplayIndexes": {},
     "showOnlyFlashspaceSpaceIndex": false,
-    "hideFlashspaceAppIcons": false,
-    "customAeroSpaceDisplayIndexes": {}
+    "hideFlashspaceAppIcons": false
   },
   "widgets": {
     "processWidget": true,
@@ -265,13 +266,15 @@
     "refreshFrequency": 2000,
     "showOnDisplay": "",
     "showIcon": true,
-    "displayAsGraph": false
+    "displayAsGraph": false,
+    "netstatsThreshold": 0
   },
   "cpuWidgetOptions": {
     "refreshFrequency": 2000,
     "showOnDisplay": "",
     "showIcon": true,
     "displayAsGraph": false,
+    "cpuUsageThreshold": 0,
     "cpuMonitorApp": "Activity Monitor"
   },
   "gpuWidgetOptions": {
@@ -285,6 +288,7 @@
     "refreshFrequency": 4000,
     "showOnDisplay": "",
     "showIcon": true,
+    "memoryUsageThreshold": 0,
     "memoryMonitorApp": "Activity Monitor"
   },
   "batteryWidgetOptions": {
@@ -292,6 +296,7 @@
     "showOnDisplay": "",
     "showIcon": true,
     "toggleCaffeinateOnClick": false,
+    "disableCaffeinateInvertedBackground": false,
     "caffeinateOption": ""
   },
   "networkWidgetOptions": {
@@ -345,7 +350,8 @@
   "keyboardWidgetOptions": {
     "refreshFrequency": 20000,
     "showOnDisplay": "",
-    "showIcon": true
+    "showIcon": true,
+    "keyboardMaxLength": 0
   },
   "cryptoWidgetOptions": {
     "refreshFrequency": 300000,
@@ -410,7 +416,7 @@
         "enabled": true,
         "refreshFrequency": 1000,
         "showOnDisplay": "",
-        "command": "~/configs/dotfiles/ubersicht/simple-bar/aerospace-mode-tracker.sh get"
+        "command": "~/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh get"
       }
     }
   },
