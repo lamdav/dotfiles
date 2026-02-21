@@ -9,7 +9,8 @@ cask "claude"
 cask "dropbox"
 
 # Networking
-cask "tailscale"
+brew "mas"                           # Mac App Store CLI (required for mas entries below)
+mas "Tailscale", id: 1475387142     # VPN — cask version has broken download URL
 
 # Browsers
 cask "google-chrome"

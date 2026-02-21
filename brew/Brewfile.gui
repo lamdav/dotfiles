@@ -1,8 +1,12 @@
 
-# Window Management & Status Bar
+# Taps (must be declared before formulae that depend on them)
 tap "FelixKratz/formulae"
-brew "borders"           # window borders for AeroSpace
-cask "aerospace"
+tap "nikitabobko/tap"
+tap "homebrew/cask-fonts"
+
+# Window Management & Status Bar
+brew "FelixKratz/formulae/borders"  # window borders for AeroSpace
+cask "nikitabobko/tap/aerospace"
 cask "ubersicht"
 
 # Fonts
