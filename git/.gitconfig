@@ -1,6 +1,3 @@
-[user]
-	name = David Lam
-	email = david.lam+github@lamdav.com
 [alias]
 	s = status
 	co = checkout
@@ -56,6 +53,5 @@
   conflictstyle = diff3
 [diff]
   colorMoved = default
-[includeIf "gitdir:~/work/"]
-  path = ~/.gitconfig-work
-
+[includeIf "gitdir:~/personal/"]
+	path = ~/.config/git/.gitconfig-personal
