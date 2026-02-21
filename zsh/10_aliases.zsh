@@ -6,7 +6,7 @@
 
 # Enhanced ls with eza (if available)
 if command -v eza >/dev/null 2>&1; then
-  alias ls='eza --color=always --long --git --no-filesize --no-time --no-permissions --no-user'
+  alias ls='eza --color=always --git --no-filesize --no-time --no-permissions --no-user'
   alias ll='eza --color=always --long --git'
   alias tree='eza --tree'
 else
