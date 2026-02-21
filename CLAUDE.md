@@ -15,6 +15,8 @@ Comprehensive dotfiles for macOS (primary) and Ubuntu. Covers modular zsh, Kitty
 ```
 dotfiles/
 ├── aerospace/          → ~/.aerospace.toml
+├── borders/
+│   └── bordersrc       → ~/.config/borders/bordersrc
 ├── direnv/
 │   └── direnvrc        → ~/.config/direnv/direnvrc
 ├── git/

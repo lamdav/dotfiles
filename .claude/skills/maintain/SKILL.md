@@ -55,6 +55,7 @@ ls -la ~/.config/nvim
 ls -la ~/.config/kitty/kitty.conf
 ls -la ~/.config/mise/config.toml
 ls -la ~/.config/direnv/direnvrc
+ls -la ~/.config/borders/bordersrc
 ls -la ~/.gitconfig
 ls -la ~/.vimrc
 ls -la ~/.aerospace.toml

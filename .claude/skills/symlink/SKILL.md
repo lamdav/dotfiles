@@ -26,6 +26,9 @@ cd ~/personal/dotfiles && python3 installer/main.py install --skip-packages --sk
 
 ### specific config — manual checks
 ```bash
+# borders
+ls -la ~/.config/borders/bordersrc
+
 # nvim
 ls -la ~/.config/nvim
 
