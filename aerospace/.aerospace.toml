@@ -33,7 +33,7 @@ enable-normalization-opposite-orientation-for-nested-containers = true
 accordion-padding = 30
 
 # Possible values: tiles|accordion
-default-root-container-layout = 'tiles'
+default-root-container-layout = 'accordion'
 
 # Possible values: horizontal|vertical|auto
 # 'auto' means: wide monitor (anything wider than high) gets horizontal orientation,
@@ -85,8 +85,26 @@ run = 'layout floating'
     inner.vertical =   10
     outer.left =       10
     outer.bottom =     10
-    outer.top =        18
+    outer.top =        40
     outer.right =      10
+
+# Workspace-to-monitor assignment
+# Monitors: AORUS FO32U2P (center/main), XV272U (left), ROG PG248Q (right/vertical)
+[workspace-to-monitor-force-assignment]
+1 = 'AORUS FO32U2P'
+2 = 'AORUS FO32U2P'
+3 = 'AORUS FO32U2P'
+4 = 'AORUS FO32U2P'
+5 = 'AORUS FO32U2P'
+6 = 'AORUS FO32U2P'
+7 = 'AORUS FO32U2P'
+8 = 'AORUS FO32U2P'
+9 = 'AORUS FO32U2P'
+S = 'XV272U'
+F = 'XV272U'
+M = 'XV272U'
+T = 'XV272U'
+Y = 'ROG PG248Q'
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -153,9 +171,11 @@ run = 'layout floating'
     alt-9 = 'workspace 9'
 
     # Dedicated workspace shortcuts
-    alt-s = 'workspace S'  # Spotify/Music
-    alt-f = 'workspace F'  # Finder/File browser
-    alt-m = 'workspace M'  # Mail/Browser with email tabs
+    alt-s = 'workspace S'  # Spotify/Music  → left monitor (XV272U)
+    alt-f = 'workspace F'  # Finder         → left monitor (XV272U)
+    alt-m = 'workspace M'  # Mail           → left monitor (XV272U)
+    alt-t = 'workspace T'  # Tracking       → left monitor (XV272U)
+    alt-y = 'workspace Y'  # Right monitor  → right monitor (ROG PG248Q)
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
     alt-shift-1 = 'move-node-to-workspace 1'
@@ -172,6 +192,8 @@ run = 'layout floating'
     alt-shift-s = 'move-node-to-workspace S'  # Move to Spotify/Music
     alt-shift-f = 'move-node-to-workspace F'  # Move to Finder/File browser
     alt-shift-m = 'move-node-to-workspace M'  # Move to Mail/Browser
+    alt-shift-t = 'move-node-to-workspace T'  # Move to Tracking
+    alt-shift-y = 'move-node-to-workspace Y'  # Move to right monitor
 
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
@@ -220,6 +242,14 @@ run = 'layout floating'
     esc = ['exec-and-forget ~/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'mode main']
 
 # Auto-assign apps to dedicated workspaces
+[[on-window-detected]]
+if.app-id = 'com.jetbrains.goland'
+run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+if.app-id = 'com.microsoft.VSCode'
+run = 'move-node-to-workspace 2'
+
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
 run = 'move-node-to-workspace F'
