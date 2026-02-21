@@ -234,6 +234,10 @@ require("lazy").setup({
       "hrsh7th/cmp-nvim-lsp",
     },
     config = function()
+      -- Override Uber's internal npm registry so Mason can install LSP servers
+      -- from the public registry. Only affects Neovim's child processes.
+      vim.env.NPM_CONFIG_REGISTRY = "https://registry.npmjs.org"
+
       require("mason").setup()
       require("mason-lspconfig").setup({
         ensure_installed = {
