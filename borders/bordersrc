@@ -4,9 +4,9 @@
 # Docs: https://github.com/FelixKratz/borders
 
 options=(
-    --active_color   0xff66b2b2   # teal — matches Dracula cyan
-    --inactive_color 0xff494d64   # muted purple — Dracula selection
-    --width          5.0
+    active_color="glow(0xff44d4e8)" # bold cyan glow
+    inactive_color=0xff494d64 # muted purple — Dracula selection
+    width=8.0
 )
 
 borders "${options[@]}"
