@@ -89,22 +89,24 @@ run = 'layout floating'
     outer.right =      10
 
 # Workspace-to-monitor assignment
-# Monitors: AORUS FO32U2P (center/main), XV272U (left), ROG PG248Q (right/vertical)
+# Supports two setups via fallback lists (first match wins):
+#   Work desk:   AORUS FO32U2P (center/main), XV272U (left), ROG PG248Q (right)
+#   Home office: Built-in Retina Display (main), DELL U2718Q (right)
 [workspace-to-monitor-force-assignment]
-1 = 'AORUS FO32U2P'
-2 = 'AORUS FO32U2P'
-3 = 'AORUS FO32U2P'
-4 = 'AORUS FO32U2P'
-5 = 'AORUS FO32U2P'
-6 = 'AORUS FO32U2P'
-7 = 'AORUS FO32U2P'
-8 = 'AORUS FO32U2P'
-9 = 'AORUS FO32U2P'
-S = 'XV272U'
-F = 'XV272U'
-M = 'XV272U'
-T = 'XV272U'
-Y = 'ROG PG248Q'
+1 = ['AORUS FO32U2P', 'DELL U2718Q']
+2 = ['AORUS FO32U2P', 'DELL U2718Q']
+3 = ['AORUS FO32U2P', 'DELL U2718Q']
+4 = ['AORUS FO32U2P', 'DELL U2718Q']
+5 = ['AORUS FO32U2P', 'DELL U2718Q']
+6 = ['AORUS FO32U2P', 'DELL U2718Q']
+7 = ['AORUS FO32U2P', 'DELL U2718Q']
+8 = ['AORUS FO32U2P', 'DELL U2718Q']
+9 = ['AORUS FO32U2P', 'DELL U2718Q']
+S = ['XV272U', 'Built-in Retina Display']
+F = ['XV272U', 'Built-in Retina Display']
+M = ['XV272U', 'Built-in Retina Display']
+T = ['XV272U', 'Built-in Retina Display']
+Y = ['ROG PG248Q', 'Built-in Retina Display']
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
