@@ -53,5 +53,7 @@
   conflictstyle = diff3
 [diff]
   colorMoved = default
+[include]
+	path=~/.config/git/.gitconfig-local
 [includeIf "gitdir:~/personal/"]
 	path = ~/.config/git/.gitconfig-personal
