@@ -31,8 +31,10 @@ dotfiles/
 ├── nvim/
 │   └── init.lua        → ~/.config/nvim/  (symlink to whole dir)
 ├── ubersicht/
-│   ├── simple-bar/simplebarrc  → ~/.simplebarrc
+│   ├── simple-bar/simplebarrc  → COPIED (not symlinked) to ~/.simplebarrc
+│   │                              Modified at runtime by sync-simplebar-displays.sh
 │   ├── simple-bar/aerospace-mode-tracker.sh → ~/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh
+│   ├── simple-bar/sync-simplebar-displays.sh → ~/.config/ubersicht/simple-bar/sync-simplebar-displays.sh
 │   └── aerospace-mode.jsx      → COPIED (not symlinked) to ~/Library/Application Support/Übersicht/widgets/
 │                                  Contains __HOME__ placeholder substituted at install time
 ├── vim/
@@ -310,6 +312,7 @@ Components installed:
 
 **Template files** (copied with substitution, not symlinked):
 - `ubersicht/aerospace-mode.jsx` — contains `__HOME__` placeholder replaced with the actual home directory at install time. Do not symlink this file; run the installer to redeploy after edits.
+- `ubersicht/simple-bar/simplebarrc` — copied (not symlinked) to `~/.simplebarrc`. The live copy is modified at runtime by `sync-simplebar-displays.sh` to inject machine-specific `customAeroSpaceDisplayIndexes`. The dotfiles version is the stable baseline with `{}`. To persist UI setting changes back to dotfiles, manually diff and copy the relevant fields.
 
 ---
 

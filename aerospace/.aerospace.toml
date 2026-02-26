@@ -10,7 +10,8 @@ after-login-command = []
 # 'after-startup-command' is run after 'after-login-command'
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = [
-    'exec-and-forget borders'
+    'exec-and-forget borders',
+    'exec-and-forget /bin/bash ~/.config/ubersicht/simple-bar/sync-simplebar-displays.sh',
 ]
 
 exec-on-workspace-change = [
@@ -212,7 +213,11 @@ Y = ['ROG PG248Q', 'Built-in Retina Display']
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 [mode.service.binding]
-    esc = ['exec-and-forget ~/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'reload-config', 'mode main']
+    esc = [
+        'exec-and-forget ~/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh set main',
+        'exec-and-forget /bin/bash ~/.config/ubersicht/simple-bar/sync-and-reload.sh',
+        'mode main',
+    ]
     r = ['exec-and-forget ~/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'flatten-workspace-tree', 'mode main'] # reset layout
     # f = ['exec-and-forget ~/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
     backspace = ['exec-and-forget ~/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'close-all-windows-but-current', 'mode main']

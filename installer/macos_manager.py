@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import shlex
+import shutil
 from pathlib import Path
 from typing import Tuple
 
@@ -31,16 +32,18 @@ class ConcreteMacOSManager(MacOSManager):
                 aerospace_source, aerospace_target, "AeroSpace configuration"
             )
 
-            # Symlink the mode-tracker script to ~/.config/ubersicht/simple-bar/
-            tracker_source = dotfiles_dir / "ubersicht" / "simple-bar" / "aerospace-mode-tracker.sh"
-            if tracker_source.exists():
-                ubersicht_config_dir = Path.home() / ".config" / "ubersicht" / "simple-bar"
-                ubersicht_config_dir.mkdir(parents=True, exist_ok=True)
-                self.symlink_manager.create_symlink(
-                    tracker_source,
-                    ubersicht_config_dir / "aerospace-mode-tracker.sh",
-                    "AeroSpace mode tracker script",
-                )
+            # Symlink scripts to ~/.config/ubersicht/simple-bar/
+            ubersicht_config_dir = Path.home() / ".config" / "ubersicht" / "simple-bar"
+            ubersicht_config_dir.mkdir(parents=True, exist_ok=True)
+            for script in ("aerospace-mode-tracker.sh", "sync-simplebar-displays.sh", "sync-and-reload.sh"):
+                script_source = dotfiles_dir / "ubersicht" / "simple-bar" / script
+                if script_source.exists():
+                    script_source.chmod(script_source.stat().st_mode | 0o111)
+                    self.symlink_manager.create_symlink(
+                        script_source,
+                        ubersicht_config_dir / script,
+                        f"simple-bar script: {script}",
+                    )
 
             return ok
         return True  # Not an error if config doesn't exist
@@ -173,14 +176,18 @@ class ConcreteMacOSManager(MacOSManager):
                 success_count += 1
 
             # Setup simple-bar configuration
+            # Cannot symlink: sync-simplebar-displays.sh modifies this file at
+            # runtime to inject machine-specific display mappings. Copy instead
+            # so the dotfiles version stays clean (same pattern as aerospace-mode.jsx).
             simplebarrc_source = (
                 dotfiles_dir / "ubersicht" / "simple-bar" / "simplebarrc"
             )
             if simplebarrc_source.exists():
                 simplebarrc_target = Path.home() / ".simplebarrc"
-                self.symlink_manager.create_symlink(
-                    simplebarrc_source, simplebarrc_target, "Simple-bar configuration"
-                )
+                if simplebarrc_target.is_symlink():
+                    simplebarrc_target.unlink()
+                shutil.copy2(simplebarrc_source, simplebarrc_target)
+                console.print("[green]✓ Simple-bar configuration copied[/green]")
 
             # Setup aerospace-mode widget
             # Cannot symlink: file contains __HOME__ placeholder that must be
