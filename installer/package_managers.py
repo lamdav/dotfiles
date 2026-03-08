@@ -85,7 +85,9 @@ class UbuntuPackageManager(PackageManager):
         success &= self._install_apt_packages(system_manager)
         success &= self._install_neovim(system_manager)
         success &= self._install_eza(system_manager)
+        success &= self._install_gh(system_manager)
         success &= self._install_fzf(system_manager)
+        success &= self._install_delta(system_manager)
         success &= self._install_mise(system_manager)
         success &= self._install_zoxide(system_manager)
         self._install_kitty_terminfo(system_manager)  # non-critical
@@ -96,6 +98,7 @@ class UbuntuPackageManager(PackageManager):
         packages = [
             "zsh", "git", "git-lfs", "curl", "wget", "jq",
             "ripgrep", "fd-find", "bat", "tmux", "direnv",
+            "btop", "httpie", "ncdu", "unzip",
             "build-essential", "software-properties-common",
         ]
         ok = system_manager.run_interactive_command(
@@ -141,8 +144,46 @@ class UbuntuPackageManager(PackageManager):
             console.print("[yellow]⚠ eza install failed — skipping[/yellow]")
         return True  # non-fatal
 
+    def _install_gh(self, system_manager: SystemManager) -> bool:
+        console.print("\n[bold cyan]📦 Phase 4 — GitHub CLI (gh)...[/bold cyan]")
+        if system_manager.check_command_exists("gh"):
+            console.print("[green]✓ gh already installed[/green]")
+            return True
+        script = (
+            "curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg"
+            " | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && "
+            "sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && "
+            'echo "deb [arch=$(dpkg --print-architecture)'
+            " signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg]"
+            ' https://cli.github.com/packages stable main"'
+            " | sudo tee /etc/apt/sources.list.d/github-cli.list && "
+            "sudo apt-get update -qq && sudo apt-get install -y gh"
+        )
+        ok = system_manager.run_interactive_command(script, "Installing gh...")
+        if not ok:
+            console.print("[yellow]⚠ gh install failed — skipping[/yellow]")
+        return True  # non-fatal
+
+    def _install_delta(self, system_manager: SystemManager) -> bool:
+        console.print("\n[bold cyan]📦 Phase 5 — git-delta (git pager)...[/bold cyan]")
+        if system_manager.check_command_exists("delta"):
+            console.print("[green]✓ delta already installed[/green]")
+            return True
+        script = (
+            "set -e && "
+            "DELTA_VERSION=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest"
+            r" | grep '\"tag_name\"' | sed 's/.*\"tag_name\": *\"\([^\"]*\)\".*/\1/') && "
+            'curl -fsSL "https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/'
+            'delta_${DELTA_VERSION}_amd64.deb" -o /tmp/delta.deb && '
+            "sudo dpkg -i /tmp/delta.deb && rm /tmp/delta.deb"
+        )
+        ok = system_manager.run_interactive_command(script, "Installing delta...")
+        if not ok:
+            console.print("[yellow]⚠ delta install failed — skipping[/yellow]")
+        return True  # non-fatal
+
     def _install_fzf(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 4 — fzf (GitHub release)...[/bold cyan]")
+        console.print("\n[bold cyan]📦 Phase 6 — fzf (GitHub release)...[/bold cyan]")
         if system_manager.check_command_exists("fzf"):
             console.print("[green]✓ fzf already installed[/green]")
             return True
@@ -161,7 +202,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_mise(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 5 — mise (version manager)...[/bold cyan]")
+        console.print("\n[bold cyan]📦 Phase 7 — mise (version manager)...[/bold cyan]")
         if system_manager.check_command_exists("mise"):
             console.print("[green]✓ mise already installed[/green]")
             return True
@@ -173,7 +214,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_zoxide(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 6 — zoxide...[/bold cyan]")
+        console.print("\n[bold cyan]📦 Phase 8 — zoxide...[/bold cyan]")
         if system_manager.check_command_exists("zoxide"):
             console.print("[green]✓ zoxide already installed[/green]")
             return True
@@ -186,7 +227,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_kitty_terminfo(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 7 — kitty terminfo (SSH from Kitty)...[/bold cyan]")
+        console.print("\n[bold cyan]📦 Phase 9 — kitty terminfo (SSH from Kitty)...[/bold cyan]")
         check = system_manager.run_command(
             "infocmp xterm-kitty >/dev/null 2>&1", "Checking kitty terminfo..."
         )
