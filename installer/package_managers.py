@@ -90,6 +90,7 @@ class UbuntuPackageManager(PackageManager):
         success &= self._install_delta(system_manager)
         success &= self._install_antidote(system_manager)
         success &= self._install_mise(system_manager)
+        success &= self._install_uv(system_manager)
         success &= self._install_zoxide(system_manager)
         self._install_kitty_terminfo(system_manager)  # non-critical
         return success
@@ -228,8 +229,26 @@ class UbuntuPackageManager(PackageManager):
             console.print("[yellow]⚠ mise install failed — skipping[/yellow]")
         return True  # non-fatal
 
+    def _install_uv(self, system_manager: SystemManager) -> bool:
+        console.print("\n[bold cyan]📦 Phase 9 — uv (Python package manager)...[/bold cyan]")
+        if system_manager.check_command_exists("uv"):
+            console.print("[green]✓ uv already installed[/green]")
+            return True
+        # Prefer apt (available on Ubuntu 24.10+); fall back to official installer.
+        script = (
+            "if apt-cache show uv >/dev/null 2>&1; then "
+            "sudo apt-get install -y uv; "
+            "else "
+            "curl -LsSf https://astral.sh/uv/install.sh | sh; "
+            "fi"
+        )
+        ok = system_manager.run_interactive_command(script, "Installing uv...")
+        if not ok:
+            console.print("[yellow]⚠ uv install failed — skipping[/yellow]")
+        return True  # non-fatal
+
     def _install_zoxide(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 9 — zoxide...[/bold cyan]")
+        console.print("\n[bold cyan]📦 Phase 10 — zoxide...[/bold cyan]")
         if system_manager.check_command_exists("zoxide"):
             console.print("[green]✓ zoxide already installed[/green]")
             return True
@@ -242,7 +261,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_kitty_terminfo(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 10 — kitty terminfo (SSH from Kitty)...[/bold cyan]")
+        console.print("\n[bold cyan]📦 Phase 11 — kitty terminfo (SSH from Kitty)...[/bold cyan]")
         check = system_manager.run_command(
             "infocmp xterm-kitty >/dev/null 2>&1", "Checking kitty terminfo..."
         )

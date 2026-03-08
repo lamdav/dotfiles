@@ -8,6 +8,7 @@ brew "gh"
 
 # Language Ecosystems (managed by mise)
 brew "mise"
+brew "uv"
 brew "go"
 brew "yarn"
 

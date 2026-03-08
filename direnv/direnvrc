@@ -25,6 +25,24 @@ layout_python() {
 }
 
 # -----------------------------------------------------------------------------
+# uv helper — creates/activates .venv using uv, auto-syncs pyproject.toml deps
+# Usage in .envrc:  layout uv
+# -----------------------------------------------------------------------------
+layout_uv() {
+  local venv_dir="${PWD}/.venv"
+  if [[ ! -d "$venv_dir" ]]; then
+    log_status "Creating virtualenv with uv..."
+    uv venv "$venv_dir"
+  fi
+  export VIRTUAL_ENV="$venv_dir"
+  PATH_add "$venv_dir/bin"
+  # Auto-sync dependencies if pyproject.toml or requirements.txt is present
+  if [[ -f pyproject.toml ]] || [[ -f requirements.txt ]]; then
+    uv sync --quiet 2>/dev/null || true
+  fi
+}
+
+# -----------------------------------------------------------------------------
 # Node helper — activates local node_modules/.bin
 # Usage in .envrc:  layout node
 # -----------------------------------------------------------------------------
