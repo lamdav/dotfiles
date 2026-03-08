@@ -173,9 +173,9 @@ class UbuntuPackageManager(PackageManager):
         script = (
             "set -e && "
             "DELTA_VERSION=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest"
-            r" | grep '\"tag_name\"' | sed 's/.*\"tag_name\": *\"\([^\"]*\)\".*/\1/') && "
+            " | jq -r '.tag_name') && "
             'curl -fsSL "https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/'
-            'delta_${DELTA_VERSION}_amd64.deb" -o /tmp/delta.deb && '
+            'git-delta_${DELTA_VERSION}_amd64.deb" -o /tmp/delta.deb && '
             "sudo dpkg -i /tmp/delta.deb && rm /tmp/delta.deb"
         )
         ok = system_manager.run_interactive_command(script, "Installing delta...")
@@ -190,8 +190,8 @@ class UbuntuPackageManager(PackageManager):
             return True
         script = (
             "set -e && "
-            "FZF_VERSION=$(curl -fsSL https://api.github.com/repos/junegunn/fzf/releases/latest "
-            r"| grep '\"tag_name\"' | sed 's/.*\"tag_name\": *\"v\([^\"]*\)\".*/\1/') && "
+            "FZF_VERSION=$(curl -fsSL https://api.github.com/repos/junegunn/fzf/releases/latest"
+            " | jq -r '.tag_name | ltrimstr(\"v\")') && "
             "mkdir -p ~/.local/bin && "
             'curl -fsSL "https://github.com/junegunn/fzf/releases/download/v${FZF_VERSION}/fzf-${FZF_VERSION}-linux_amd64.tar.gz" '
             "| tar -xz -C ~/.local/bin fzf && "
