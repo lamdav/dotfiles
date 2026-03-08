@@ -75,7 +75,7 @@ dotfiles/
 | `05_keybindings.zsh` | Key bindings | Requires completion system |
 | `06_lazy-loading.zsh` | Generic lazy_load/group_lazy_load helpers | Version tools now handled by mise |
 | `10_aliases.zsh` | Aliases + shell functions | Requires tools on PATH |
-| `99_integrations.zsh` | mise, fzf, zoxide, direnv, p10k, kitty | Runs last |
+| `99_integrations.zsh` | mise, fzf, zoxide, direnv, p10k | Runs last; kitty in macos/ |
 
 **Important:** `no_clobber` is set in `01_options.zsh`. Any redirect that writes to an existing file must use `>|` instead of `>`. This applies in `03_plugins.zsh` and the `updateplugins` function.
 
@@ -91,7 +91,9 @@ Each module loads in three layers (interleaved):
 | Module | macos/ | linux/ |
 |--------|--------|--------|
 | `02_environment` | Homebrew PATH, `BROWSER=open`, gcloud | `~/.local/bin` priority, XDG dirs |
-| `10_aliases` | `refreshbar`, `ssh='kitten ssh'` | `fd`→`fdfind`, `bat`→`batcat` shims |
+| `04_completion` | GCloud SDK completion, Homebrew tool completions | — |
+| `10_aliases` | `refreshbar`, `ssh='kitten ssh'` | `fd`→`fdfind`, `find`→`fdfind`, `bat`→`batcat` shims |
+| `99_integrations` | fd FZF backend, kitty functions | fdfind FZF backend |
 
 Adding a new distro (e.g. Arch): create `zsh/arch/` — shared and `linux/` modules need no changes.
 
@@ -270,7 +272,7 @@ Keybindings (active in shell):
 
 Default options: `--height 40% --layout=reverse --border`
 
-Uses `fd` as backend: hidden files included, `.git` excluded.
+Uses `fd` as backend on macOS, `fdfind` on Ubuntu — both configured in the platform `99_integrations` layer. Hidden files included, `.git` excluded.
 
 ---
 
@@ -350,7 +352,7 @@ Components installed:
 ```bash
 python installer/main.py install --skip-system
 ```
-Installs in phases: apt base tools → Neovim (unstable PPA) → eza → fzf → mise → zoxide → kitty terminfo. macOS-only components (AeroSpace, Übersicht, Kitty config, system prefs) are automatically skipped.
+Installs in phases: apt base tools → Neovim (unstable PPA) → eza → gh → git-delta → fzf → antidote → mise → zoxide → kitty terminfo. macOS-only components (AeroSpace, Übersicht, Kitty config, system prefs) are automatically skipped.
 
 **Template files** (copied with substitution, not symlinked):
 - `ubersicht/aerospace-mode.jsx` — contains `__HOME__` placeholder replaced with the actual home directory at install time. Do not symlink this file; run the installer to redeploy after edits.
