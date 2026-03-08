@@ -134,28 +134,29 @@ class ConcreteSymlinkManager(SymlinkManager):
         """Set up git configuration symlinks."""
         console.print("\n[bold cyan]🔧 Setting up Git configuration...[/bold cyan]")
 
-        # ~/.gitconfig is machine-managed (work/local config) and is never overwritten.
-        # We symlink our personal dotfiles config to ~/.config/git/.gitconfig-local
-        # and ensure ~/.gitconfig includes it.
+        # ~/.config/git/.gitconfig is a symlink to the dotfiles config.
+        # ~/.gitconfig is machine-managed — created as a plain file (hard copy) with
+        # an [include] pointing to ~/.config/git/.gitconfig. Never symlinked.
         git_config_dir = Path.home() / ".config" / "git"
         git_config_dir.mkdir(parents=True, exist_ok=True)
         git_source = dotfiles_dir / "git" / ".gitconfig"
-        git_target = git_config_dir / ".gitconfig-local"
-        ok = self.create_symlink(git_source, git_target, "Git personal config (via include)")
+        git_target = git_config_dir / ".gitconfig"
+        ok = self.create_symlink(git_source, git_target, "Git configuration")
 
-        # Append [include] to ~/.gitconfig if not already present
+        # Bootstrap ~/.gitconfig as a plain file if it doesn't already include our config
         global_gitconfig = Path.home() / ".gitconfig"
-        include_block = '[include]\n\tpath = ~/.config/git/.gitconfig-local\n'
+        include_line = "path = ~/.config/git/.gitconfig"
+        include_block = f"[include]\n\t{include_line}\n"
         if global_gitconfig.exists():
             contents = global_gitconfig.read_text()
-            if "~/.config/git/.gitconfig-local" not in contents:
+            if include_line not in contents:
                 global_gitconfig.write_text(contents.rstrip() + "\n\n" + include_block)
                 console.print("[green]✓ Appended [include] to ~/.gitconfig[/green]")
             else:
-                console.print("[green]✓ ~/.gitconfig already includes personal config[/green]")
+                console.print("[green]✓ ~/.gitconfig already includes dotfiles config[/green]")
         else:
             global_gitconfig.write_text(include_block)
-            console.print("[yellow]⚠ ~/.gitconfig not found — created with [include] only[/yellow]")
+            console.print("[green]✓ Created ~/.gitconfig with [include][/green]")
 
         ignore_source = dotfiles_dir / "git" / ".gitignore_global"
         if ignore_source.exists():
