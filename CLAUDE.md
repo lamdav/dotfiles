@@ -333,13 +333,17 @@ Hotkey window (Quake-style): `ctrl+\`` — registered via `kitten quick-access-t
 
 ## Installer (installer/)
 
-Python installer (recommended):
 ```bash
-python installer/main.py install          # full install
-python installer/main.py install --skip-packages  # skip brew bundle
-python installer/main.py install --skip-shell     # skip zsh/oh-my-zsh setup
-python installer/main.py install --skip-system    # skip macOS system preferences
-python installer/main.py status           # check symlink status
+uv run install-dotfiles install           # full install
+uv run install-dotfiles install --skip-packages  # skip brew bundle
+uv run install-dotfiles install --skip-shell     # skip zsh/oh-my-zsh setup
+uv run install-dotfiles install --skip-system    # skip macOS system preferences
+uv run install-dotfiles status            # check symlink status
+```
+
+Alternatively invoke directly (if venv active or uv not available):
+```bash
+python installer/main.py install --skip-system
 ```
 
 Components installed:
