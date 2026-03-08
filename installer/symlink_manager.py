@@ -163,6 +163,15 @@ class ConcreteSymlinkManager(SymlinkManager):
             ignore_target = Path.home() / ".gitignore_global"
             self.create_symlink(ignore_source, ignore_target, "Global gitignore")
 
+        # Bootstrap ~/.config/git/.gitconfig-local as a plain empty file if absent.
+        # This is machine-local (not in the repo). Users configure it themselves.
+        gitconfig_local = git_config_dir / ".gitconfig-local"
+        if not gitconfig_local.exists() and not gitconfig_local.is_symlink():
+            gitconfig_local.touch()
+            console.print("[green]✓ Created empty ~/.config/git/.gitconfig-local[/green]")
+        else:
+            console.print("[green]✓ ~/.config/git/.gitconfig-local already exists[/green]")
+
         # Symlink context-specific git configs into ~/.config/git/
         for name in (".gitconfig-personal",):
             src = dotfiles_dir / "git" / name
