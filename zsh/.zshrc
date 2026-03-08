@@ -18,6 +18,20 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # =============================================================================
+# PLATFORM DETECTION
+# =============================================================================
+
+if [[ "$OSTYPE" == darwin* ]]; then
+  ZSH_OS_FAMILY="macos"
+  ZSH_DISTRO="macos"
+elif [[ "$OSTYPE" == linux* ]]; then
+  ZSH_OS_FAMILY="linux"
+  ZSH_DISTRO="${${(f)"$(</etc/os-release)"}[(r)ID=*]#ID=}"
+  ZSH_DISTRO="${ZSH_DISTRO:-linux}"
+fi
+export ZSH_OS_FAMILY ZSH_DISTRO
+
+# =============================================================================
 # MODULAR CONFIGURATION LOADING
 # =============================================================================
 
@@ -54,16 +68,26 @@ zsh_modules=(
   "99_integrations"
 )
 
-# Source each module with error handling
+# Source each module with platform layers: shared → family → distro
 for module in "${zsh_modules[@]}"; do
+  # Shared layer
   module_file="${ZSH_CONFIG_DIR}/${module}.zsh"
   if [[ -r "$module_file" ]]; then
     source "$module_file"
   else
     echo "Warning: Could not load zsh module: $module_file"
-    echo "  ZSH_CONFIG_DIR: $ZSH_CONFIG_DIR"
-    echo "  File exists: $(test -f "$module_file" && echo "yes" || echo "no")"
-    echo "  File readable: $(test -r "$module_file" && echo "yes" || echo "no")"
+  fi
+
+  # OS family layer (e.g. linux/) — skipped when family == distro (macOS)
+  if [[ -n "$ZSH_OS_FAMILY" && "$ZSH_OS_FAMILY" != "$ZSH_DISTRO" ]]; then
+    family_file="${ZSH_CONFIG_DIR}/${ZSH_OS_FAMILY}/${module}.zsh"
+    [[ -r "$family_file" ]] && source "$family_file"
+  fi
+
+  # Distro layer (e.g. macos/, ubuntu/)
+  if [[ -n "$ZSH_DISTRO" ]]; then
+    distro_file="${ZSH_CONFIG_DIR}/${ZSH_DISTRO}/${module}.zsh"
+    [[ -r "$distro_file" ]] && source "$distro_file"
   fi
 done
 
@@ -75,7 +99,7 @@ done
 typeset -U path fpath
 
 # Clean up variables
-unset ZSH_CONFIG_DIR zsh_modules module module_file
+unset ZSH_CONFIG_DIR zsh_modules module module_file family_file distro_file
 
 # =============================================================================
 # DEBUG PROFILING (uncomment first line of file to enable)

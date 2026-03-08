@@ -17,19 +17,27 @@ dotfiles/
 ├── aerospace/          → ~/.aerospace.toml
 ├── borders/
 │   └── bordersrc       → ~/.config/borders/bordersrc
+├── brew/               Modular Brewfiles (devtools, k8s, gui, apps, media, optional)
+├── colors/
+│   └── firewatch.conf  Kitty color scheme source
 ├── direnv/
 │   └── direnvrc        → ~/.config/direnv/direnvrc
+├── docs/               Runbooks (new-machine.md, maintenance.md, tools.md)
 ├── git/
-│   ├── .gitconfig      → ~/.gitconfig
-│   └── .gitconfig-work → ~/.gitconfig-work  (work email override, see [includeIf])
+│   ├── .gitconfig         → ~/.config/git/.gitconfig  (included by ~/.gitconfig)
+│   └── .gitconfig-personal → ~/.config/git/.gitconfig-personal
+├── installer/          Python installer (main.py, symlink_manager.py, …)
 ├── iterm/              → ~/Library/Application Support/iTerm2/DynamicProfiles/
 ├── kitty/
-│   ├── kitty.conf      → ~/.config/kitty/kitty.conf
-│   └── kitty-customizations/ → ~/.config/kitty/kitty-customizations/
+│   ├── kitty.conf                → ~/.config/kitty/kitty.conf
+│   ├── kitty-customizations/     → ~/.config/kitty/kitty-customizations/
+│   └── kitty-customizations/tab_bar.py → ~/.config/kitty/tab_bar.py  (also linked at root)
 ├── mise/
 │   └── config.toml     → ~/.config/mise/config.toml
 ├── nvim/
 │   └── init.lua        → ~/.config/nvim/  (symlink to whole dir)
+├── scripts/
+│   └── setup-simple-bar.sh
 ├── ubersicht/
 │   ├── simple-bar/simplebarrc  → COPIED (not symlinked) to ~/.simplebarrc
 │   │                              Modified at runtime by sync-simplebar-displays.sh
@@ -44,7 +52,10 @@ dotfiles/
     ├── .zsh_plugins    → ~/.zsh_plugins
     ├── .p10k.zsh       → ~/.p10k.zsh
     ├── .zlogin
-    └── 01-99_*.zsh     → ~/.config/zsh/ (all numbered modules)
+    ├── 01-99_*.zsh     → ~/.config/zsh/ (shared modules, all platforms)
+    ├── macos/          → ~/.config/zsh/macos/  (macOS-specific overrides)
+    ├── linux/          → ~/.config/zsh/linux/  (Linux family base, all distros)
+    └── ubuntu/         → ~/.config/zsh/ubuntu/ (Ubuntu-specific thin shim)
 ```
 
 ---
@@ -67,6 +78,22 @@ dotfiles/
 | `99_integrations.zsh` | mise, fzf, zoxide, direnv, p10k, kitty | Runs last |
 
 **Important:** `no_clobber` is set in `01_options.zsh`. Any redirect that writes to an existing file must use `>|` instead of `>`. This applies in `03_plugins.zsh` and the `updateplugins` function.
+
+### Platform Layer Loading
+
+Each module loads in three layers (interleaved):
+1. **Shared** (`~/.config/zsh/{module}.zsh`) — universal, `command -v` guards only
+2. **OS family** (`~/.config/zsh/linux/{module}.zsh`) — all Linux distros; skipped on macOS
+3. **Distro** (`~/.config/zsh/macos/{module}.zsh` or `ubuntu/`) — distro-specific overrides
+
+**Platform files by module:**
+
+| Module | macos/ | linux/ |
+|--------|--------|--------|
+| `02_environment` | Homebrew PATH, `BROWSER=open`, gcloud | `~/.local/bin` priority, XDG dirs |
+| `10_aliases` | `refreshbar`, `ssh='kitten ssh'` | `fd`→`fdfind`, `bat`→`batcat` shims |
+
+Adding a new distro (e.g. Arch): create `zsh/arch/` — shared and `linux/` modules need no changes.
 
 ### Active Plugins (zsh/.zsh_plugins)
 - `mfaerevaag/wd` — warp directory bookmarks
@@ -194,7 +221,9 @@ git track/untrack  # manage assume-unchanged
 
 **Settings:** `pull.rebase=true`, `push.autoSetupRemote=true`, `fetch.prune=true`, `rebase.autostash=true`, `rerere.enabled=true`
 
-**Work profile:** repos under `~/work/` auto-load `~/.gitconfig-work` via `[includeIf]`. Edit `git/.gitconfig-work` to set work email.
+**Personal profile:** repos under `~/personal/` auto-load `~/.config/git/.gitconfig-personal` via `[includeIf]`. Edit `git/.gitconfig-personal` for personal identity/settings.
+
+**Git config layering:** `~/.gitconfig` (user-managed) → includes `~/.config/git/.gitconfig` (symlink to dotfiles) → includes `~/.config/git/.gitconfig-local` (machine-local overrides, not in repo).
 
 **Pager:** delta with side-by-side, line numbers, navigate mode
 
@@ -224,6 +253,7 @@ brew bundle --file brew/Brewfile.devtools   # core tools (fzf, fd, gh, mise, nvi
 brew bundle --file brew/Brewfile.k8s        # helm, kubectx, k9s
 brew bundle --file brew/Brewfile.gui        # aerospace, ubersicht, fonts
 brew bundle --file brew/Brewfile.apps       # raycast, 1password, vscode, chrome...
+brew bundle --file brew/Brewfile.media      # media tools
 brew bundle --file brew/Brewfile.optional   # slack, discord
 ```
 
@@ -292,6 +322,10 @@ Key shortcuts: `cmd+t` new tab, `cmd+d` split horizontal, `cmd+shift+d` split ve
 
 Hotkey window (Quake-style): `ctrl+\`` — registered via `kitten quick-access-terminal`.
 
+**Note:** `tab_bar.py` is symlinked to both `~/.config/kitty/kitty-customizations/tab_bar.py` (via dir symlink) AND directly to `~/.config/kitty/tab_bar.py` — kitty requires it at the config root to load it as a custom tab bar.
+
+**SSH from Kitty:** `alias ssh='kitten ssh'` is active in `zsh/macos/10_aliases.zsh` when `$TERM == xterm-kitty`. This auto-pushes kitty terminfo to the remote before the session. The Ubuntu installer also installs terminfo server-side as a fallback.
+
 ---
 
 ## Installer (installer/)
@@ -299,7 +333,9 @@ Hotkey window (Quake-style): `ctrl+\`` — registered via `kitten quick-access-t
 Python installer (recommended):
 ```bash
 python installer/main.py install          # full install
-python installer/main.py install --skip-packages  # symlinks only
+python installer/main.py install --skip-packages  # skip brew bundle
+python installer/main.py install --skip-shell     # skip zsh/oh-my-zsh setup
+python installer/main.py install --skip-system    # skip macOS system preferences
 python installer/main.py status           # check symlink status
 ```
 
@@ -309,6 +345,12 @@ Components installed:
 - mise + direnv configs
 - Kitty config + customizations
 - macOS only: AeroSpace, iTerm2, Übersicht, system preferences, Kitty hotkey window
+
+**Ubuntu server install** (run on the remote machine after cloning):
+```bash
+python installer/main.py install --skip-system
+```
+Installs in phases: apt base tools → Neovim (unstable PPA) → eza → fzf → mise → zoxide → kitty terminfo. macOS-only components (AeroSpace, Übersicht, Kitty config, system prefs) are automatically skipped.
 
 **Template files** (copied with substitution, not symlinked):
 - `ubersicht/aerospace-mode.jsx` — contains `__HOME__` placeholder replaced with the actual home directory at install time. Do not symlink this file; run the installer to redeploy after edits.
@@ -332,7 +374,9 @@ Components installed:
 | Symlink broken | `python installer/main.py status` |
 | AeroSpace hotkeys don't work (mouse doesn't move) | Key is intercepted before AeroSpace. Check: `pgrep skhd` (yabai leftover — `brew services stop skhd`); `defaults read com.googlecode.iterm2 GlobalKeyMap` (remove conflicting iTerm2 global bindings) |
 | AeroSpace hotkeys work via CLI but not keyboard | Same as above — another process has a CGEventTap for that key combination |
-| simple-bar mode indicator always shows "main" | `aerospace-mode.jsx` has wrong home path. Re-run installer or: `sed "s|__HOME__|$HOME|g" ~/personal/dotfiles/ubersicht/aerospace-mode.jsx > ~/Library/Application\ Support/Übersicht/widgets/aerospace-mode.jsx` |
+| simple-bar mode indicator always shows "main" | `aerospace-mode.jsx` has wrong home path. Re-run installer or: `sed "s|__HOME__|$HOME|g" ~/configs/dotfiles/ubersicht/aerospace-mode.jsx > ~/Library/Application\ Support/Übersicht/widgets/aerospace-mode.jsx` |
+| Ubuntu: `fd` not found | `fd` is `fdfind` on Debian/Ubuntu — `linux/10_aliases.zsh` aliases it automatically |
+| Ubuntu: `bat` not found | `bat` is `batcat` on Debian/Ubuntu — `linux/10_aliases.zsh` aliases it automatically |
 
 ---
 

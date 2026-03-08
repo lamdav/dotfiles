@@ -110,6 +110,24 @@ class ConcreteSymlinkManager(SymlinkManager):
 
             console.print(f"[green]✓ {module_count} Zsh modules configured[/green]")
 
+        # Platform-specific zsh directories
+        import platform as _platform
+        _system = _platform.system()
+        if _system == "Darwin":
+            platform_dirs = ["macos"]
+        elif _system == "Linux":
+            platform_dirs = ["linux", "ubuntu"]
+        else:
+            platform_dirs = []
+
+        for platform_dir in platform_dirs:
+            platform_source = dotfiles_dir / "zsh" / platform_dir
+            if platform_source.exists():
+                platform_target = zsh_config_dir / platform_dir
+                self.create_symlink(
+                    platform_source, platform_target, f"Zsh platform dir: {platform_dir}"
+                )
+
         return success_count, total_steps
 
     def setup_git_config(self, dotfiles_dir: Path) -> bool:
@@ -199,6 +217,11 @@ class ConcreteSymlinkManager(SymlinkManager):
 
     def setup_kitty_config(self, dotfiles_dir: Path) -> Tuple[int, int]:
         """Set up kitty configuration symlinks. Returns (success_count, total_steps)."""
+        import platform as _platform
+        if _platform.system() == "Linux":
+            console.print("[yellow]⚠ Skipping Kitty config on Linux (server environment)[/yellow]")
+            return 0, 0
+
         console.print("\n[bold cyan]🐱 Setting up Kitty terminal...[/bold cyan]")
 
         success_count = 0

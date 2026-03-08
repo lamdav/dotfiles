@@ -12,11 +12,8 @@ fi
 # FZF (fuzzy finder)
 # =============================================================================
 
-if [[ -f "/opt/homebrew/opt/fzf/shell/key-bindings.zsh" ]]; then
-  source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
-fi
-if [[ -f "/opt/homebrew/opt/fzf/shell/completion.zsh" ]]; then
-  source "/opt/homebrew/opt/fzf/shell/completion.zsh"
+if command -v fzf >/dev/null 2>&1; then
+  eval "$(fzf --zsh)"
 fi
 
 if command -v fd >/dev/null 2>&1; then

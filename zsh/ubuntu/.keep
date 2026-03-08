@@ -1,0 +1,2 @@
+# Ubuntu-specific zsh overrides go here.
+# Most Linux-generic config lives in ../linux/ and applies to all distros.

@@ -117,9 +117,6 @@ mkcd() {
   mkdir -p "$1" && cd "$1"
 }
 
-# Refresh Übersicht widgets
-alias refreshbar='osascript -e '\''tell application id "tracesOf.Uebersicht" to refresh'\'''
-
 # Extract various archive formats
 extract() {
   if [[ -f "$1" ]]; then
