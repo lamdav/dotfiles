@@ -237,7 +237,8 @@ Config: `direnv/direnvrc` → `~/.config/direnv/direnvrc`
 
 Provides layout helpers usable in `.envrc` files:
 ```bash
-layout uv       # creates/activates .venv via uv; auto-syncs pyproject.toml/requirements.txt
+layout uv              # creates/activates .venv via uv; auto-syncs pyproject.toml/requirements.txt
+layout uv my-cmd       # same + generates zsh completion for my-cmd from the venv
 layout python   # creates/activates .venv via python3 -m venv
 layout node     # adds node_modules/.bin to PATH
 layout go       # sets project-local GOPATH
