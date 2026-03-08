@@ -88,6 +88,7 @@ class UbuntuPackageManager(PackageManager):
         success &= self._install_gh(system_manager)
         success &= self._install_fzf(system_manager)
         success &= self._install_delta(system_manager)
+        success &= self._install_antidote(system_manager)
         success &= self._install_mise(system_manager)
         success &= self._install_zoxide(system_manager)
         self._install_kitty_terminfo(system_manager)  # non-critical
@@ -201,8 +202,22 @@ class UbuntuPackageManager(PackageManager):
             console.print("[yellow]⚠ fzf install failed — skipping[/yellow]")
         return True  # non-fatal
 
+    def _install_antidote(self, system_manager: SystemManager) -> bool:
+        console.print("\n[bold cyan]📦 Phase 7 — antidote (zsh plugin manager)...[/bold cyan]")
+        antidote_dir = Path.home() / ".antidote"
+        if antidote_dir.exists():
+            console.print("[green]✓ antidote already installed[/green]")
+            return True
+        ok = system_manager.run_interactive_command(
+            "git clone --depth=1 https://github.com/getantidote/antidote.git ~/.antidote",
+            "Installing antidote...",
+        )
+        if not ok:
+            console.print("[yellow]⚠ antidote install failed — zsh plugins won't load[/yellow]")
+        return ok  # fatal: plugins won't work without it
+
     def _install_mise(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 7 — mise (version manager)...[/bold cyan]")
+        console.print("\n[bold cyan]📦 Phase 8 — mise (version manager)...[/bold cyan]")
         if system_manager.check_command_exists("mise"):
             console.print("[green]✓ mise already installed[/green]")
             return True
@@ -214,7 +229,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_zoxide(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 8 — zoxide...[/bold cyan]")
+        console.print("\n[bold cyan]📦 Phase 9 — zoxide...[/bold cyan]")
         if system_manager.check_command_exists("zoxide"):
             console.print("[green]✓ zoxide already installed[/green]")
             return True
@@ -227,7 +242,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_kitty_terminfo(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 9 — kitty terminfo (SSH from Kitty)...[/bold cyan]")
+        console.print("\n[bold cyan]📦 Phase 10 — kitty terminfo (SSH from Kitty)...[/bold cyan]")
         check = system_manager.run_command(
             "infocmp xterm-kitty >/dev/null 2>&1", "Checking kitty terminfo..."
         )

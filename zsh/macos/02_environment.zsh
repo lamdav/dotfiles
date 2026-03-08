@@ -7,6 +7,7 @@
 
 export BROWSER="${BROWSER:-open}"
 export HOMEBREW_NO_ANALYTICS=1
+export ANTIDOTE_HOME="${HOME}/Library/Caches/antidote"
 
 # =============================================================================
 # HOMEBREW PATH
