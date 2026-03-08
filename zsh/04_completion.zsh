@@ -6,7 +6,10 @@ WORDCHARS=''
 
 # Only run compinit once per day for performance (OMZ style)
 autoload -Uz compinit
-if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump 2>/dev/null || echo 0) ]; then
+# Regenerate dump only if it's missing or older than 24 hours.
+# find -mmin works on both macOS and Linux (unlike BSD stat -f).
+if [[ ! -f "${ZDOTDIR:-$HOME}/.zcompdump" ]] || \
+   [[ -n "$(find "${ZDOTDIR:-$HOME}/.zcompdump" -mmin +1440 2>/dev/null)" ]]; then
   compinit
 else
   compinit -C
@@ -24,7 +27,7 @@ zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-dir
 # Use caching for better performance
 zstyle ':completion:*' use-cache yes
 export ZSH_CACHE_DIR="${HOME}/.zsh/cache"
-[ -d $ZSH_CACHE_DIR ] || mkdir -p $ZSH_CACHE_DIR
+[[ -d "${ZSH_CACHE_DIR}" ]] || mkdir -p "${ZSH_CACHE_DIR}"
 zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR"
 
 # Don't complete uninteresting users
@@ -40,17 +43,12 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
 zstyle '*' single-ignored show
 
 # SSH completion from ~/.ssh/config
-zstyle ':completion:*:(ssh|scp|rsync):*' hosts $([ -f ~/.ssh/config ] && awk '/^Host / { for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i }' ~/.ssh/config)
+zstyle ':completion:*:(ssh|scp|rsync):*' hosts $([ -f "${HOME}/.ssh/config" ] && awk '/^Host / { for (i=2; i<=NF; i++) if ($i !~ /[*?]/) print $i }' "${HOME}/.ssh/config")
 zstyle ':completion:*:ssh:*' group-order hosts-domain hosts-host users
 
 # =============================================================================
 # EXTERNAL TOOL COMPLETIONS
 # =============================================================================
-
-# Google Cloud SDK completion (PATH is loaded in environment module)
-if [[ -f "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc" ]]; then
-  source "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc"
-fi
 
 # Register completions for commonly used tools
 # Simple, reliable approach that just works
@@ -60,11 +58,3 @@ if (( $+functions[_wd] )); then
   compdef _wd wd
 fi
 
-# Homebrew completions that need explicit registration
-completion_tools=(bat eza rg fd)
-for tool in "${completion_tools[@]}"; do
-  if command -v "$tool" >/dev/null 2>&1; then
-    autoload -U "_$tool" 2>/dev/null && compdef "_$tool" "$tool"
-  fi
-done
-unset completion_tools tool

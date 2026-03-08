@@ -9,7 +9,7 @@ export EDITOR="${EDITOR:-nvim}"
 export PAGER="${PAGER:-less}"
 
 # SSH configuration
-export SSH_KEY_PATH="~/.ssh/id_ed25519"
+export SSH_KEY_PATH="${HOME}/.ssh/id_ed25519"
 
 # GitHub token for MCP and tooling (sourced from gh CLI to avoid storing in plaintext)
 if command -v gh >/dev/null 2>&1; then

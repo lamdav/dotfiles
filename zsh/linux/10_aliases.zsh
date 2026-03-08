@@ -9,10 +9,7 @@
 # fd: installed as fdfind on Debian/Ubuntu
 if command -v fdfind >/dev/null 2>&1 && ! command -v fd >/dev/null 2>&1; then
   alias fd='fdfind'
-  # Also update FZF commands that use fd
-  export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git'
-  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-  export FZF_ALT_C_COMMAND='fdfind --type d --hidden --follow --exclude .git'
+  alias find='fdfind'
 fi
 
 # bat: installed as batcat on Debian/Ubuntu
