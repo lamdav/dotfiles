@@ -17,9 +17,9 @@ SIMPLE_BAR_CONFIG="$HOME/.simplebarrc"
 echo -e "${BLUE}🎨 Setting up Simple-bar with Firewatch theme...${NC}"
 
 # Check if Übersicht is installed, install if needed
-if ! ls /Applications/ | grep -i "übersicht\|uebersicht" > /dev/null; then
+if ! find /Applications -maxdepth 1 -iname "übersicht*" -o -iname "uebersicht*" 2>/dev/null | grep -q .; then
     echo -e "${YELLOW}📥 Übersicht not found. Installing via Homebrew...${NC}"
-    
+
     if command -v brew &> /dev/null; then
         brew install --cask ubersicht
         echo -e "${GREEN}✅ Übersicht installed successfully${NC}"
@@ -33,10 +33,10 @@ fi
 # Check if simple-bar is installed
 if [ ! -d "$SIMPLE_BAR_DIR" ]; then
     echo -e "${YELLOW}📥 Simple-bar not found. Installing...${NC}"
-    
+
     # Create widgets directory if it doesn't exist
     mkdir -p "$(dirname "$SIMPLE_BAR_DIR")"
-    
+
     # Clone simple-bar
     if command -v git &> /dev/null; then
         git clone https://github.com/Jean-Tinland/simple-bar "$SIMPLE_BAR_DIR"
@@ -65,7 +65,7 @@ echo -e "${BLUE}🔄 Refreshing Übersicht...${NC}"
 osascript -e 'tell application id "tracesOf.Uebersicht" to refresh' 2>/dev/null || {
     echo -e "${YELLOW}⚠️  Could not refresh Übersicht automatically. Please:${NC}"
     echo "   1. Open Übersicht"
-    echo "   2. Click the menu bar icon"  
+    echo "   2. Click the menu bar icon"
     echo "   3. Click 'Refresh all Widgets'"
 }
 

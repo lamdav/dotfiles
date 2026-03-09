@@ -45,7 +45,7 @@ fi
 
 # Update simplebarrc using jq. Write via cat to preserve the symlink.
 TMP=$(mktemp)
-trap "rm -f $TMP" EXIT
+trap 'rm -f "$TMP"' EXIT
 jq --argjson m "$MAPPING_JSON" \
     '.spacesDisplay.customAeroSpaceDisplayIndexes = $m' \
     "$SIMPLEBARRC" > "$TMP"

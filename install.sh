@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-export dir="$(pwd)"
+dir="$(pwd)"
+export dir
 
 # Detect operating system (macOS or Ubuntu)
 detect_os() {
@@ -57,16 +58,16 @@ install_packages() {
         ubuntu)
             echo "Installing packages for Ubuntu/Debian..."
             sudo apt update
-            
+
             # Core development tools
             sudo apt install -y git git-lfs curl wget python3 python3-pip nodejs npm zsh
             sudo apt install -y bat ripgrep jq tree tmux rsync coreutils
-            
+
             # Install exa (eza alternative for older Ubuntu versions)
             if ! command -v eza &> /dev/null; then
                 sudo apt install -y exa || echo "exa not available, skipping"
             fi
-            
+
             echo "Note: Some macOS-specific apps (Aerospace, Kitty GUI apps) are not available on Linux"
             ;;
         unsupported)
@@ -124,7 +125,7 @@ if [ -f "$dir/kitty/kitty.conf" ]; then
     echo "Setting up Kitty configuration..."
     mkdir -p ~/.config/kitty
     ln -sf "$dir/kitty/kitty.conf" ~/.config/kitty/kitty.conf
-    
+
     # Link kitty customizations directory
     if [ -d "$dir/kitty/kitty-customizations" ]; then
         ln -sf "$dir/kitty/kitty-customizations" ~/.config/kitty/kitty-customizations
@@ -245,7 +246,7 @@ killall Dock 2>/dev/null || true
 killall Finder 2>/dev/null || true
 killall SystemUIServer 2>/dev/null || true
 
-echo "\nDotfiles installation complete!"
+printf "\nDotfiles installation complete!\n"
 echo "System preferences have been configured for optimal development workflow."
 echo "Run 'exec zsh' to reload your shell."
 echo "You may need to restart iTerm2 to see the new profile."
@@ -263,9 +264,9 @@ echo "If using Kitty, your configuration has been linked to ~/.config/kitty/kitt
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
     # Check if Übersicht is installed, install if needed
-    if ! ls /Applications/ | grep -i "übersicht\\|uebersicht" > /dev/null; then
+    if ! find /Applications -maxdepth 1 -iname "übersicht*" -o -iname "uebersicht*" 2>/dev/null | grep -q .; then
         echo "📥 Übersicht not found. Installing via Homebrew..."
-        
+
         if command -v brew &> /dev/null; then
             brew install --cask ubersicht
             echo "✅ Übersicht installed successfully"
@@ -280,10 +281,10 @@ echo "If using Kitty, your configuration has been linked to ~/.config/kitty/kitt
     SIMPLE_BAR_DIR="$HOME/Library/Application Support/Übersicht/widgets/simple-bar"
     if [ ! -d "$SIMPLE_BAR_DIR" ]; then
         echo "📥 Simple-bar not found. Installing..."
-        
+
         # Create widgets directory if it doesn't exist
         mkdir -p "$(dirname "$SIMPLE_BAR_DIR")"
-        
+
         # Clone simple-bar
         if command -v git &> /dev/null; then
             git clone https://github.com/Jean-Tinland/simple-bar "$SIMPLE_BAR_DIR"
@@ -309,10 +310,10 @@ echo "If using Kitty, your configuration has been linked to ~/.config/kitty/kitt
     echo "Setting up AeroSpace mode indicator widget..."
     WIDGETS_DIR="$HOME/Library/Application Support/Übersicht/widgets"
     mkdir -p "$WIDGETS_DIR"
-    
+
     # Remove any existing aerospace-mode.jsx file
     rm -f "$WIDGETS_DIR/aerospace-mode.jsx"
-    
+
     # Create symlink to dotfiles version
     ln -sf "$dir/ubersicht/aerospace-mode.jsx" "$WIDGETS_DIR/aerospace-mode.jsx"
     echo "✅ AeroSpace mode widget linked successfully"
