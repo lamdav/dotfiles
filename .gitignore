@@ -26,6 +26,9 @@ wheels/
 .installed.cfg
 *.egg
 
+# direnv working directory (runtime state, generated completions)
+.direnv/
+
 # Virtual environments
 .env
 .venv
