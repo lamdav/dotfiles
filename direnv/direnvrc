@@ -27,48 +27,66 @@ layout_python() {
 # -----------------------------------------------------------------------------
 # uv helper — creates/activates .venv using uv, auto-syncs pyproject.toml deps
 # Usage in .envrc:
-#   layout uv            — venv + sync only
-#   layout uv my-cmd     — venv + sync + zsh completion for my-cmd
+#   layout uv                            — venv + sync in $PWD
+#   layout uv <cmd>                      — venv + sync in $PWD, completion for <cmd>
+#   layout uv <cmd> --pyproject=<subdir> — venv + sync in $PWD/<subdir>, completion for <cmd>
 #
-# Completion is written to .direnv/completions/_my_cmd and added to FPATH.
+# --pyproject=<subdir> places the venv at $PWD/<subdir>/.venv and runs
+# uv sync --directory $PWD/<subdir>. VIRTUAL_ENV is set accordingly so uv
+# never warns about a path mismatch.
+#
+# Completion is written to .direnv/completions/ and added to FPATH.
+# If the command binary is not in the venv (e.g. installed globally via
+# `uv tool install`), the completion block is silently skipped.
 # direnv restores FPATH on exit — no manual cleanup needed.
-# Completions load lazily in the current shell (first <TAB>);
-# new shells pick them up immediately.
 # -----------------------------------------------------------------------------
 layout_uv() {
   local cmd="${1:-}"
-  local venv_dir="${PWD}/.venv"
+  local pyproject_subdir=""
+
+  # Parse --pyproject=<subdir> flag from remaining args
+  local arg
+  for arg in "${@:2}"; do
+    case "$arg" in
+      --pyproject=*) pyproject_subdir="${arg#--pyproject=}" ;;
+    esac
+  done
+
+  # Resolve project directory and venv location
+  local project_dir="$PWD"
+  if [[ -n "$pyproject_subdir" ]]; then
+    project_dir="${PWD}/${pyproject_subdir}"
+  fi
+  local venv_dir="${project_dir}/.venv"
+
+  # Clear any stale activation from a previous shell so uv sees a clean slate
+  unset VIRTUAL_ENV
+  unset UV_PROJECT_ENVIRONMENT
 
   if [[ ! -d "$venv_dir" ]]; then
-    log_status "Creating virtualenv with uv..."
+    log_status "Creating virtualenv with uv in ${project_dir}..."
     uv venv "$venv_dir"
   fi
+
   export VIRTUAL_ENV="$venv_dir"
+  export UV_PROJECT_ENVIRONMENT="$venv_dir"
   PATH_add "$venv_dir/bin"
 
-  if [[ -f pyproject.toml ]] || [[ -f requirements.txt ]]; then
-    uv sync --quiet 2>/dev/null || true
+  if [[ -f "${project_dir}/pyproject.toml" ]] || [[ -f "${project_dir}/requirements.txt" ]]; then
+    uv sync --quiet --directory "$project_dir" 2>/dev/null || true
   fi
 
-  # Optional: generate zsh completion for a CLI entry point in the venv
+  # Optional: generate zsh completion for the CLI entry point in the venv.
+  # If the binary is absent (e.g. installed globally via uv tool install),
+  # skip silently — no error.
   if [[ -n "$cmd" ]]; then
     local bin="${venv_dir}/bin/${cmd}"
     if [[ -x "$bin" ]]; then
       local completions_dir="${PWD}/.direnv/completions"
       mkdir -p "$completions_dir"
 
-      # Completion function name: dashes → underscores, prefixed with _
-      local func_name="_${cmd//-/_}"
-      local comp_file="${completions_dir}/${func_name}"
-
-      local comp_output
-      comp_output="$("$bin" --show-completion zsh 2>/dev/null || true)"
-
-      # direnv evaluates .envrc in bash — $SHELL detection in click/typer
-      # --show-completion is unreliable here. Write the standard typer/click
-      # zsh completion template directly; the actual completion runs via the
-      # _COMPLETE=complete_zsh env var at tab-press time, not at generation time.
       local func="${cmd//-/_}"
+      local comp_file="${completions_dir}/_${func}"
       local complete_var
       complete_var="$(echo "${func}_COMPLETE" | tr '[:lower:]' '[:upper:]')"
 
@@ -82,14 +100,10 @@ _${func}_completion() {
 compdef _${func}_completion ${cmd}
 COMPEOF
 
-      # Export a well-known var — the zsh precmd hook in 99_integrations.zsh
-      # picks this up, adds it to fpath, and runs compdef immediately.
-      # On exit direnv unsets this, and the hook cleans up fpath.
       export DIRENV_COMPLETION_DIR="$completions_dir"
       log_status "Completion for '$cmd' active"
-    else
-      log_error "Command '$cmd' not found in venv — run 'uv sync' first"
     fi
+    # else: binary not in local venv — skip completion silently
   fi
 }
 
