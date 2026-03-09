@@ -2,7 +2,6 @@
 # Taps (must be declared before formulae that depend on them)
 tap "FelixKratz/formulae"
 tap "nikitabobko/tap"
-tap "homebrew/cask-fonts"
 
 # Window Management & Status Bar
 brew "FelixKratz/formulae/borders"  # window borders for AeroSpace
