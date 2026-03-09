@@ -43,16 +43,21 @@ fi
 # =============================================================================
 
 _direnv_completion_hook() {
-  if [[ -n "${DIRENV_COMPLETION_DIR:-}" && -d "$DIRENV_COMPLETION_DIR" ]]; then
-    if (( ! $fpath[(Ie)$DIRENV_COMPLETION_DIR] )); then
-      fpath=("$DIRENV_COMPLETION_DIR" $fpath)
-      for f in "$DIRENV_COMPLETION_DIR"/_*(N); do
-        compdef "${f:t}" "${${f:t}#_}"
+  local active="${DIRENV_COMPLETION_DIR:-}"
+
+  if [[ -n "$active" && -d "$active" ]]; then
+    # Source each completion file once per directory.
+    # Each file defines its function and calls compdef itself.
+    if [[ "$active" != "${_DIRENV_COMPLETION_DIR_LOADED:-}" ]]; then
+      for f in "$active"/_*(N); do
+        source "$f"
       done
+      _DIRENV_COMPLETION_DIR_LOADED="$active"
     fi
-  else
-    # Remove any stale .direnv completion dirs when leaving a project
+  elif [[ -n "${_DIRENV_COMPLETION_DIR_LOADED:-}" ]]; then
+    # Left the project — strip .direnv completion dirs from fpath
     fpath=("${(@)fpath:#*/.direnv/completions}")
+    unset _DIRENV_COMPLETION_DIR_LOADED
   fi
 }
 add-zsh-hook precmd _direnv_completion_hook
