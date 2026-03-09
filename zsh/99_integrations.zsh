@@ -37,6 +37,27 @@ else
 fi
 
 # =============================================================================
+# DIRENV COMPLETION HOOK
+# Picks up DIRENV_COMPLETION_DIR set by layout_uv in direnvrc.
+# Adds the dir to fpath and runs compdef on enter; cleans up on exit.
+# =============================================================================
+
+_direnv_completion_hook() {
+  if [[ -n "${DIRENV_COMPLETION_DIR:-}" && -d "$DIRENV_COMPLETION_DIR" ]]; then
+    if (( ! $fpath[(Ie)$DIRENV_COMPLETION_DIR] )); then
+      fpath=("$DIRENV_COMPLETION_DIR" $fpath)
+      for f in "$DIRENV_COMPLETION_DIR"/_*(N); do
+        compdef "${f:t}" "${${f:t}#_}"
+      done
+    fi
+  else
+    # Remove any stale .direnv completion dirs when leaving a project
+    fpath=("${(@)fpath:#*/.direnv/completions}")
+  fi
+}
+add-zsh-hook precmd _direnv_completion_hook
+
+# =============================================================================
 # CUSTOM CONFIGURATION
 # =============================================================================
 

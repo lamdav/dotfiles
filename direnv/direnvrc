@@ -64,19 +64,29 @@ layout_uv() {
       local comp_output
       comp_output="$("$bin" --show-completion zsh 2>/dev/null || true)"
 
-      if [[ -n "$comp_output" ]]; then
-        # Ensure the file starts with #compdef so fpath associates it correctly
-        if [[ "$comp_output" != "#compdef"* ]]; then
-          printf '#compdef %s\n%s\n' "$cmd" "$comp_output" > "$comp_file"
-        else
-          printf '%s\n' "$comp_output" > "$comp_file"
-        fi
-        # FPATH is restored by direnv on exit — cleanup is automatic
-        path_add FPATH "$completions_dir"
-        log_status "Completion for '$cmd' active (lazy-loads on first <TAB>)"
-      else
-        log_error "Could not generate completion for '$cmd' — does it support --show-completion zsh?"
-      fi
+      # direnv evaluates .envrc in bash — $SHELL detection in click/typer
+      # --show-completion is unreliable here. Write the standard typer/click
+      # zsh completion template directly; the actual completion runs via the
+      # _COMPLETE=complete_zsh env var at tab-press time, not at generation time.
+      local func="${cmd//-/_}"
+      local complete_var
+      complete_var="$(echo "${func}_COMPLETE" | tr '[:lower:]' '[:upper:]')"
+
+      cat > "$comp_file" << COMPEOF
+#compdef ${cmd}
+
+_${func}_completion() {
+  eval \$(env _TYPER_COMPLETE_ARGS="\${words[1,\$CURRENT]}" _${complete_var}=complete_zsh ${cmd})
+}
+
+compdef _${func}_completion ${cmd}
+COMPEOF
+
+      # Export a well-known var — the zsh precmd hook in 99_integrations.zsh
+      # picks this up, adds it to fpath, and runs compdef immediately.
+      # On exit direnv unsets this, and the hook cleans up fpath.
+      export DIRENV_COMPLETION_DIR="$completions_dir"
+      log_status "Completion for '$cmd' active"
     else
       log_error "Command '$cmd' not found in venv — run 'uv sync' first"
     fi
