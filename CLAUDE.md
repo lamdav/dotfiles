@@ -55,7 +55,7 @@ dotfiles/
     ├── 01-99_*.zsh     → ~/.config/zsh/ (shared modules, all platforms)
     ├── macos/          → ~/.config/zsh/macos/  (macOS-specific overrides)
     ├── linux/          → ~/.config/zsh/linux/  (Linux family base, all distros)
-    └── ubuntu/         → ~/.config/zsh/ubuntu/ (Ubuntu-specific thin shim)
+    └── ubuntu/         → ~/.config/zsh/ubuntu/ (Ubuntu-specific overrides — currently empty, placeholder for future)
 ```
 
 ---
@@ -129,8 +129,8 @@ Use `cdi` for interactive directory picker (fzf-powered zoxide).
 - `benchmarkzsh` — 10-run startup benchmark
 - `mkcd <dir>` — mkdir + cd
 - `extract <file>` — universal archive extractor
-- `kitty-help` — print all kitty keybindings
-- `ksave/kload/ksplit/knotify/ktheme` — kitty session helpers
+- `kitty-help` — print all kitty keybindings *(macOS only — defined in `macos/99_integrations.zsh`)*
+- `ksave/kload/ksplit/knotify/ktheme` — kitty session helpers *(macOS only)*
 
 ---
 
@@ -385,6 +385,21 @@ Installs in phases: apt base tools → Neovim (unstable PPA) → eza → gh → 
 | simple-bar mode indicator always shows "main" | `aerospace-mode.jsx` has wrong home path. Re-run installer or: `sed "s|__HOME__|$HOME|g" ~/configs/dotfiles/ubersicht/aerospace-mode.jsx > ~/Library/Application\ Support/Übersicht/widgets/aerospace-mode.jsx` |
 | Ubuntu: `fd` not found | `fd` is `fdfind` on Debian/Ubuntu — `linux/10_aliases.zsh` aliases it automatically |
 | Ubuntu: `bat` not found | `bat` is `batcat` on Debian/Ubuntu — `linux/10_aliases.zsh` aliases it automatically |
+
+---
+
+## Code Quality (pre-commit)
+
+pre-commit is configured (`.pre-commit-config.yaml`) and installed in the git hook.
+
+```bash
+pre-commit run --all-files   # run all hooks manually
+pre-commit autoupdate        # update hook versions
+```
+
+**Hooks:** trailing-whitespace, end-of-file-fixer, check-yaml, check-merge-conflict, black, isort, shellcheck
+
+**Gotcha:** shellcheck only runs on `.sh`/`.bash` files — `.zsh` files are excluded because shellcheck doesn't understand zsh-specific syntax (`precmd_functions`, `add-zsh-hook`, `N` glob qualifier, etc.).
 
 ---
 
