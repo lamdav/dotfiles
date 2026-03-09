@@ -13,7 +13,7 @@ python3 session_manager.py load work-setup     # Restore layout
 python3 session_manager.py list                # List saved sessions
 ```
 
-### 2. 🎨 Theme Switcher (`theme_switcher.py`) 
+### 2. 🎨 Theme Switcher (`theme_switcher.py`)
 Automatically switch themes based on current directory.
 
 ```bash
@@ -110,7 +110,7 @@ kstatus run &
 ### Directory-Based Themes
 The theme switcher comes with default rules for:
 - `/Users/lamdav/work` → Work theme (dark green)
-- `/Users/lamdav/personal` → Personal theme (purple) 
+- `/Users/lamdav/personal` → Personal theme (purple)
 - `/Users/lamdav/configs` → Config theme (current Firewatch theme)
 
 Add your own with:
@@ -126,7 +126,7 @@ The `tab_bar.py` is already integrated. For other scripts, you can add keybindin
 # Smart splitting
 map cmd+alt+d launch --type=overlay ~/.config/kitty/kitty-customizations/smart_split.py
 
-# Quick status update  
+# Quick status update
 map cmd+alt+s launch --type=overlay ~/.config/kitty/kitty-customizations/status_line.py once
 
 # Theme switch for current directory

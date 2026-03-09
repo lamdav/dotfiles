@@ -98,10 +98,23 @@ class UbuntuPackageManager(PackageManager):
     def _install_apt_packages(self, system_manager: SystemManager) -> bool:
         console.print("\n[bold cyan]📦 Phase 1 — apt base packages...[/bold cyan]")
         packages = [
-            "zsh", "git", "git-lfs", "curl", "wget", "jq",
-            "ripgrep", "fd-find", "bat", "tmux", "direnv",
-            "btop", "httpie", "ncdu", "unzip",
-            "build-essential", "software-properties-common",
+            "zsh",
+            "git",
+            "git-lfs",
+            "curl",
+            "wget",
+            "jq",
+            "ripgrep",
+            "fd-find",
+            "bat",
+            "tmux",
+            "direnv",
+            "btop",
+            "httpie",
+            "ncdu",
+            "unzip",
+            "build-essential",
+            "software-properties-common",
         ]
         ok = system_manager.run_interactive_command(
             "sudo apt-get update -qq", "Updating apt..."
@@ -204,7 +217,9 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_antidote(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 7 — antidote (zsh plugin manager)...[/bold cyan]")
+        console.print(
+            "\n[bold cyan]📦 Phase 7 — antidote (zsh plugin manager)...[/bold cyan]"
+        )
         antidote_dir = Path.home() / ".antidote"
         if antidote_dir.exists():
             console.print("[green]✓ antidote already installed[/green]")
@@ -214,7 +229,9 @@ class UbuntuPackageManager(PackageManager):
             "Installing antidote...",
         )
         if not ok:
-            console.print("[yellow]⚠ antidote install failed — zsh plugins won't load[/yellow]")
+            console.print(
+                "[yellow]⚠ antidote install failed — zsh plugins won't load[/yellow]"
+            )
         return ok  # fatal: plugins won't work without it
 
     def _install_mise(self, system_manager: SystemManager) -> bool:
@@ -230,7 +247,9 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_uv(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 9 — uv (Python package manager)...[/bold cyan]")
+        console.print(
+            "\n[bold cyan]📦 Phase 9 — uv (Python package manager)...[/bold cyan]"
+        )
         if system_manager.check_command_exists("uv"):
             console.print("[green]✓ uv already installed[/green]")
             return True
@@ -261,7 +280,9 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_kitty_terminfo(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 11 — kitty terminfo (SSH from Kitty)...[/bold cyan]")
+        console.print(
+            "\n[bold cyan]📦 Phase 11 — kitty terminfo (SSH from Kitty)...[/bold cyan]"
+        )
         check = system_manager.run_command(
             "infocmp xterm-kitty >/dev/null 2>&1", "Checking kitty terminfo..."
         )

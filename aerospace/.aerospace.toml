@@ -240,11 +240,11 @@ Y = ['ROG PG248Q', 'Built-in Retina Display']
 
 # 'media' binding mode declaration for Spotify/media control
 [mode.media.binding]
-    # Alternative controls (don't exit mode)  
+    # Alternative controls (don't exit mode)
     alt-space = 'exec-and-forget osascript -e "tell application \"Spotify\" to playpause"'
     alt-h = 'exec-and-forget osascript -e "tell application \"Spotify\" to previous track"'
     alt-l = 'exec-and-forget osascript -e "tell application \"Spotify\" to next track"'
-    
+
     # Exit media mode
     esc = ['exec-and-forget ~/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh set main', 'mode main']
 

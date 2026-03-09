@@ -51,7 +51,7 @@ if command -v git >/dev/null 2>&1; then
   alias gd='git diff'
   alias gco='git checkout'
   alias gb='git branch'
-  
+
   # Advanced git operations
   alias git-clean='git -c gc.reflogExpire=0 -c gc.reflogExpireUnreachable=0 -c gc.rerereresolved=0 -c gc.rerereunresolved=0 -c gc.pruneExpire=now gc "$@"'
 fi

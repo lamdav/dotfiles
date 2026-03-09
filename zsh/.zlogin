@@ -6,4 +6,3 @@
     zcompile "$zcompdump"
   fi
 } &!
-

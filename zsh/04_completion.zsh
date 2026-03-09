@@ -60,4 +60,3 @@ fi
 
 # uv — Python package manager
 command -v uv >/dev/null 2>&1 && eval "$(uv generate-shell-completion zsh)"
-

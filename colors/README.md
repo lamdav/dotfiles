@@ -14,7 +14,7 @@ This directory contains the shared color definitions used across all dotfiles co
 
 ### Standard Colors
 - **Red**: `#d9537a` - Error states, warnings
-- **Green**: `#5ab977` - Success states, confirmations  
+- **Green**: `#5ab977` - Success states, confirmations
 - **Yellow**: `#dfb563` - Caution, highlights
 - **Orange**: `#dfb563` - Same as yellow for consistency
 - **Blue**: `#4d89c4` - Information, links
@@ -42,7 +42,7 @@ This directory contains the shared color definitions used across all dotfiles co
 - Focused elements use accent cyan
 - Secondary elements use main alt
 
-### iTerm2 
+### iTerm2
 - Uses the standard 16-color palette
 - Profiles should reference these exact hex values
 

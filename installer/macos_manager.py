@@ -35,7 +35,11 @@ class ConcreteMacOSManager(MacOSManager):
             # Symlink scripts to ~/.config/ubersicht/simple-bar/
             ubersicht_config_dir = Path.home() / ".config" / "ubersicht" / "simple-bar"
             ubersicht_config_dir.mkdir(parents=True, exist_ok=True)
-            for script in ("aerospace-mode-tracker.sh", "sync-simplebar-displays.sh", "sync-and-reload.sh"):
+            for script in (
+                "aerospace-mode-tracker.sh",
+                "sync-simplebar-displays.sh",
+                "sync-and-reload.sh",
+            ):
                 script_source = dotfiles_dir / "ubersicht" / "simple-bar" / script
                 if script_source.exists():
                     script_source.chmod(script_source.stat().st_mode | 0o111)
@@ -68,10 +72,14 @@ class ConcreteMacOSManager(MacOSManager):
 
     def setup_kitty_quick_access(self, system_manager: SystemManager) -> bool:
         """Register Kitty quick-access-terminal (hotkey window) with macOS."""
-        console.print("\n[bold cyan]⚡ Setting up Kitty quick-access-terminal...[/bold cyan]")
+        console.print(
+            "\n[bold cyan]⚡ Setting up Kitty quick-access-terminal...[/bold cyan]"
+        )
 
         if not system_manager.check_command_exists("kitten"):
-            console.print("[yellow]Kitty not installed, skipping quick-access-terminal setup[/yellow]")
+            console.print(
+                "[yellow]Kitty not installed, skipping quick-access-terminal setup[/yellow]"
+            )
             return True
 
         # Run kitten quick-access-terminal once to register with macOS
@@ -84,7 +92,7 @@ class ConcreteMacOSManager(MacOSManager):
             proc = subprocess.Popen(
                 ["kitten", "quick-access-terminal"],
                 stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
+                stderr=subprocess.DEVNULL,
             )
             time.sleep(2)  # Give it time to register
 
@@ -99,15 +107,21 @@ class ConcreteMacOSManager(MacOSManager):
             subprocess.run(
                 ["pkill", "-f", "quick-access-terminal"],
                 stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
+                stderr=subprocess.DEVNULL,
             )
 
             console.print("[green]✓ Kitty quick-access-terminal registered[/green]")
             console.print("\n[yellow]To complete setup:[/yellow]")
-            console.print("  1. Open System Settings → Keyboard → Keyboard Shortcuts → Services")
-            console.print("  2. Scroll to 'General' section and find 'Quick access to kitty'")
+            console.print(
+                "  1. Open System Settings → Keyboard → Keyboard Shortcuts → Services"
+            )
+            console.print(
+                "  2. Scroll to 'General' section and find 'Quick access to kitty'"
+            )
             console.print("  3. Check the box to enable it")
-            console.print("  4. Click 'Add Shortcut' and press: [bold]Ctrl + `[/bold] (Control + backtick)")
+            console.print(
+                "  4. Click 'Add Shortcut' and press: [bold]Ctrl + `[/bold] (Control + backtick)"
+            )
             return True
         except Exception as e:
             console.print(f"[red]✗ Failed to register quick-access-terminal: {e}[/red]")
@@ -204,15 +218,22 @@ class ConcreteMacOSManager(MacOSManager):
                     if aerospace_mode_target.is_symlink():
                         aerospace_mode_target.unlink()
                     aerospace_mode_target.write_text(content)
-                    console.print("[green]✓ AeroSpace mode indicator configured[/green]")
+                    console.print(
+                        "[green]✓ AeroSpace mode indicator configured[/green]"
+                    )
                     success_count += 1
                 except Exception as e:
-                    console.print(f"[red]✗ Failed to configure AeroSpace mode indicator: {e}[/red]")
+                    console.print(
+                        f"[red]✗ Failed to configure AeroSpace mode indicator: {e}[/red]"
+                    )
 
             # Restart Übersicht to recognize new widgets
             console.print("Restarting Übersicht to recognize new widgets...")
             # pkill returns 1 if no process matched (app not running) — that's fine
-            system_manager.run_command("pkill -f Uebersicht || pkill -f Übersicht || true", "Stopping Übersicht...")
+            system_manager.run_command(
+                "pkill -f Uebersicht || pkill -f Übersicht || true",
+                "Stopping Übersicht...",
+            )
             system_manager.run_command("open -a Übersicht", "Starting Übersicht...")
             console.print(
                 "[green]✓ Übersicht restarted. New widgets should now be visible.[/green]"

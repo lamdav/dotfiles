@@ -5,7 +5,7 @@
       "Guid": "1A4722F1-C7F6-4470-BAB9-1C7F5F563388",
       "Default Bookmark": "No",
       "Tags": [],
-      
+
       "Window Type": 1,
       "Has Hotkey": true,
       "HotKey Characters": "`",
@@ -17,18 +17,18 @@
       "HotKey Window AutoHides": true,
       "HotKey Window Animates": true,
       "HotKey Window Reopens On Activation": false,
-      
+
       "Working Directory": "/Users/lamdav",
       "Custom Directory": "Recycle",
       "Custom Command": "Yes",
       "Command": "/opt/homebrew/bin/zsh",
       "Terminal Type": "xterm-256color",
-      
+
       "Rows": 25,
       "Columns": 80,
       "Screen": -1,
       "Space": -1,
-      
+
       "Normal Font": "FiraCodeNF-Reg 12",
       "Non Ascii Font": "Monaco 12",
       "Use Non-ASCII Font": false,
@@ -40,7 +40,7 @@
       "ASCII Ligatures": true,
       "Horizontal Spacing": 1,
       "Vertical Spacing": 1,
-      
+
       "Foreground Color": {
         "Red Component": 0.6078431372549019,
         "Green Component": 0.6352941176470588,
@@ -97,7 +97,7 @@
         "Alpha Component": 0.5,
         "Green Component": 0.1491314172744751
       },
-      
+
       "Ansi 0 Color": {
         "Red Component": 0.3450980484485626,
         "Green Component": 0.37254902720451355,
@@ -178,7 +178,7 @@
         "Green Component": 0.8980392156862745,
         "Blue Component": 1
       },
-      
+
       "Keyboard Map": {
         "0xf700-0x260000": {"Action": 10, "Text": "[1;6A"},
         "0x37-0x40000": {"Action": 11, "Text": "0x1f"},
@@ -221,7 +221,7 @@
         "0xf702-0x240000": {"Action": 10, "Text": "[1;5D"},
         "0xf704-0x20000": {"Action": 10, "Text": "[1;2P"}
       },
-      
+
       "Jobs to Ignore": ["rlogin", "ssh", "slogin", "telnet"],
       "Scrollback Lines": 1000,
       "Unlimited Scrollback": false,

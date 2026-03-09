@@ -3,7 +3,7 @@ filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
   Plugin 'VundleVim/Vundle.vim'
-  Plugin 'scrooloose/nerdtree' 
+  Plugin 'scrooloose/nerdtree'
   Plugin 'bling/vim-airline'
   Plugin 'airblade/vim-gitgutter'
   Plugin 'tomasr/molokai'

@@ -112,6 +112,7 @@ class ConcreteSymlinkManager(SymlinkManager):
 
         # Platform-specific zsh directories
         import platform as _platform
+
         _system = _platform.system()
         if _system == "Darwin":
             platform_dirs = ["macos"]
@@ -125,7 +126,9 @@ class ConcreteSymlinkManager(SymlinkManager):
             if platform_source.exists():
                 platform_target = zsh_config_dir / platform_dir
                 self.create_symlink(
-                    platform_source, platform_target, f"Zsh platform dir: {platform_dir}"
+                    platform_source,
+                    platform_target,
+                    f"Zsh platform dir: {platform_dir}",
                 )
 
         return success_count, total_steps
@@ -153,7 +156,9 @@ class ConcreteSymlinkManager(SymlinkManager):
                 global_gitconfig.write_text(contents.rstrip() + "\n\n" + include_block)
                 console.print("[green]✓ Appended [include] to ~/.gitconfig[/green]")
             else:
-                console.print("[green]✓ ~/.gitconfig already includes dotfiles config[/green]")
+                console.print(
+                    "[green]✓ ~/.gitconfig already includes dotfiles config[/green]"
+                )
         else:
             global_gitconfig.write_text(include_block)
             console.print("[green]✓ Created ~/.gitconfig with [include][/green]")
@@ -168,9 +173,13 @@ class ConcreteSymlinkManager(SymlinkManager):
         gitconfig_local = git_config_dir / ".gitconfig-local"
         if not gitconfig_local.exists() and not gitconfig_local.is_symlink():
             gitconfig_local.touch()
-            console.print("[green]✓ Created empty ~/.config/git/.gitconfig-local[/green]")
+            console.print(
+                "[green]✓ Created empty ~/.config/git/.gitconfig-local[/green]"
+            )
         else:
-            console.print("[green]✓ ~/.config/git/.gitconfig-local already exists[/green]")
+            console.print(
+                "[green]✓ ~/.config/git/.gitconfig-local already exists[/green]"
+            )
 
         # Symlink context-specific git configs into ~/.config/git/
         for name in (".gitconfig-personal",):
@@ -204,7 +213,9 @@ class ConcreteSymlinkManager(SymlinkManager):
         direnv_source = dotfiles_dir / "direnv" / "direnvrc"
         if direnv_source.exists():
             direnv_target = Path.home() / ".config" / "direnv" / "direnvrc"
-            return self.create_symlink(direnv_source, direnv_target, "direnv global config")
+            return self.create_symlink(
+                direnv_source, direnv_target, "direnv global config"
+            )
         return True
 
     def setup_nvim_config(self, dotfiles_dir: Path) -> bool:
@@ -228,8 +239,11 @@ class ConcreteSymlinkManager(SymlinkManager):
     def setup_kitty_config(self, dotfiles_dir: Path) -> Tuple[int, int]:
         """Set up kitty configuration symlinks. Returns (success_count, total_steps)."""
         import platform as _platform
+
         if _platform.system() == "Linux":
-            console.print("[yellow]⚠ Skipping Kitty config on Linux (server environment)[/yellow]")
+            console.print(
+                "[yellow]⚠ Skipping Kitty config on Linux (server environment)[/yellow]"
+            )
             return 0, 0
 
         console.print("\n[bold cyan]🐱 Setting up Kitty terminal...[/bold cyan]")

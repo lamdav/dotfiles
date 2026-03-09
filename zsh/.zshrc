@@ -48,7 +48,7 @@ fi
 # =============================================================================
 # MODULAR CONFIGURATION LOADING SEQUENCE
 # =============================================================================
-# 
+#
 # Load order is critical - modules have dependencies:
 # 1. options:      Basic zsh options and behavior (no dependencies)
 # 2. environment:  PATH, FPATH, exports (sets base FPATH)
