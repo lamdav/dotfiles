@@ -18,6 +18,7 @@
     "fontSize": "12px",
     "yabaiPath": "$(which yabai)",
     "aerospacePath": "/opt/homebrew/bin/aerospace",
+    "flashspacePath": "$(which flashspace)",
     "windowManager": "aerospace",
     "shell": "bash",
     "terminal": "kitty",
@@ -27,7 +28,6 @@
     "serverSocketPort": 7777,
     "yabaiServerRefresh": false,
     "aerospaceServerRefresh": true,
-    "flashspacePath": "$(which flashspace)",
     "flashspaceServerRefresh": false,
     "darkTheme": "SpaceDuck",
     "lightTheme": "firewatch-light",
@@ -191,7 +191,6 @@
   },
   "process": {
     "showOnDisplay": "",
-    "displayForFocusedSpace": false,
     "displayOnlyCurrent": true,
     "centered": false,
     "showCurrentSpaceMode": false,
@@ -200,7 +199,8 @@
     "expandAllProcesses": false,
     "displaySkhdMode": false,
     "displayStackIndex": false,
-    "displayOnlyCurrentStack": false
+    "displayOnlyCurrentStack": false,
+    "displayForFocusedSpace": false
   },
   "spacesDisplay": {
     "showOnDisplay": "",
@@ -215,9 +215,9 @@
     "hideEmptySpaces": true,
     "showOptionsOnHover": false,
     "switchSpacesWithoutYabai": false,
-    "customAeroSpaceDisplayIndexes": {},
     "showOnlyFlashspaceSpaceIndex": false,
-    "hideFlashspaceAppIcons": false
+    "hideFlashspaceAppIcons": false,
+    "customAeroSpaceDisplayIndexes": {}
   },
   "widgets": {
     "processWidget": true,
@@ -274,8 +274,8 @@
     "showOnDisplay": "",
     "showIcon": true,
     "displayAsGraph": false,
-    "cpuUsageThreshold": 0,
-    "cpuMonitorApp": "Activity Monitor"
+    "cpuMonitorApp": "Activity Monitor",
+    "cpuUsageThreshold": 0
   },
   "gpuWidgetOptions": {
     "refreshFrequency": 3000,
@@ -288,16 +288,16 @@
     "refreshFrequency": 4000,
     "showOnDisplay": "",
     "showIcon": true,
-    "memoryUsageThreshold": 0,
-    "memoryMonitorApp": "Activity Monitor"
+    "memoryMonitorApp": "Activity Monitor",
+    "memoryUsageThreshold": 0
   },
   "batteryWidgetOptions": {
     "refreshFrequency": 10000,
     "showOnDisplay": "",
     "showIcon": true,
     "toggleCaffeinateOnClick": false,
-    "disableCaffeinateInvertedBackground": false,
-    "caffeinateOption": ""
+    "caffeinateOption": "",
+    "disableCaffeinateInvertedBackground": false
   },
   "networkWidgetOptions": {
     "refreshFrequency": 20000,
