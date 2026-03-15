@@ -77,10 +77,18 @@ class MacOSPackageManager(PackageManager):
 class UbuntuPackageManager(PackageManager):
     """Package manager for Ubuntu using apt and direct installs."""
 
+    def __init__(self):
+        self._phase = 0
+
+    def _phase_header(self, name: str) -> None:
+        self._phase += 1
+        console.print(f"\n[bold cyan]📦 Phase {self._phase} — {name}...[/bold cyan]")
+
     def get_package_manager_name(self) -> str:
         return "APT (Ubuntu/Debian)"
 
     def install_packages(self, system_manager: SystemManager) -> bool:
+        self._phase = 0
         success = True
         success &= self._install_apt_packages(system_manager)
         success &= self._install_neovim(system_manager)
@@ -97,7 +105,7 @@ class UbuntuPackageManager(PackageManager):
         return success
 
     def _install_apt_packages(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 1 — apt base packages...[/bold cyan]")
+        self._phase_header("apt base packages")
         packages = [
             "zsh",
             "git",
@@ -127,7 +135,7 @@ class UbuntuPackageManager(PackageManager):
         return ok
 
     def _install_neovim(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 2 — Neovim (unstable PPA)...[/bold cyan]")
+        self._phase_header("Neovim (unstable PPA)")
         if system_manager.check_command_exists("nvim"):
             console.print("[green]✓ Neovim already installed[/green]")
             return True
@@ -142,7 +150,7 @@ class UbuntuPackageManager(PackageManager):
         return ok
 
     def _install_eza(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 3 — eza...[/bold cyan]")
+        self._phase_header("eza")
         if system_manager.check_command_exists("eza"):
             console.print("[green]✓ eza already installed[/green]")
             return True
@@ -161,7 +169,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_gh(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 4 — GitHub CLI (gh)...[/bold cyan]")
+        self._phase_header("GitHub CLI (gh)")
         if system_manager.check_command_exists("gh"):
             console.print("[green]✓ gh already installed[/green]")
             return True
@@ -181,7 +189,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_delta(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 5 — git-delta (git pager)...[/bold cyan]")
+        self._phase_header("git-delta (git pager)")
         if system_manager.check_command_exists("delta"):
             console.print("[green]✓ delta already installed[/green]")
             return True
@@ -199,7 +207,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_fzf(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 6 — fzf (GitHub release)...[/bold cyan]")
+        self._phase_header("fzf (GitHub release)")
         if system_manager.check_command_exists("fzf"):
             console.print("[green]✓ fzf already installed[/green]")
             return True
@@ -218,9 +226,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_antidote(self, system_manager: SystemManager) -> bool:
-        console.print(
-            "\n[bold cyan]📦 Phase 7 — antidote (zsh plugin manager)...[/bold cyan]"
-        )
+        self._phase_header("antidote (zsh plugin manager)")
         antidote_dir = Path.home() / ".antidote"
         if antidote_dir.exists():
             console.print("[green]✓ antidote already installed[/green]")
@@ -236,7 +242,7 @@ class UbuntuPackageManager(PackageManager):
         return ok  # fatal: plugins won't work without it
 
     def _install_mise(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 8 — mise (version manager)...[/bold cyan]")
+        self._phase_header("mise (version manager)")
         if system_manager.check_command_exists("mise"):
             console.print("[green]✓ mise already installed[/green]")
             return True
@@ -248,9 +254,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_uv(self, system_manager: SystemManager) -> bool:
-        console.print(
-            "\n[bold cyan]📦 Phase 9 — uv (Python package manager)...[/bold cyan]"
-        )
+        self._phase_header("uv (Python package manager)")
         if system_manager.check_command_exists("uv"):
             console.print("[green]✓ uv already installed[/green]")
             return True
@@ -268,7 +272,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_zoxide(self, system_manager: SystemManager) -> bool:
-        console.print("\n[bold cyan]📦 Phase 10 — zoxide...[/bold cyan]")
+        self._phase_header("zoxide")
         if system_manager.check_command_exists("zoxide"):
             console.print("[green]✓ zoxide already installed[/green]")
             return True
@@ -281,9 +285,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_git_cliff(self, system_manager: SystemManager) -> bool:
-        console.print(
-            "\n[bold cyan]📦 Phase 11 — git-cliff (changelog generator)...[/bold cyan]"
-        )
+        self._phase_header("git-cliff (changelog generator)")
         if system_manager.check_command_exists("git-cliff"):
             console.print("[green]✓ git-cliff already installed[/green]")
             return True
@@ -300,9 +302,7 @@ class UbuntuPackageManager(PackageManager):
         return True  # non-fatal
 
     def _install_kitty_terminfo(self, system_manager: SystemManager) -> bool:
-        console.print(
-            "\n[bold cyan]📦 Phase 12 — kitty terminfo (SSH from Kitty)...[/bold cyan]"
-        )
+        self._phase_header("kitty terminfo (SSH from Kitty)")
         check = system_manager.run_command(
             "infocmp xterm-kitty >/dev/null 2>&1", "Checking kitty terminfo..."
         )
