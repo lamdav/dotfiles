@@ -1,3 +1,8 @@
+## [1.0.1] - 2026-03-15
+
+### 🚜 Refactor
+
+- Replace hardcoded phase numbers with dynamic counter in Ubuntu installer
 ## [1.0.0] - 2026-03-15
 
 ### 🚀 Features
@@ -72,3 +77,4 @@
 - Gitignore .direnv/ runtime directory
 - Add pre-commit config and fix shellcheck warnings
 - Sync simplebarrc property ordering from live config
+- Add git-cliff versioning and release workflow
