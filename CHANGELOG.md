@@ -1,3 +1,8 @@
+## [1.1.1] - 2026-03-15
+
+### ⚙️ Miscellaneous Tasks
+
+- Add uv.lock for reproducible installs
 ## [1.1.0] - 2026-03-15
 
 ### 🚀 Features
@@ -11,6 +16,7 @@
 ### ⚙️ Miscellaneous Tasks
 
 - Remove bin/release in favor of upcoming dot CLI
+- Release v1.1.0
 ## [1.0.1] - 2026-03-15
 
 ### 🚀 Features
