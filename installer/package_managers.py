@@ -92,6 +92,7 @@ class UbuntuPackageManager(PackageManager):
         success &= self._install_mise(system_manager)
         success &= self._install_uv(system_manager)
         success &= self._install_zoxide(system_manager)
+        success &= self._install_git_cliff(system_manager)
         self._install_kitty_terminfo(system_manager)  # non-critical
         return success
 
@@ -279,9 +280,28 @@ class UbuntuPackageManager(PackageManager):
             console.print("[yellow]⚠ zoxide install failed — skipping[/yellow]")
         return True  # non-fatal
 
+    def _install_git_cliff(self, system_manager: SystemManager) -> bool:
+        console.print(
+            "\n[bold cyan]📦 Phase 11 — git-cliff (changelog generator)...[/bold cyan]"
+        )
+        if system_manager.check_command_exists("git-cliff"):
+            console.print("[green]✓ git-cliff already installed[/green]")
+            return True
+        script = (
+            "GIT_CLIFF_VERSION=$(curl -fsSL https://api.github.com/repos/orhun/git-cliff/releases/latest"
+            " | jq -r '.tag_name' | sed 's/v//') && "
+            'curl -fsSL "https://github.com/orhun/git-cliff/releases/download/v${GIT_CLIFF_VERSION}/'
+            'git-cliff_${GIT_CLIFF_VERSION}_amd64.deb" -o /tmp/git-cliff.deb && '
+            "sudo dpkg -i /tmp/git-cliff.deb && rm /tmp/git-cliff.deb"
+        )
+        ok = system_manager.run_interactive_command(script, "Installing git-cliff...")
+        if not ok:
+            console.print("[yellow]⚠ git-cliff install failed — skipping[/yellow]")
+        return True  # non-fatal
+
     def _install_kitty_terminfo(self, system_manager: SystemManager) -> bool:
         console.print(
-            "\n[bold cyan]📦 Phase 11 — kitty terminfo (SSH from Kitty)...[/bold cyan]"
+            "\n[bold cyan]📦 Phase 12 — kitty terminfo (SSH from Kitty)...[/bold cyan]"
         )
         check = system_manager.run_command(
             "infocmp xterm-kitty >/dev/null 2>&1", "Checking kitty terminfo..."
