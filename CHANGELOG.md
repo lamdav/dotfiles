@@ -1,9 +1,17 @@
+## [1.1.0] - 2026-03-15
+
+### 🚀 Features
+
+- Implement dot CLI with release workflow
+
+### 🐛 Bug Fixes
+
+- Show help when dot is invoked with no arguments
+
+### ⚙️ Miscellaneous Tasks
+
+- Remove bin/release in favor of upcoming dot CLI
 ## [1.0.1] - 2026-03-15
-
-### 🚜 Refactor
-
-- Replace hardcoded phase numbers with dynamic counter in Ubuntu installer
-## [1.0.0] - 2026-03-15
 
 ### 🚀 Features
 
@@ -50,6 +58,7 @@
 
 - Implement absolute imports and OSType enum for type safety
 - Split integrations and completions by OS layer
+- Replace hardcoded phase numbers with dynamic counter in Ubuntu installer
 
 ### 📚 Documentation
 
@@ -77,4 +86,6 @@
 - Gitignore .direnv/ runtime directory
 - Add pre-commit config and fix shellcheck warnings
 - Sync simplebarrc property ordering from live config
+- Remove deprecated homebrew/cask-fonts tap
 - Add git-cliff versioning and release workflow
+- Release v1.0.1
