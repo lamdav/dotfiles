@@ -2,6 +2,7 @@
 # Core Development Tools
 brew "git"
 brew "git-lfs"
+brew "git-cliff"
 brew "git-delta"
 brew "docker"
 brew "gh"
