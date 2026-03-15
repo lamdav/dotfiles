@@ -1,8 +1,18 @@
+## [1.2.0] - 2026-03-15
+
+### 🚀 Features
+
+- Extend layout uv with --pyproject=<subdir> flag
+
+### ⚙️ Miscellaneous Tasks
+
+- Update .envrc layout command to dot
 ## [1.1.1] - 2026-03-15
 
 ### ⚙️ Miscellaneous Tasks
 
 - Add uv.lock for reproducible installs
+- Release v1.1.1
 ## [1.1.0] - 2026-03-15
 
 ### 🚀 Features
