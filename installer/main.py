@@ -12,6 +12,7 @@ app = typer.Typer(
     name="dot",
     help="Dotfiles management CLI",
     rich_markup_mode="rich",
+    no_args_is_help=True,
 )
 console = Console()
 
