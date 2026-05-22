@@ -1,0 +1,10 @@
+
+tap "mongodb/brew"
+
+# MongoDB
+brew "mongodb/brew/mongodb-community"
+brew "mongodb/brew/mongodb-database-tools"
+brew "mongosh"
+
+# Redis
+brew "redis"

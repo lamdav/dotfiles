@@ -2,15 +2,16 @@
 # Productivity Apps
 cask "raycast"
 cask "1password"
+cask "1password-cli"
 cask "visual-studio-code"
 cask "claude"
+cask "commander-one"
 
 # Cloud Storage
 cask "dropbox"
 
 # Networking
-brew "mas"                           # Mac App Store CLI (required for mas entries below)
-mas "Tailscale", id: 1475387142     # VPN — cask version has broken download URL
+cask "tailscale-app"
 
 # Browsers
 cask "google-chrome"
@@ -20,3 +21,6 @@ cask "kitty"
 
 # Entertainment
 cask "spotify"
+
+# Media Controls
+cask "macmediakeyforwarder"

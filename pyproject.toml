@@ -24,6 +24,8 @@ build-backend = "hatchling.build"
 dev = [
     "black>=25.1.0",
     "isort>=5.12.0",
+    "pre-commit>=4.0.0",
+    "commitizen>=4.0.0",
 ]
 
 [tool.black]
