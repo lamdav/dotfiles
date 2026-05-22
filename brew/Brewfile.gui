@@ -11,3 +11,8 @@ cask "ubersicht"
 # Fonts
 cask "font-fira-code"
 cask "font-fira-code-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-sf-pro"
+
+# Icons & System UI
+cask "sf-symbols"

@@ -3,4 +3,5 @@ tap "derailed/k9s"
 # Kubernetes Tools
 brew "helm"
 brew "kubectx"
+brew "kubeconform"
 brew "derailed/k9s/k9s"
