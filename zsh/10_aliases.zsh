@@ -20,6 +20,10 @@ if command -v bat >/dev/null 2>&1; then
   alias cat='bat --style=plain'
 fi
 
+if command -v glow >/dev/null 2>&1 && command -v bat >/dev/null 2>&1; then
+  batmd() { PAGER='bat' glow -p "$@"; }
+fi
+
 if command -v fd >/dev/null 2>&1; then
   alias find='fd'
 fi
