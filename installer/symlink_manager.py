@@ -236,6 +236,18 @@ class ConcreteSymlinkManager(SymlinkManager):
             return self.create_symlink(borders_source, borders_target, "borders config")
         return True
 
+    def setup_claude_config(self, dotfiles_dir: Path) -> bool:
+        """Set up Claude Code settings symlink."""
+        console.print(
+            "\n[bold cyan]🤖 Setting up Claude Code configuration...[/bold cyan]"
+        )
+        claude_source = dotfiles_dir / "claude" / "settings.json"
+        if not claude_source.exists():
+            return True
+
+        claude_target = Path.home() / ".claude" / "settings.json"
+        return self.create_symlink(claude_source, claude_target, "Claude Code settings")
+
     def setup_glow_config(self, dotfiles_dir: Path) -> bool:
         """Set up glow markdown viewer configuration symlink."""
         console.print("\n[bold cyan]📖 Setting up glow configuration...[/bold cyan]")
