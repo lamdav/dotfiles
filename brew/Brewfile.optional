@@ -2,9 +2,6 @@
 # JVM / Build Tools
 brew "gradle"
 
-# Browser Automation
-cask "chromedriver"
-
 # Optional Communication Apps
 cask "slack"
 cask "discord"
