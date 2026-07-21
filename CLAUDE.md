@@ -18,6 +18,9 @@ dotfiles/
 ├── borders/
 │   └── bordersrc       → ~/.config/borders/bordersrc
 ├── brew/               Modular Brewfiles (devtools, k8s, gui, apps, media, optional)
+├── claude/
+│   ├── settings.json           → ~/.claude/settings.json
+│   └── conductor-workspace/    Agent-Deck conductor role config (not symlinked)
 ├── colors/
 │   └── firewatch.conf  Kitty color scheme source
 ├── direnv/

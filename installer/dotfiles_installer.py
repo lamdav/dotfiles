@@ -113,6 +113,11 @@ class DotfilesInstaller(Installer):
             success_count += 1
         total_steps += 1
 
+        # Claude Code configuration
+        if self.symlink_manager.setup_claude_config(self.dotfiles_dir):
+            success_count += 1
+        total_steps += 1
+
         # borders configuration (macOS only)
         if os_type == OSType.MACOS:
             if self.symlink_manager.setup_borders_config(self.dotfiles_dir):
