@@ -27,6 +27,7 @@ Quick reference for every major tool in this setup.
 | `cat <file>` | bat | Syntax-highlighted view |
 | `find <pattern>` | fd | Fast file search |
 | `grep <pattern>` | ripgrep | Fast content search |
+| `glow <file.md>` | glow | Render markdown in the terminal |
 
 **fd examples:**
 ```bash
