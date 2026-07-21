@@ -9,7 +9,7 @@ Run dotfiles maintenance for this machine. Reference `docs/maintenance.md` for t
 
 The user may pass an optional scope via $ARGUMENTS:
 - `daily` — reload shell, direnv, plugins if needed
-- `weekly` — brew upgrade, mise upgrade, nvim plugins, gh extensions
+- `weekly` — brew upgrade, mise upgrade, nvim plugins, gh extensions, simple-bar widget
 - `monthly` — omz update, mise bump, brew cleanup, audit symlinks
 - `sync` — interactive health check: audit symlinks, config consistency, and prompt to repair anything out of date
 - `all` or no argument — run everything interactively, asking before destructive steps
@@ -29,6 +29,15 @@ brew upgrade --cask
 mise upgrade
 nvim --headless "+Lazy sync" +qa
 gh extension upgrade --all
+
+# simple-bar (Übersicht widget) — macOS only, skip if not cloned
+SIMPLEBAR_DIR="$HOME/Library/Application Support/Übersicht/widgets/simple-bar"
+if [ -d "$SIMPLEBAR_DIR/.git" ]; then
+  git -C "$SIMPLEBAR_DIR" pull
+  # package.json may have changed upstream — reinstall deps if so
+  git -C "$SIMPLEBAR_DIR" diff --name-only HEAD@{1} HEAD 2>/dev/null | grep -q package.json \
+    && (cd "$SIMPLEBAR_DIR" && npm install)
+fi
 ```
 
 ### Monthly

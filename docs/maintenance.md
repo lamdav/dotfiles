@@ -36,6 +36,15 @@ nvim --headless "+Lazy sync" +qa
 
 # Update gh extensions
 gh extension upgrade --all
+
+# Update simple-bar (Übersicht widget) — macOS only, skip if not cloned
+SIMPLEBAR_DIR="$HOME/Library/Application Support/Übersicht/widgets/simple-bar"
+if [ -d "$SIMPLEBAR_DIR/.git" ]; then
+  git -C "$SIMPLEBAR_DIR" pull
+  # package.json may have changed upstream — reinstall deps if so
+  git -C "$SIMPLEBAR_DIR" diff --name-only HEAD@{1} HEAD 2>/dev/null | grep -q package.json \
+    && (cd "$SIMPLEBAR_DIR" && npm install)
+fi
 ```
 
 ---
