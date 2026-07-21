@@ -26,6 +26,8 @@ dotfiles/
 ├── git/
 │   ├── .gitconfig         → ~/.config/git/.gitconfig  (included by ~/.gitconfig)
 │   └── .gitconfig-personal → ~/.config/git/.gitconfig-personal
+├── glow/
+│   └── glow.yml        → ~/Library/Preferences/glow/glow.yml (macOS) or ~/.config/glow/glow.yml (Linux)
 ├── installer/          Python installer (main.py, symlink_manager.py, …)
 ├── iterm/              → ~/Library/Application Support/iTerm2/DynamicProfiles/
 ├── kitty/
@@ -121,6 +123,7 @@ To update: `updateplugins && exec zsh`
 | `grep` | rg | ripgrep |
 | `top` | btop | btop |
 | `vim` / `vi` | nvim | neovim |
+| `glow` | glow --tui | glow |
 
 Use `cdi` for interactive directory picker (fzf-powered zoxide).
 
