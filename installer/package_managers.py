@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import re
 from pathlib import Path
 
 from rich.console import Console
@@ -19,6 +20,19 @@ class MacOSPackageManager(PackageManager):
     def get_package_manager_name(self) -> str:
         """Get the name of the package manager."""
         return "Homebrew"
+
+    def _trust_taps(self, brewfile_path: Path, system_manager: SystemManager) -> None:
+        """Trust third-party taps declared in a Brewfile before running brew bundle.
+
+        Homebrew 6.x requires explicit `brew trust` for non-official taps
+        (HOMEBREW_REQUIRE_TAP_TRUST is on by default) or brew bundle silently
+        fails to install their formulae/casks.
+        """
+        taps = re.findall(r'^tap\s+"([^"]+)"', brewfile_path.read_text(), re.MULTILINE)
+        for tap in taps:
+            system_manager.run_command(
+                f"brew trust --tap {tap}", f"Trusting tap {tap}..."
+            )
 
     def install_packages(self, system_manager: SystemManager) -> bool:
         """Install packages for macOS using Homebrew."""
@@ -51,6 +65,7 @@ class MacOSPackageManager(PackageManager):
             brewfile_path = self.dotfiles_dir / brewfile
             if brewfile_path.exists():
                 console.print(f"Installing {description}...")
+                self._trust_taps(brewfile_path, system_manager)
                 # brew bundle may require password for cask installations
                 success &= system_manager.run_interactive_command(
                     f"brew bundle --file={brewfile}",

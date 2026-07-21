@@ -31,7 +31,15 @@ cd ~/configs/dotfiles
 
 ## 3. Install Packages
 
+Homebrew (6.x+) requires third-party taps to be explicitly trusted before
+`brew bundle` will install formulae/casks from them — otherwise they're
+silently skipped. `Brewfile.k8s` and `Brewfile.gui` each declare one or more:
+
 ```bash
+brew trust --tap derailed/k9s
+brew trust --tap FelixKratz/formulae
+brew trust --tap nikitabobko/tap
+
 brew bundle --file brew/Brewfile.devtools
 brew bundle --file brew/Brewfile.k8s
 brew bundle --file brew/Brewfile.gui
