@@ -37,6 +37,12 @@ if command -v nvim >/dev/null 2>&1; then
   alias vi='nvim'
 fi
 
+# glow.yml sets pager/style defaults, but --tui isn't a persistable config
+# option (only a CLI flag), so force it here for interactive use
+if command -v glow >/dev/null 2>&1; then
+  alias glow='glow --tui'
+fi
+
 # =============================================================================
 # GIT ALIASES
 # =============================================================================
