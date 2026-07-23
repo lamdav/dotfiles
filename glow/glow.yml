@@ -3,8 +3,11 @@
 style: "dark"
 # mouse wheel support (TUI-mode only)
 mouse: true
-# use pager to display markdown
-pager: true
+# use pager to display markdown — off because the glow --tui alias below
+# conflicts with pager (glow errors: "cannot use both pager and tui"), and
+# plain `less` (this machine's $PAGER) doesn't interpret ANSI color without
+# -R, which is what was spewing raw escape codes as literal text
+pager: false
 # at which column should we word wrap?
 width: 100
 # show all files, including hidden and ignored.
