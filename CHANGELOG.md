@@ -1,3 +1,24 @@
+## [1.3.0] - 2026-10-17
+
+### 🚀 Features
+
+- Expand brew toolset and add cloud/database Brewfiles
+- Add glow markdown viewer to devtools
+- Auto-trust third-party brew taps before bundling
+- Add simple-bar widget updates to maintenance routine
+- Add glow config with dark style, pager, and TUI defaults
+- Track Claude Code and Gemini CLI conductor configs
+- Symlink Claude Code settings via installer
+
+### 🐛 Bug Fixes
+
+- Disable glow pager to stop raw ANSI codes leaking to output
+
+### ⚙️ Miscellaneous Tasks
+
+- Swap gemini-cli for antigravity-cli, drop chromedriver
+- Update nvim plugin lockfile
+- Sync Claude Code settings, drop stray autoMode trust block
 ## [1.2.0] - 2026-03-15
 
 ### 🚀 Features
@@ -7,6 +28,7 @@
 ### ⚙️ Miscellaneous Tasks
 
 - Update .envrc layout command to dot
+- Release v1.2.0
 ## [1.1.1] - 2026-03-15
 
 ### ⚙️ Miscellaneous Tasks
