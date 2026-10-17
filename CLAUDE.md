@@ -280,9 +280,11 @@ brew bundle --file brew/Brewfile.media      # media tools
 brew bundle --file brew/Brewfile.optional   # slack, discord
 ```
 
-**Key tools in devtools:** git, git-delta, gh, mise, neovim, fzf, fd, ripgrep, bat, eza, zoxide, direnv, btop, jq, httpie, tmux
+**Key tools in devtools:** git, git-delta, gh, mise, neovim, fzf, fd, ripgrep, bat, eza, zoxide, direnv, btop, jaq, xh, tmux
 
-**Third-party taps (`Brewfile.k8s`, `Brewfile.gui`, `Brewfile.databases`):** Homebrew 6.x requires `brew trust --tap <name>` before `brew bundle` will install formulae/casks from a non-official tap — otherwise they're silently skipped with no error. `installer/main.py install` trusts a Brewfile's taps automatically before bundling; the manual `brew bundle` runbook in `docs/new-machine.md` trusts them explicitly first. Check with `brew tap-info --json <tap>` → `"trusted"` if a bundled tool (e.g. `k9s`, `aerospace`, `borders`) seems missing after install.
+**Third-party taps (`Brewfile.k8s`, `Brewfile.gui`):** Homebrew 6.x requires `brew trust --tap <name>` before `brew bundle` will install formulae/casks from a non-official tap — otherwise they're silently skipped with no error. `installer/main.py install` trusts a Brewfile's taps automatically before bundling; the manual `brew bundle` runbook in `docs/new-machine.md` trusts them explicitly first. Check with `brew tap-info --json <tap>` → `"trusted"` if a bundled tool (e.g. `k9s`, `aerospace`, `borders`) seems missing after install.
+
+**No `Brewfile.databases`:** redis/mongo for local dev are run via docker (per-project, not a persistent host service), not installed natively — there's deliberately no Brewfile for them.
 
 ---
 
