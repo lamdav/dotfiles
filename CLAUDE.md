@@ -15,6 +15,9 @@ Comprehensive dotfiles for macOS (primary) and Ubuntu. Covers modular zsh, Kitty
 ```
 dotfiles/
 ├── aerospace/          → ~/.aerospace.toml
+├── atuin/
+│   ├── config.toml     → ~/.atuin/config.toml
+│   └── themes/         → ~/.atuin/themes/ (symlink to whole dir; dracula.toml inside)
 ├── borders/
 │   └── bordersrc       → ~/.config/borders/bordersrc
 ├── brew/               Modular Brewfiles (devtools, k8s, gui, apps, media, optional)
@@ -299,12 +302,17 @@ Uses `fd` as backend on macOS, `fdfind` on Ubuntu — both configured in the pla
 
 Context-aware history search (`Ctrl+R`) — filters by directory, exit code, and duration, not just substring match on the command text. Shared `99_integrations.zsh` module; init must stay ordered after fzf's.
 
+**Config:** `atuin/config.toml` → `~/.atuin/config.toml` (not XDG-based — atuin always uses `~/.atuin/` on both macOS and Linux). Daemon mode is enabled (`[daemon] enabled/autostart = true`) and kept running via `brew services start atuin` (launchd-managed), since `autostart` alone only spins the daemon up on demand and won't start it from a cold shell.
+
+**Theme:** `atuin/themes/dracula.toml` (whole `themes/` dir symlinked to `~/.atuin/themes/`) — a custom theme since atuin ships no Dracula option itself, mapping its `Base`/`Annotation`/`Guidance`/`Important`/`AlertInfo`/`AlertWarn`/`AlertError` meanings to the same Dracula hex palette already used by `bat --theme=Dracula` and the `#6272a4` zsh-autosuggestions color. Active via `[theme] name = "dracula"` in `config.toml`.
+
 ```bash
 atuin search <query>   # search from the CLI
 atuin stats             # usage stats
+atuin daemon status    # confirm the daemon is running and healthy
 ```
 
-Sync across machines is opt-in (`atuin register`/`atuin login`), not configured by default.
+Sync across machines is opt-in (`atuin register`/`atuin login`), not configured by default. Threads capture (resuming Claude Code/Codex/etc. sessions via `atuin threads resume`) is also off by default — `atuin config enable threads` turns it on.
 
 ---
 

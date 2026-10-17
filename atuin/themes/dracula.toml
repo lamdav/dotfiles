@@ -1,0 +1,11 @@
+# Dracula-inspired theme for atuin, matching this dotfiles setup's existing
+# Dracula accents: bat --theme=Dracula, zsh-autosuggestions #6272a4.
+# Official palette: https://draculatheme.com/contribute
+
+Base = "#f8f8f2"       # Foreground
+Annotation = "#6272a4" # Comment — same color used for zsh-autosuggestions
+Guidance = "#bd93f9"   # Purple — keybinding hints
+Important = "#ff79c6"  # Pink — selected/highlighted entry
+AlertInfo = "#8be9fd"   # Cyan
+AlertWarn = "#ffb86c"   # Orange
+AlertError = "#ff5555"  # Red

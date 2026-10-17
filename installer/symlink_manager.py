@@ -265,6 +265,24 @@ class ConcreteSymlinkManager(SymlinkManager):
 
         return self.create_symlink(glow_source, glow_target, "glow config")
 
+    def setup_atuin_config(self, dotfiles_dir: Path) -> bool:
+        """Set up atuin shell history configuration and themes symlinks."""
+        console.print("\n[bold cyan]🕐 Setting up atuin configuration...[/bold cyan]")
+        atuin_source = dotfiles_dir / "atuin" / "config.toml"
+        success = True
+        if atuin_source.exists():
+            atuin_target = Path.home() / ".atuin" / "config.toml"
+            success = self.create_symlink(atuin_source, atuin_target, "atuin config")
+
+        themes_source = dotfiles_dir / "atuin" / "themes"
+        if themes_source.exists():
+            themes_target = Path.home() / ".atuin" / "themes"
+            success = (
+                self.create_symlink(themes_source, themes_target, "atuin themes")
+                and success
+            )
+        return success
+
     def setup_kitty_config(self, dotfiles_dir: Path) -> Tuple[int, int]:
         """Set up kitty configuration symlinks. Returns (success_count, total_steps)."""
         import platform as _platform

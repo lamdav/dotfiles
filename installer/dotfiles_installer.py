@@ -113,6 +113,11 @@ class DotfilesInstaller(Installer):
             success_count += 1
         total_steps += 1
 
+        # atuin configuration
+        if self.symlink_manager.setup_atuin_config(self.dotfiles_dir):
+            success_count += 1
+        total_steps += 1
+
         # Claude Code configuration
         if self.symlink_manager.setup_claude_config(self.dotfiles_dir):
             success_count += 1
@@ -189,6 +194,7 @@ class DotfilesInstaller(Installer):
             ("kitty/kitty.conf", ".config/kitty/kitty.conf", "Kitty configuration"),
             ("mise/config.toml", ".config/mise/config.toml", "mise config"),
             ("direnv/direnvrc", ".config/direnv/direnvrc", "direnv config"),
+            ("atuin/config.toml", ".atuin/config.toml", "atuin config"),
         ]
 
         # Add macOS-specific configs
