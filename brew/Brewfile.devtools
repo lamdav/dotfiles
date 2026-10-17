@@ -27,10 +27,12 @@ brew "neovim"
 
 # CLI Utilities
 cask "antigravity-cli"
+brew "atuin"
 brew "bat"
 brew "btop"
 brew "curl"
 brew "direnv"
+brew "dust"
 brew "eza"
 brew "fd"
 brew "fzf"

@@ -15,6 +15,14 @@ command -v fzf >/dev/null 2>&1 && eval "$(fzf --zsh)"
 export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --bind ctrl-/:toggle-preview'
 
 # =============================================================================
+# ATUIN (shell history search)
+# Must load after fzf — atuin's init rebinds Ctrl+R over fzf's history widget.
+# Ctrl+T and Alt+C stay on fzf for file/dir picking.
+# =============================================================================
+
+command -v atuin >/dev/null 2>&1 && eval "$(atuin init zsh)"
+
+# =============================================================================
 # ZOXIDE (smart cd)
 # =============================================================================
 

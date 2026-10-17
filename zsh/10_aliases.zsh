@@ -32,6 +32,10 @@ if command -v rg >/dev/null 2>&1; then
   alias grep='rg'
 fi
 
+if command -v dust >/dev/null 2>&1; then
+  alias du='dust'
+fi
+
 if command -v btop >/dev/null 2>&1; then
   alias top='btop'
 fi

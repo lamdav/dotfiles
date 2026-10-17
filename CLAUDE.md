@@ -124,6 +124,7 @@ To update: `updateplugins && exec zsh`
 | `cat` | bat --style=plain | bat |
 | `find` | fd | fd |
 | `grep` | rg | ripgrep |
+| `du` | dust | dust |
 | `top` | btop | btop |
 | `vim` / `vi` | nvim | neovim |
 | `glow` | glow --tui | glow |
@@ -276,13 +277,25 @@ brew bundle --file brew/Brewfile.optional   # slack, discord
 ## FZF Integration
 
 Keybindings (active in shell):
-- `Ctrl+R` — fuzzy history search
 - `Ctrl+T` — fuzzy file picker (uses fd, respects .gitignore)
 - `Alt+C` — fuzzy cd (uses fd, dirs only)
 
 Default options: `--height 40% --layout=reverse --border`
 
 Uses `fd` as backend on macOS, `fdfind` on Ubuntu — both configured in the platform `99_integrations` layer. Hidden files included, `.git` excluded.
+
+**Note:** `Ctrl+R` is bound to atuin, not fzf — atuin's `99_integrations.zsh` block loads after fzf's and overrides the history widget. See Atuin below.
+
+## Atuin (Shell History)
+
+Context-aware history search (`Ctrl+R`) — filters by directory, exit code, and duration, not just substring match on the command text. Shared `99_integrations.zsh` module; init must stay ordered after fzf's.
+
+```bash
+atuin search <query>   # search from the CLI
+atuin stats             # usage stats
+```
+
+Sync across machines is opt-in (`atuin register`/`atuin login`), not configured by default.
 
 ---
 

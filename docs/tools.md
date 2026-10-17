@@ -27,6 +27,7 @@ Quick reference for every major tool in this setup.
 | `cat <file>` | bat | Syntax-highlighted view |
 | `find <pattern>` | fd | Fast file search |
 | `grep <pattern>` | ripgrep | Fast content search |
+| `du <path>` | dust | Disk usage with a visual tree |
 | `glow <file.md>` | glow | Render markdown in the terminal |
 
 **fd examples:**
@@ -50,11 +51,31 @@ rg -C 3 "error"       # show 3 lines of context
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+R` | Fuzzy history search |
 | `Ctrl+T` | Fuzzy file picker (inserts path) |
 | `Alt+C` | Fuzzy cd into directory |
 
 Inside any fzf prompt: `Ctrl+/` toggles preview pane.
+
+`Ctrl+R` is bound to atuin instead of fzf — see below.
+
+---
+
+## Atuin (Shell History)
+
+Replaces fzf's `Ctrl+R` with a richer history search: filters by directory, exit code, and duration, not just the command text.
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+R` | Search history (atuin TUI) |
+| `Up` | Prefix-search history (atuin) |
+
+```bash
+atuin history list        # recent history
+atuin search <query>       # search from the CLI
+atuin stats                 # usage stats (top commands, etc.)
+```
+
+First run imports existing zsh history automatically. Sync across machines is opt-in (`atuin register` / `atuin login`) — not configured by default here.
 
 **In Neovim:**
 ```
