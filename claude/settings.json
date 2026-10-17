@@ -12,14 +12,12 @@
       "Write",
       "Glob",
       "Grep",
-      "Agent",
       "WebFetch",
       "Bash(git:*)",
       "Bash(go:*)",
       "Bash(gofmt:*)",
       "Bash(golangci-lint:*)",
       "Bash(docker:*)",
-      "Bash(python3 -m pytest:*)",
       "Bash(pytest:*)",
       "Bash(uv:*)",
       "Bash(pip:*)",
@@ -58,13 +56,20 @@
     "skill-creator@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "cloudflare@cloudflare": true
+    "cloudflare@cloudflare": true,
+    "vercel@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "cloudflare": {
       "source": {
         "source": "github",
         "repo": "cloudflare/skills"
+      }
+    },
+    "unifi-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "sirkirby/unifi-mcp"
       }
     }
   },
