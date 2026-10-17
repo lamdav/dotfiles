@@ -163,12 +163,12 @@ enter_accept = true
 ## selected based on the shell's keymap where the keybinding is defined. If
 ## this is set to "emacs", "vim-insert", or "vim-normal", the startup keymap
 ## mode in the Atuin search is forced to be the specified one.
-# keymap_mode = "emacs"
+keymap_mode = "vim-insert"
 
 ## Cursor style in each keymap mode. If specified, the cursor style is changed
 ## in entering the cursor shape. Available values are "default" and
 ## "{blink,steady}-{block,underline,bar}".
-# keymap_cursor = { emacs = "blink-block", vim_insert = "blink-block", vim_normal = "steady-block" }
+keymap_cursor = { emacs = "blink-block", vim_insert = "blink-bar", vim_normal = "steady-block" }
 
 # network_connect_timeout = 5
 # network_timeout = 30
@@ -300,7 +300,7 @@ autostart = true
 ##    https://ogeon.github.io/docs/palette/master/palette/named/index.html
 ## If you provide a custom theme file, it should be called "NAME.toml" and the theme below
 ## should be the stem, i.e. `theme = "NAME"` for your chosen NAME.
-# name = "autumn"
+name = "dracula"
 
 ## Whether the theme manager should output normal or extra information to help fix themes.
 ## Boolean, true or false. If unset, left up to the theme manager.
@@ -431,6 +431,9 @@ autostart = true
 ## Make directory expand instead of command:
 # columns = ["duration", "time", { type = "directory", expand = true }, { type = "command", expand = false }]
 
+# exit colored red/green via AlertError/AlertInfo, directory for context, command expands
+columns = ["exit", "duration", "time", { type = "directory", width = 25 }, "command"]
+
 ## Syntax highlight commands in the search results, using the theme's colors.
 ## Not available on all platforms (e.g. Windows).
-# syntax_highlight = true
+syntax_highlight = true
