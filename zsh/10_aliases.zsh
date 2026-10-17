@@ -117,6 +117,21 @@ updateplugins() {
   fi
 }
 
+# Launch yazi file manager; cd the shell to wherever you exited it
+y() {
+  if ! command -v yazi >/dev/null 2>&1; then
+    echo "yazi not found"
+    return 1
+  fi
+  local tmp cwd
+  tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(command cat -- "$tmp")" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
+}
+
 # Create directory and change into it
 mkcd() {
   [[ $# -eq 1 ]] || { echo "Usage: mkcd <directory>"; return 1 }

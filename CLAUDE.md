@@ -134,6 +134,7 @@ Use `cdi` for interactive directory picker (fzf-powered zoxide).
 ### Key Shell Functions
 - `updateplugins` — regenerate antidote cache
 - `benchmarkzsh` — 10-run startup benchmark
+- `y` — launch yazi file manager; `cd`s the shell to wherever you exited it
 - `mkcd <dir>` — mkdir + cd
 - `extract <file>` — universal archive extractor
 - `kitty-help` — print all kitty keybindings *(macOS only — defined in `macos/99_integrations.zsh`)*

@@ -10,6 +10,7 @@ Quick reference for every major tool in this setup.
 |---------|-------------|
 | `cd <fuzzy>` | Smart cd via zoxide — learns from history |
 | `cdi` | Interactive directory picker (fzf + zoxide) |
+| `y` | yazi file manager; `cd`s the shell to wherever you exited |
 | `wd add <name>` | Bookmark current directory |
 | `wd <name>` | Jump to bookmarked directory |
 | `wd ls` | List all bookmarks |
