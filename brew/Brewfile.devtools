@@ -11,8 +11,6 @@ brew "mkcert"
 # Language Ecosystems (managed by mise)
 brew "mise"
 brew "uv"
-brew "go"
-brew "yarn"
 brew "golangci-lint"
 brew "gnupg"
 
