@@ -1,7 +1,4 @@
 
-# JVM / Build Tools
-brew "gradle"
-
 # Optional Communication Apps
 cask "slack"
 cask "discord"

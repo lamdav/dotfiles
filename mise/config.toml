@@ -9,6 +9,11 @@ java    = "temurin-21"  # LTS, replaces jabba
 "pypi:poetry"     = "latest"
 "pypi:commitizen" = "latest"
 
+# Go/JVM build tools (replaces brew — avoids pulling in a separate go/openjdk
+# as a build or runtime dependency just for these)
+golangci-lint = "latest"
+gradle        = "latest"
+
 [settings]
 experimental = false
 jobs         = 4         # parallel installs
