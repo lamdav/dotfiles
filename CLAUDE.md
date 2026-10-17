@@ -125,6 +125,8 @@ To update: `updateplugins && exec zsh`
 | `find` | fd | fd |
 | `grep` | rg | ripgrep |
 | `du` | dust | dust |
+| `http`/`https` | xh | xh |
+| `jq` | jaq | jaq |
 | `top` | btop | btop |
 | `vim` / `vi` | nvim | neovim |
 | `glow` | glow --tui | glow |

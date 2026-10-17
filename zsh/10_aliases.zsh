@@ -36,6 +36,16 @@ if command -v dust >/dev/null 2>&1; then
   alias du='dust'
 fi
 
+# xh mirrors httpie's flag syntax, so this is a safe drop-in
+if command -v xh >/dev/null 2>&1; then
+  alias http='xh'
+fi
+
+# jaq covers standard jq syntax; some advanced jq-specific filters differ
+if command -v jaq >/dev/null 2>&1; then
+  alias jq='jaq'
+fi
+
 if command -v btop >/dev/null 2>&1; then
   alias top='btop'
 fi

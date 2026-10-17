@@ -29,6 +29,8 @@ Quick reference for every major tool in this setup.
 | `find <pattern>` | fd | Fast file search |
 | `grep <pattern>` | ripgrep | Fast content search |
 | `du <path>` | dust | Disk usage with a visual tree |
+| `http`/`https <url>` | xh | HTTP client, same flags as httpie |
+| `jq <filter>` | jaq | JSON processor, same syntax as jq |
 | `glow <file.md>` | glow | Render markdown in the terminal |
 
 **fd examples:**
