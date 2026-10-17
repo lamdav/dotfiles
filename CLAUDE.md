@@ -154,7 +154,13 @@ node   = "lts"
 python = "latest"
 go     = "latest"
 java   = "temurin-21"
+
+"pypi:pre-commit" = "latest"
+"pypi:poetry"     = "latest"
+"pypi:commitizen" = "latest"
 ```
+
+Standalone Python CLI tools (pre-commit, poetry, commitizen) are installed via mise's `pypi:` backend, not pipx/brew — a pipx venv hard-links to a specific brew Python formula, so a `brew autoremove` that drops that formula silently breaks the venv. mise pins its own Python runtime instead, so `mise upgrade` is the only thing that moves it.
 
 **Common commands:**
 ```bash

@@ -4,6 +4,11 @@ python  = "latest"
 go      = "latest"
 java    = "temurin-21"  # LTS, replaces jabba
 
+# Isolated Python CLI tools (replaces pipx — see brew/Brewfile.devtools)
+"pypi:pre-commit" = "latest"
+"pypi:poetry"     = "latest"
+"pypi:commitizen" = "latest"
+
 [settings]
 experimental = false
 jobs         = 4         # parallel installs

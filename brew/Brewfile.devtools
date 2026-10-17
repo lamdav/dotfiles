@@ -14,7 +14,6 @@ brew "uv"
 brew "go"
 brew "yarn"
 brew "golangci-lint"
-brew "pipx"
 brew "gnupg"
 
 # Shell
