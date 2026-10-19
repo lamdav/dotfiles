@@ -81,6 +81,56 @@ if command -v git >/dev/null 2>&1; then
 fi
 
 # =============================================================================
+# DIRENV QUICK-SETUP
+# git has no hook that fires on `git init` (githooks(5) has no post-init —
+# init.templateDir only helps `git clone`, via post-checkout), so this is a
+# plain standalone command, not an automatic hook on an existing command.
+# Run it yourself in any project dir to scaffold .envrc.
+# =============================================================================
+
+if command -v direnv >/dev/null 2>&1; then
+  envrc-init() {
+    if [[ -f .envrc ]]; then
+      echo ".envrc already exists in $PWD — not touching it."
+      return 1
+    fi
+
+    echo "Layouts (space-separated numbers, e.g. '1 5'):"
+    echo "  1) uv      Python venv via uv, auto-syncs pyproject.toml/requirements.txt"
+    echo "  2) python  Python venv via python3 -m venv"
+    echo "  3) node    adds node_modules/.bin to PATH"
+    echo "  4) go      project-local GOPATH"
+    echo "  5) mise    activates .mise.toml (language/tool versions via mise)"
+
+    local picks
+    read -r "picks?Choice: "
+    local -a selected=(${(z)picks})
+
+    local -a lines
+    local c
+    for c in "${selected[@]}"; do
+      case "$c" in
+        1) lines+=("layout uv") ;;
+        2) lines+=("layout python") ;;
+        3) lines+=("layout node") ;;
+        4) lines+=("layout go") ;;
+        5) lines+=("use mise") ;;
+      esac
+    done
+
+    if (( ${#lines[@]} == 0 )); then
+      echo "No layout selected — skipping .envrc creation."
+      return 1
+    fi
+
+    printf '%s\n' "${lines[@]}" >| .envrc
+    direnv allow
+    echo "Created .envrc:"
+    cat .envrc
+  }
+fi
+
+# =============================================================================
 # DIRECTORY NAVIGATION
 # =============================================================================
 

@@ -142,6 +142,7 @@ Use `cdi` for interactive directory picker (fzf-powered zoxide).
 - `y` — launch yazi file manager; `cd`s the shell to wherever you exited it
 - `mkcd <dir>` — mkdir + cd
 - `extract <file>` — universal archive extractor
+- `envrc-init` — scaffold `.envrc` in the current directory from a numbered menu over the direnv layout helpers below (multi-select, e.g. `1 5` for `uv` + `mise`); run it yourself after `git init` or in any new project dir. No-ops if `.envrc` already exists.
 - `kitty-help` — print all kitty keybindings *(macOS only — defined in `macos/99_integrations.zsh`)*
 - `ksave/kload/ksplit/knotify/ktheme` — kitty session helpers *(macOS only)*
 
@@ -263,6 +264,8 @@ layout node     # adds node_modules/.bin to PATH
 layout go       # sets project-local GOPATH
 use mise        # activates .mise.toml (built-in direnv 2.32+)
 ```
+
+**Quick-setup:** `envrc-init` (in `zsh/10_aliases.zsh`) offers a numbered menu over the layouts above and writes `.envrc` for you — run it manually in a project dir (e.g. right after `git init`). git has no hook that fires on `git init` itself (`githooks(5)` has no `post-init`), so this is a standalone command rather than something wired into git.
 
 After editing `.envrc`: `direnv allow`
 
