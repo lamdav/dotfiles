@@ -16,7 +16,6 @@ brew "gnupg"
 # Shell
 brew "zsh"
 brew "antidote"
-brew "bash-completion"
 
 # Editor
 brew "neovim"
