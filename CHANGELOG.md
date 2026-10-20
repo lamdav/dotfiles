@@ -1,7 +1,8 @@
-## [1.3.0] - 2026-10-17
+## [1.3.0] - 2026-10-20
 
 ### 🚀 Features
 
+- Add batmd function for glow+bat markdown viewing
 - Expand brew toolset and add cloud/database Brewfiles
 - Add glow markdown viewer to devtools
 - Auto-trust third-party brew taps before bundling
@@ -9,16 +10,32 @@
 - Add glow config with dark style, pager, and TUI defaults
 - Track Claude Code and Gemini CLI conductor configs
 - Symlink Claude Code settings via installer
+- Add atuin for history search and dust for disk usage
+- Swap ranger for yazi file manager
+- Migrate pre-commit, poetry, commitizen from pipx to mise pypi backend
+- Add xh and jaq as faster httpie/jq alternatives
+- Track atuin config in dotfiles, enable daemon mode, add Dracula theme
+- Fix Dracula theme structure, add vim keymap and richer columns to atuin
+- Track d2 in Brewfile.devtools
+- Migrate golangci-lint and gradle from brew to mise
+- Add envrc-init for one-command .envrc scaffolding
 
 ### 🐛 Bug Fixes
 
 - Disable glow pager to stop raw ANSI codes leaking to output
+- Revert atuin to default theme, dracula.toml was incomplete
+- Bump transitive virtualenv 21.3.1 -> 21.14.5 (security)
 
 ### ⚙️ Miscellaneous Tasks
 
 - Swap gemini-cli for antigravity-cli, drop chromedriver
 - Update nvim plugin lockfile
 - Sync Claude Code settings, drop stray autoMode trust block
+- Release v1.3.0
+- Drop httpie, jq, and tree — fully shadowed by their replacements
+- Drop duplicate go and broken yarn from brew, use mise+corepack
+- Remove unused Brewfile.databases, fix stale jq/httpie doc mention
+- Remove unused bash-completion (zsh uses native compinit, not bashcompinit)
 ## [1.2.0] - 2026-03-15
 
 ### 🚀 Features
