@@ -98,14 +98,19 @@ def release(
 
     # Capture the body while these commits are still unreleased — `--latest`
     # would pick the *previous* release's section here, since the new tag
-    # doesn't exist yet.
-    release_body = subprocess.run(
+    # doesn't exist yet. Drop the leading "## [unreleased]" banner line:
+    # `--strip` only strips the configured header/footer, not this one.
+    unreleased_output = subprocess.run(
         ["git", "cliff", "--unreleased", "--strip", "all"],
         capture_output=True,
         text=True,
         check=True,
         cwd=DOTFILES_DIR,
     ).stdout.strip()
+    body_lines = unreleased_output.splitlines()
+    if body_lines and body_lines[0].startswith("##"):
+        body_lines = body_lines[1:]
+    release_body = "\n".join(body_lines).strip()
 
     subprocess.run(
         ["git", "cliff", *bump_args, "--tag", new_version, "-o", "CHANGELOG.md"],
