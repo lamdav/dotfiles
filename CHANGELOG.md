@@ -1,3 +1,14 @@
+## [1.4.0] - 2026-10-31
+
+### 🚀 Features
+
+- Add dot status --fix and declarative symlink table
+
+### 🐛 Bug Fixes
+
+- Correct git-cliff bump flags in dot release
+- Use --unreleased instead of --latest for release commit/tag body
+- Strip leading unreleased banner from release commit/tag body
 ## [1.3.0] - 2026-10-20
 
 ### 🚀 Features
@@ -36,6 +47,7 @@
 - Drop duplicate go and broken yarn from brew, use mise+corepack
 - Remove unused Brewfile.databases, fix stale jq/httpie doc mention
 - Remove unused bash-completion (zsh uses native compinit, not bashcompinit)
+- Release v1.3.0
 ## [1.2.0] - 2026-03-15
 
 ### 🚀 Features
