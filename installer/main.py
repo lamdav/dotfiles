@@ -64,13 +64,13 @@ def release(
         raise typer.Exit(1)
 
     if patch:
-        bump_flag = "--bump-patch"
+        bump_args = ["--bump", "patch"]
     elif minor:
-        bump_flag = "--bump-minor"
+        bump_args = ["--bump", "minor"]
     elif major:
-        bump_flag = "--bump-major"
+        bump_args = ["--bump", "major"]
     else:
-        bump_flag = "--bump"
+        bump_args = ["--bump"]
 
     has_tags = bool(
         subprocess.run(
@@ -80,7 +80,7 @@ def release(
 
     if has_tags:
         result = subprocess.run(
-            ["git", "cliff", bump_flag, "--bumped-version"],
+            ["git", "cliff", *bump_args, "--bumped-version"],
             capture_output=True,
             text=True,
             cwd=DOTFILES_DIR,
@@ -97,7 +97,7 @@ def release(
     console.print(f"Releasing [bold]{new_version}[/bold]...")
 
     subprocess.run(
-        ["git", "cliff", bump_flag, "--tag", new_version, "-o", "CHANGELOG.md"],
+        ["git", "cliff", *bump_args, "--tag", new_version, "-o", "CHANGELOG.md"],
         check=True,
         cwd=DOTFILES_DIR,
     )
