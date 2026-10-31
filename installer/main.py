@@ -96,19 +96,22 @@ def release(
 
     console.print(f"Releasing [bold]{new_version}[/bold]...")
 
-    subprocess.run(
-        ["git", "cliff", *bump_args, "--tag", new_version, "-o", "CHANGELOG.md"],
-        check=True,
-        cwd=DOTFILES_DIR,
-    )
-
+    # Capture the body while these commits are still unreleased — `--latest`
+    # would pick the *previous* release's section here, since the new tag
+    # doesn't exist yet.
     release_body = subprocess.run(
-        ["git", "cliff", "--latest", "--strip", "all"],
+        ["git", "cliff", "--unreleased", "--strip", "all"],
         capture_output=True,
         text=True,
         check=True,
         cwd=DOTFILES_DIR,
     ).stdout.strip()
+
+    subprocess.run(
+        ["git", "cliff", *bump_args, "--tag", new_version, "-o", "CHANGELOG.md"],
+        check=True,
+        cwd=DOTFILES_DIR,
+    )
 
     subprocess.run(["git", "add", "CHANGELOG.md"], check=True, cwd=DOTFILES_DIR)
     subprocess.run(
