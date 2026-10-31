@@ -9,9 +9,9 @@ from rich.table import Table
 
 from installer.enums import OSType
 from installer.interfaces import Installer
-from installer.macos_manager import ConcreteMacOSManager
+from installer.macos_manager import MACOS_SYMLINK_TARGETS, ConcreteMacOSManager
 from installer.package_managers import create_package_manager
-from installer.symlink_manager import ConcreteSymlinkManager
+from installer.symlink_manager import SYMLINK_TARGETS, ConcreteSymlinkManager
 from installer.system_manager import ConcreteSystemManager
 
 console = Console()
@@ -171,7 +171,7 @@ class DotfilesInstaller(Installer):
         # Installation summary
         self._show_installation_summary(success_count, total_steps, os_type)
 
-    def status(self) -> None:
+    def status(self, fix: bool = False) -> None:
         """Show the current status of dotfiles configuration."""
         console.print(
             Panel.fit(
@@ -184,55 +184,47 @@ class DotfilesInstaller(Installer):
         table.add_column("Status", style="bold")
         table.add_column("Path")
 
-        configs = [
-            ("zsh/.zshrc", ".zshrc", "Zsh configuration"),
-            ("zsh/.p10k.zsh", ".p10k.zsh", "Powerlevel10k theme"),
-            ("git/.gitconfig", ".config/git/.gitconfig", "Git configuration"),
-            ("git/.gitignore_global", ".gitignore_global", "Global gitignore"),
-            ("vim/.vimrc", ".vimrc", "Vim configuration"),
-            ("nvim", ".config/nvim", "Neovim configuration"),
-            ("kitty/kitty.conf", ".config/kitty/kitty.conf", "Kitty configuration"),
-            ("mise/config.toml", ".config/mise/config.toml", "mise config"),
-            ("direnv/direnvrc", ".config/direnv/direnvrc", "direnv config"),
-            ("atuin/config.toml", ".atuin/config.toml", "atuin config"),
-        ]
+        os_type = self.system_manager.get_os_type()
+        current_platform = "macos" if os_type == OSType.MACOS else "linux"
 
-        # Add macOS-specific configs
-        if self.system_manager.get_os_type() == OSType.MACOS:
-            configs.extend(
-                [
-                    (
-                        "borders/bordersrc",
-                        ".config/borders/bordersrc",
-                        "borders config",
-                    ),
-                    (
-                        "aerospace/.aerospace.toml",
-                        ".aerospace.toml",
-                        "AeroSpace configuration",
-                    ),
-                    (
-                        "iterm/iterm-profiles.json",
-                        "Library/Application Support/iTerm2/DynamicProfiles/iterm-profiles.json",
-                        "iTerm2 profiles",
-                    ),
-                ]
-            )
+        specs = list(SYMLINK_TARGETS)
+        if os_type == OSType.MACOS:
+            specs += MACOS_SYMLINK_TARGETS
 
-        for source_path, target_path, description in configs:
-            target = Path.home() / target_path
-            source = self.dotfiles_dir / source_path
+        fixed_count = 0
+        for spec in specs:
+            if spec.platform is not None and spec.platform != current_platform:
+                continue
 
-            if target.is_symlink() and target.resolve() == source:
+            target = Path.home() / spec.target
+            source = self.dotfiles_dir / spec.source
+            linked = target.is_symlink() and target.resolve() == source
+
+            if fix and not linked and source.exists():
+                if self.symlink_manager.create_symlink(
+                    source, target, spec.description
+                ):
+                    fixed_count += 1
+                linked = target.is_symlink() and target.resolve() == source
+
+            if linked:
                 status = "[green]✓ Linked[/green]"
             elif target.exists():
                 status = "[yellow]⚠ File exists (not linked)[/yellow]"
             else:
                 status = "[red]✗ Not configured[/red]"
 
-            table.add_row(description, status, str(target))
+            table.add_row(spec.description, status, str(target))
 
         console.print(table)
+
+        if fix:
+            if fixed_count:
+                console.print(f"\n[green]✓ Fixed {fixed_count} symlink(s)[/green]")
+            else:
+                console.print(
+                    "\n[green]Nothing to fix — all symlinks already correct[/green]"
+                )
 
         # Check tools
         console.print("\n[bold cyan]Installed Tools:[/bold cyan]")

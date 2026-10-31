@@ -40,10 +40,14 @@ def install(
 
 
 @app.command(rich_help_panel="Setup")
-def status() -> None:
+def status(
+    fix: bool = typer.Option(
+        False, "--fix", help="Create or repair any symlink reported as broken/missing"
+    ),
+) -> None:
     """Show the current status of dotfiles configuration."""
     installer = DotfilesInstaller(DOTFILES_DIR)
-    installer.status()
+    installer.status(fix=fix)
 
 
 @app.command(rich_help_panel="Release")

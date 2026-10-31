@@ -50,9 +50,6 @@ python3 status_line.py run                     # Continuous updates
 python3 status_line.py config                  # Show configuration
 ```
 
-### 6. 🎯 Tab Bar (`tab_bar.py`)
-Custom tab bar with process-based icons (already configured in kitty.conf).
-
 ## Shell Functions
 
 Add these to your `.zshrc` for convenient access:
@@ -120,7 +117,7 @@ python3 theme_switcher.py add /path/to/project "project-name" "#1a1a1a"
 
 ## Integration with kitty.conf
 
-The `tab_bar.py` is already integrated. For other scripts, you can add keybindings:
+You can add keybindings for these scripts:
 
 ```
 # Smart splitting

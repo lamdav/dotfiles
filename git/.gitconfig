@@ -57,3 +57,5 @@
 	path=~/.config/git/.gitconfig-local
 [includeIf "gitdir:~/personal/"]
 	path = ~/.config/git/.gitconfig-personal
+[includeIf "gitdir:~/work/"]
+	path = ~/.config/git/.gitconfig-work

@@ -31,15 +31,15 @@ dotfiles/
 ├── docs/               Runbooks (new-machine.md, maintenance.md, tools.md)
 ├── git/
 │   ├── .gitconfig         → ~/.config/git/.gitconfig  (included by ~/.gitconfig)
-│   └── .gitconfig-personal → ~/.config/git/.gitconfig-personal
+│   ├── .gitconfig-personal → ~/.config/git/.gitconfig-personal
+│   └── .gitconfig-work    → ~/.config/git/.gitconfig-work
 ├── glow/
 │   └── glow.yml        → ~/Library/Preferences/glow/glow.yml (macOS) or ~/.config/glow/glow.yml (Linux)
 ├── installer/          Python installer (main.py, symlink_manager.py, …)
 ├── iterm/              → ~/Library/Application Support/iTerm2/DynamicProfiles/
 ├── kitty/
 │   ├── kitty.conf                → ~/.config/kitty/kitty.conf
-│   ├── kitty-customizations/     → ~/.config/kitty/kitty-customizations/
-│   └── kitty-customizations/tab_bar.py → ~/.config/kitty/tab_bar.py  (also linked at root)
+│   └── kitty-customizations/     → ~/.config/kitty/kitty-customizations/
 ├── mise/
 │   └── config.toml     → ~/.config/mise/config.toml
 ├── nvim/
@@ -245,6 +245,8 @@ git track/untrack  # manage assume-unchanged
 
 **Personal profile:** repos under `~/personal/` auto-load `~/.config/git/.gitconfig-personal` via `[includeIf]`. Edit `git/.gitconfig-personal` for personal identity/settings.
 
+**Work profile:** repos under `~/work/` auto-load `~/.config/git/.gitconfig-work` the same way. `git/.gitconfig-work` ships with placeholder `[user]` values (`REPLACE_ME`) — fill in the real work name/email before relying on it; it's intentionally not pre-filled since this file is checked into the repo.
+
 **Git config layering:** `~/.gitconfig` (user-managed) → includes `~/.config/git/.gitconfig` (symlink to dotfiles) → includes `~/.config/git/.gitconfig-local` (machine-local overrides, not in repo).
 
 **Pager:** delta with side-by-side, line numbers, navigate mode
@@ -369,7 +371,7 @@ Key shortcuts: `cmd+t` new tab, `cmd+d` split horizontal, `cmd+shift+d` split ve
 
 Hotkey window (Quake-style): `ctrl+\`` — registered via `kitten quick-access-terminal`.
 
-**Note:** `tab_bar.py` is symlinked to both `~/.config/kitty/kitty-customizations/tab_bar.py` (via dir symlink) AND directly to `~/.config/kitty/tab_bar.py` — kitty requires it at the config root to load it as a custom tab bar.
+Tab bar uses kitty's native `tab_bar_style fade` (`kitty.conf`) — an earlier custom `tab_bar.py` script was tried and abandoned; there is no custom tab bar script in this setup anymore.
 
 **SSH from Kitty:** `alias ssh='kitten ssh'` is active in `zsh/macos/10_aliases.zsh` when `$TERM == xterm-kitty`. This auto-pushes kitty terminfo to the remote before the session. The Ubuntu installer also installs terminfo server-side as a fallback.
 
@@ -383,6 +385,7 @@ dot install --skip-packages  # skip brew bundle
 dot install --skip-shell     # skip zsh/oh-my-zsh setup
 dot install --skip-system    # skip macOS system preferences
 dot status            # check symlink status
+dot status --fix      # create/repair any symlink reported as broken or missing
 ```
 
 Components installed:
@@ -435,13 +438,14 @@ changelog body, and creates an annotated tag.
 | LSP not working | `:Mason`, install server; check `:LspInfo` |
 | Kitty config error | `kitty --config ~/.config/kitty/kitty.conf --version` |
 | Git delta not showing | `git show` — verify delta is on PATH |
-| Symlink broken | `dot status` |
+| Symlink broken | `dot status --fix` (re-creates broken/missing symlinks only; prompts before replacing a non-symlink file) |
 | AeroSpace hotkeys don't work (mouse doesn't move) | Key is intercepted before AeroSpace. Check: `pgrep skhd` (yabai leftover — `brew services stop skhd`); `defaults read com.googlecode.iterm2 GlobalKeyMap` (remove conflicting iTerm2 global bindings) |
 | AeroSpace hotkeys work via CLI but not keyboard | Same as above — another process has a CGEventTap for that key combination |
 | simple-bar mode indicator always shows "main" | `aerospace-mode.jsx` has wrong home path. Re-run installer or: `sed "s|__HOME__|$HOME|g" ~/configs/dotfiles/ubersicht/aerospace-mode.jsx > ~/Library/Application\ Support/Übersicht/widgets/aerospace-mode.jsx` |
 | Ubuntu: `fd` not found | `fd` is `fdfind` on Debian/Ubuntu — `linux/10_aliases.zsh` aliases it automatically |
 | Ubuntu: `bat` not found | `bat` is `batcat` on Debian/Ubuntu — `linux/10_aliases.zsh` aliases it automatically |
 | `dot next` exits 1 immediately | No unreleased conventional commits since last tag |
+| glow TUI exits instead of scrolling left on wide code blocks | Upstream behavior, not configurable: glow's pager has no horizontal scroll; `h`/`left`/`delete` are hard-bound to "unload document" (`ui/ui.go`), which exits when there's no file list to fall back to (as with the `glow --tui <file>` alias). Use `batmd <file>` instead — it pipes through `bat`/`less`, which supports real left/right arrow panning |
 
 ---
 

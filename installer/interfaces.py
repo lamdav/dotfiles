@@ -138,6 +138,10 @@ class Installer(ABC):
         pass
 
     @abstractmethod
-    def status(self) -> None:
-        """Show the current status of dotfiles configuration."""
+    def status(self, fix: bool = False) -> None:
+        """Show the current status of dotfiles configuration.
+
+        If `fix` is True, attempt to create/repair any symlink reported as
+        missing or broken before rendering its row.
+        """
         pass

@@ -32,6 +32,7 @@ Quick reference for every major tool in this setup.
 | `http`/`https <url>` | xh | HTTP client, same flags as httpie |
 | `jq <filter>` | jaq | JSON processor, same syntax as jq |
 | `glow <file.md>` | glow | Render markdown in the terminal |
+| `batmd <file.md>` | glow + bat | Render via `bat`/`less` instead of glow's TUI — use for files with wide code blocks (see note below) |
 
 **fd examples:**
 ```bash
@@ -47,6 +48,8 @@ rg -t go "func main"  # search only Go files
 rg -l "pattern"       # list matching files only
 rg -C 3 "error"       # show 3 lines of context
 ```
+
+**glow's TUI has no horizontal scroll.** Long lines in fenced code blocks (glamour deliberately doesn't word-wrap code) get clipped at the terminal edge with no way to pan right. Worse, `h`/`left`/`delete` aren't unbound — glow hard-wires them to "back out of the current document," which exits the TUI entirely when there's no file list underneath (as with the `glow --tui <file>` alias). Use `batmd <file>` for anything with wide code blocks — it pages through `bat`/`less`, where arrow keys do real horizontal panning.
 
 ---
 
@@ -122,7 +125,9 @@ git show            # last commit
 
 **rerere** is enabled — git remembers conflict resolutions and replays them automatically on rebase.
 
-**Work repos:** put them under `~/work/` and `~/.gitconfig-work` is applied automatically (different email).
+**Personal repos:** put them under `~/personal/` and `~/.config/git/.gitconfig-personal` is applied automatically (different email), via a `[includeIf "gitdir:..."]` block in `git/.gitconfig`.
+
+**Work repos:** same mechanism, under `~/work/` — applies `~/.config/git/.gitconfig-work`. Fill in the real name/email in `git/.gitconfig-work` first; it ships with `REPLACE_ME` placeholders.
 
 ---
 

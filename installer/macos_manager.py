@@ -9,9 +9,24 @@ from rich.console import Console
 from rich.prompt import Confirm
 
 from installer.interfaces import MacOSManager, SystemManager
-from installer.symlink_manager import ConcreteSymlinkManager
+from installer.symlink_manager import ConcreteSymlinkManager, SymlinkSpec
 
 console = Console()
+
+AEROSPACE_CONFIG = SymlinkSpec(
+    "aerospace/.aerospace.toml", ".aerospace.toml", "AeroSpace configuration", "macos"
+)
+ITERM_PROFILES = SymlinkSpec(
+    "iterm/iterm-profiles.json",
+    "Library/Application Support/iTerm2/DynamicProfiles/iterm-profiles.json",
+    "iTerm2 profiles",
+    "macos",
+)
+
+# macOS-only specs, kept separate from symlink_manager.SYMLINK_TARGETS since
+# they're set up by ConcreteMacOSManager rather than ConcreteSymlinkManager.
+# status() merges both lists when running on macOS.
+MACOS_SYMLINK_TARGETS = [AEROSPACE_CONFIG, ITERM_PROFILES]
 
 
 class ConcreteMacOSManager(MacOSManager):
@@ -25,11 +40,11 @@ class ConcreteMacOSManager(MacOSManager):
         console.print(
             "\n[bold cyan]🪟 Setting up AeroSpace window manager...[/bold cyan]"
         )
-        aerospace_source = dotfiles_dir / "aerospace" / ".aerospace.toml"
+        aerospace_source = dotfiles_dir / AEROSPACE_CONFIG.source
         if aerospace_source.exists():
-            aerospace_target = Path.home() / ".aerospace.toml"
+            aerospace_target = Path.home() / AEROSPACE_CONFIG.target
             ok = self.symlink_manager.create_symlink(
-                aerospace_source, aerospace_target, "AeroSpace configuration"
+                aerospace_source, aerospace_target, AEROSPACE_CONFIG.description
             )
 
             # Symlink scripts to ~/.config/ubersicht/simple-bar/
@@ -55,18 +70,11 @@ class ConcreteMacOSManager(MacOSManager):
     def setup_iterm_config(self, dotfiles_dir: Path) -> bool:
         """Set up iTerm2 configuration symlink."""
         console.print("\n[bold cyan]💻 Setting up iTerm2 profiles...[/bold cyan]")
-        iterm_source = dotfiles_dir / "iterm" / "iterm-profiles.json"
+        iterm_source = dotfiles_dir / ITERM_PROFILES.source
         if iterm_source.exists():
-            iterm_target = (
-                Path.home()
-                / "Library"
-                / "Application Support"
-                / "iTerm2"
-                / "DynamicProfiles"
-                / "iterm-profiles.json"
-            )
+            iterm_target = Path.home() / ITERM_PROFILES.target
             return self.symlink_manager.create_symlink(
-                iterm_source, iterm_target, "iTerm2 profiles"
+                iterm_source, iterm_target, ITERM_PROFILES.description
             )
         return True  # Not an error if config doesn't exist
 

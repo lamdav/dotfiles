@@ -9,20 +9,26 @@ Audit and optionally repair dotfiles symlinks. Reference `docs/maintenance.md` f
 
 The user may pass an optional argument via $ARGUMENTS:
 - `status` or no argument — show status of all symlinks
-- `repair` — re-run the installer in symlinks-only mode to fix any broken links
+- `repair` — targeted repair of just the broken/missing symlinks `status` reports
 - A specific config name (e.g. `nvim`, `git`, `zsh`, `mise`) — check just that one
 
 ## Steps by scope
 
 ### status (default)
 ```bash
-cd ~/personal/dotfiles && python3 installer/main.py status
+cd ~/configs/dotfiles && python3 installer/main.py status
 ```
 
 ### repair
 ```bash
-cd ~/personal/dotfiles && python3 installer/main.py install --skip-packages --skip-system
+cd ~/configs/dotfiles && python3 installer/main.py status --fix
 ```
+This only touches symlinks that `status` already reported as broken/missing or
+re-creates missing ones — it prompts before replacing a real (non-symlink)
+file at the target, and never runs package installs, Oh My Zsh setup, or
+macOS system preference changes. For a full re-provision instead (e.g. after
+restoring a machine from scratch), use `python3 installer/main.py install
+--skip-packages --skip-system`.
 
 ### specific config — manual checks
 ```bash

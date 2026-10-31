@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import shutil
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Tuple
+from typing import List, Optional, Tuple
 
 from rich.console import Console
 from rich.prompt import Confirm
@@ -10,6 +11,102 @@ from rich.prompt import Confirm
 from installer.interfaces import SymlinkManager
 
 console = Console()
+
+
+@dataclass(frozen=True)
+class SymlinkSpec:
+    """A single declared symlink: dotfiles-relative source -> home-relative target.
+
+    `platform` is None for all platforms, or "macos"/"linux" to restrict it —
+    this is the single source of truth `status()` reads from, so a spec added
+    here is automatically picked up by the status table without having to
+    remember to add a second, separate row by hand.
+    """
+
+    source: str
+    target: str
+    description: str
+    platform: Optional[str] = None
+
+
+# Simple one-to-one symlinks. Setup functions below build their source/target
+# paths from these constants so there is exactly one place to add a new
+# mapping; `status()` reads the same list.
+ZSHRC = SymlinkSpec("zsh/.zshrc", ".zshrc", "Zsh configuration")
+ZSH_PLUGINS = SymlinkSpec("zsh/.zsh_plugins", ".zsh_plugins", "Zsh plugins")
+P10K_THEME = SymlinkSpec("zsh/.p10k.zsh", ".p10k.zsh", "Powerlevel10k theme")
+ZLOGIN = SymlinkSpec("zsh/.zlogin", ".zlogin", "Zsh login script")
+
+GITCONFIG = SymlinkSpec("git/.gitconfig", ".config/git/.gitconfig", "Git configuration")
+GITIGNORE_GLOBAL = SymlinkSpec(
+    "git/.gitignore_global", ".gitignore_global", "Global gitignore"
+)
+GITCONFIG_PERSONAL = SymlinkSpec(
+    "git/.gitconfig-personal", ".config/git/.gitconfig-personal", "Git config: personal"
+)
+GITCONFIG_WORK = SymlinkSpec(
+    "git/.gitconfig-work", ".config/git/.gitconfig-work", "Git config: work"
+)
+
+VIM_CONFIG = SymlinkSpec("vim/.vimrc", ".vimrc", "Vim configuration")
+NVIM_CONFIG = SymlinkSpec("nvim", ".config/nvim", "Neovim configuration")
+MISE_CONFIG = SymlinkSpec("mise/config.toml", ".config/mise/config.toml", "mise config")
+DIRENV_CONFIG = SymlinkSpec(
+    "direnv/direnvrc", ".config/direnv/direnvrc", "direnv config"
+)
+
+GLOW_CONFIG_MACOS = SymlinkSpec(
+    "glow/glow.yml", "Library/Preferences/glow/glow.yml", "glow config", "macos"
+)
+GLOW_CONFIG_LINUX = SymlinkSpec(
+    "glow/glow.yml", ".config/glow/glow.yml", "glow config", "linux"
+)
+
+ATUIN_CONFIG = SymlinkSpec("atuin/config.toml", ".atuin/config.toml", "atuin config")
+ATUIN_THEMES = SymlinkSpec("atuin/themes", ".atuin/themes", "atuin themes")
+
+CLAUDE_CONFIG = SymlinkSpec(
+    "claude/settings.json", ".claude/settings.json", "Claude Code settings"
+)
+
+BORDERS_CONFIG = SymlinkSpec(
+    "borders/bordersrc", ".config/borders/bordersrc", "borders config", "macos"
+)
+
+KITTY_CONF = SymlinkSpec(
+    "kitty/kitty.conf", ".config/kitty/kitty.conf", "Kitty configuration", "macos"
+)
+KITTY_CUSTOMIZATIONS = SymlinkSpec(
+    "kitty/kitty-customizations",
+    ".config/kitty/kitty-customizations",
+    "Kitty customizations",
+    "macos",
+)
+
+# Single source of truth for `status()`. Add a new simple mapping above and
+# to this list, and it shows up in `dot status` with no further wiring.
+SYMLINK_TARGETS: List[SymlinkSpec] = [
+    ZSHRC,
+    ZSH_PLUGINS,
+    P10K_THEME,
+    ZLOGIN,
+    GITCONFIG,
+    GITIGNORE_GLOBAL,
+    GITCONFIG_PERSONAL,
+    GITCONFIG_WORK,
+    VIM_CONFIG,
+    NVIM_CONFIG,
+    MISE_CONFIG,
+    DIRENV_CONFIG,
+    GLOW_CONFIG_MACOS,
+    GLOW_CONFIG_LINUX,
+    ATUIN_CONFIG,
+    ATUIN_THEMES,
+    CLAUDE_CONFIG,
+    BORDERS_CONFIG,
+    KITTY_CONF,
+    KITTY_CUSTOMIZATIONS,
+]
 
 
 class ConcreteSymlinkManager(SymlinkManager):
@@ -68,18 +165,11 @@ class ConcreteSymlinkManager(SymlinkManager):
         total_steps += 1
 
         # Create shell configuration symlinks
-        shell_configs = [
-            ("zsh/.zshrc", ".zshrc", "Zsh configuration"),
-            ("zsh/.zsh_plugins", ".zsh_plugins", "Zsh plugins"),
-            ("zsh/.p10k.zsh", ".p10k.zsh", "Powerlevel10k theme"),
-            ("zsh/.zlogin", ".zlogin", "Zsh login script"),
-        ]
-
-        for source_path, target_file, description in shell_configs:
-            source = dotfiles_dir / source_path
-            target = Path.home() / target_file
+        for spec in (ZSHRC, ZSH_PLUGINS, P10K_THEME, ZLOGIN):
+            source = dotfiles_dir / spec.source
+            target = Path.home() / spec.target
             if source.exists():
-                if self.create_symlink(source, target, description):
+                if self.create_symlink(source, target, spec.description):
                     success_count += 1
             total_steps += 1
 
@@ -142,9 +232,9 @@ class ConcreteSymlinkManager(SymlinkManager):
         # an [include] pointing to ~/.config/git/.gitconfig. Never symlinked.
         git_config_dir = Path.home() / ".config" / "git"
         git_config_dir.mkdir(parents=True, exist_ok=True)
-        git_source = dotfiles_dir / "git" / ".gitconfig"
-        git_target = git_config_dir / ".gitconfig"
-        ok = self.create_symlink(git_source, git_target, "Git configuration")
+        git_source = dotfiles_dir / GITCONFIG.source
+        git_target = Path.home() / GITCONFIG.target
+        ok = self.create_symlink(git_source, git_target, GITCONFIG.description)
 
         # Bootstrap ~/.gitconfig as a plain file if it doesn't already include our config
         global_gitconfig = Path.home() / ".gitconfig"
@@ -163,10 +253,12 @@ class ConcreteSymlinkManager(SymlinkManager):
             global_gitconfig.write_text(include_block)
             console.print("[green]✓ Created ~/.gitconfig with [include][/green]")
 
-        ignore_source = dotfiles_dir / "git" / ".gitignore_global"
+        ignore_source = dotfiles_dir / GITIGNORE_GLOBAL.source
         if ignore_source.exists():
-            ignore_target = Path.home() / ".gitignore_global"
-            self.create_symlink(ignore_source, ignore_target, "Global gitignore")
+            ignore_target = Path.home() / GITIGNORE_GLOBAL.target
+            self.create_symlink(
+                ignore_source, ignore_target, GITIGNORE_GLOBAL.description
+            )
 
         # Bootstrap ~/.config/git/.gitconfig-local as a plain empty file if absent.
         # This is machine-local (not in the repo). Users configure it themselves.
@@ -182,58 +274,64 @@ class ConcreteSymlinkManager(SymlinkManager):
             )
 
         # Symlink context-specific git configs into ~/.config/git/
-        for name in (".gitconfig-personal",):
-            src = dotfiles_dir / "git" / name
+        for spec in (GITCONFIG_PERSONAL, GITCONFIG_WORK):
+            src = dotfiles_dir / spec.source
             if src.exists():
-                self.create_symlink(src, git_config_dir / name, f"Git config: {name}")
+                self.create_symlink(src, Path.home() / spec.target, spec.description)
 
         return ok
 
     def setup_vim_config(self, dotfiles_dir: Path) -> bool:
         """Set up vim configuration symlink."""
         console.print("\n[bold cyan]📝 Setting up Vim configuration...[/bold cyan]")
-        vim_source = dotfiles_dir / "vim" / ".vimrc"
+        vim_source = dotfiles_dir / VIM_CONFIG.source
         if vim_source.exists():
-            vim_target = Path.home() / ".vimrc"
-            return self.create_symlink(vim_source, vim_target, "Vim configuration")
+            vim_target = Path.home() / VIM_CONFIG.target
+            return self.create_symlink(vim_source, vim_target, VIM_CONFIG.description)
         return True  # Not an error if vim config doesn't exist
 
     def setup_mise_config(self, dotfiles_dir: Path) -> bool:
         """Set up mise global configuration symlink."""
         console.print("\n[bold cyan]🔧 Setting up mise configuration...[/bold cyan]")
-        mise_source = dotfiles_dir / "mise" / "config.toml"
+        mise_source = dotfiles_dir / MISE_CONFIG.source
         if mise_source.exists():
-            mise_target = Path.home() / ".config" / "mise" / "config.toml"
-            return self.create_symlink(mise_source, mise_target, "mise global config")
+            mise_target = Path.home() / MISE_CONFIG.target
+            return self.create_symlink(
+                mise_source, mise_target, MISE_CONFIG.description
+            )
         return True
 
     def setup_direnv_config(self, dotfiles_dir: Path) -> bool:
         """Set up direnv global configuration symlink."""
         console.print("\n[bold cyan]🔧 Setting up direnv configuration...[/bold cyan]")
-        direnv_source = dotfiles_dir / "direnv" / "direnvrc"
+        direnv_source = dotfiles_dir / DIRENV_CONFIG.source
         if direnv_source.exists():
-            direnv_target = Path.home() / ".config" / "direnv" / "direnvrc"
+            direnv_target = Path.home() / DIRENV_CONFIG.target
             return self.create_symlink(
-                direnv_source, direnv_target, "direnv global config"
+                direnv_source, direnv_target, DIRENV_CONFIG.description
             )
         return True
 
     def setup_nvim_config(self, dotfiles_dir: Path) -> bool:
         """Set up Neovim configuration symlink."""
         console.print("\n[bold cyan]📝 Setting up Neovim configuration...[/bold cyan]")
-        nvim_source = dotfiles_dir / "nvim"
+        nvim_source = dotfiles_dir / NVIM_CONFIG.source
         if nvim_source.exists():
-            nvim_target = Path.home() / ".config" / "nvim"
-            return self.create_symlink(nvim_source, nvim_target, "Neovim configuration")
+            nvim_target = Path.home() / NVIM_CONFIG.target
+            return self.create_symlink(
+                nvim_source, nvim_target, NVIM_CONFIG.description
+            )
         return True  # Not an error if nvim config doesn't exist
 
     def setup_borders_config(self, dotfiles_dir: Path) -> bool:
         """Set up borders window border configuration symlink."""
         console.print("\n[bold cyan]🔲 Setting up borders configuration...[/bold cyan]")
-        borders_source = dotfiles_dir / "borders" / "bordersrc"
+        borders_source = dotfiles_dir / BORDERS_CONFIG.source
         if borders_source.exists():
-            borders_target = Path.home() / ".config" / "borders" / "bordersrc"
-            return self.create_symlink(borders_source, borders_target, "borders config")
+            borders_target = Path.home() / BORDERS_CONFIG.target
+            return self.create_symlink(
+                borders_source, borders_target, BORDERS_CONFIG.description
+            )
         return True
 
     def setup_claude_config(self, dotfiles_dir: Path) -> bool:
@@ -241,44 +339,50 @@ class ConcreteSymlinkManager(SymlinkManager):
         console.print(
             "\n[bold cyan]🤖 Setting up Claude Code configuration...[/bold cyan]"
         )
-        claude_source = dotfiles_dir / "claude" / "settings.json"
+        claude_source = dotfiles_dir / CLAUDE_CONFIG.source
         if not claude_source.exists():
             return True
 
-        claude_target = Path.home() / ".claude" / "settings.json"
-        return self.create_symlink(claude_source, claude_target, "Claude Code settings")
+        claude_target = Path.home() / CLAUDE_CONFIG.target
+        return self.create_symlink(
+            claude_source, claude_target, CLAUDE_CONFIG.description
+        )
 
     def setup_glow_config(self, dotfiles_dir: Path) -> bool:
         """Set up glow markdown viewer configuration symlink."""
         console.print("\n[bold cyan]📖 Setting up glow configuration...[/bold cyan]")
-        glow_source = dotfiles_dir / "glow" / "glow.yml"
-        if not glow_source.exists():
-            return True
 
         import platform as _platform
 
-        if _platform.system() == "Darwin":
-            # glow follows os.UserConfigDir(), which is ~/Library/Preferences on macOS
-            glow_target = Path.home() / "Library" / "Preferences" / "glow" / "glow.yml"
-        else:
-            glow_target = Path.home() / ".config" / "glow" / "glow.yml"
+        # glow follows os.UserConfigDir(), which is ~/Library/Preferences on macOS
+        spec = (
+            GLOW_CONFIG_MACOS if _platform.system() == "Darwin" else GLOW_CONFIG_LINUX
+        )
+        glow_source = dotfiles_dir / spec.source
+        if not glow_source.exists():
+            return True
 
-        return self.create_symlink(glow_source, glow_target, "glow config")
+        glow_target = Path.home() / spec.target
+        return self.create_symlink(glow_source, glow_target, spec.description)
 
     def setup_atuin_config(self, dotfiles_dir: Path) -> bool:
         """Set up atuin shell history configuration and themes symlinks."""
         console.print("\n[bold cyan]🕐 Setting up atuin configuration...[/bold cyan]")
-        atuin_source = dotfiles_dir / "atuin" / "config.toml"
+        atuin_source = dotfiles_dir / ATUIN_CONFIG.source
         success = True
         if atuin_source.exists():
-            atuin_target = Path.home() / ".atuin" / "config.toml"
-            success = self.create_symlink(atuin_source, atuin_target, "atuin config")
+            atuin_target = Path.home() / ATUIN_CONFIG.target
+            success = self.create_symlink(
+                atuin_source, atuin_target, ATUIN_CONFIG.description
+            )
 
-        themes_source = dotfiles_dir / "atuin" / "themes"
+        themes_source = dotfiles_dir / ATUIN_THEMES.source
         if themes_source.exists():
-            themes_target = Path.home() / ".atuin" / "themes"
+            themes_target = Path.home() / ATUIN_THEMES.target
             success = (
-                self.create_symlink(themes_source, themes_target, "atuin themes")
+                self.create_symlink(
+                    themes_source, themes_target, ATUIN_THEMES.description
+                )
                 and success
             )
         return success
@@ -298,32 +402,13 @@ class ConcreteSymlinkManager(SymlinkManager):
         success_count = 0
         total_steps = 0
 
-        # Kitty configuration
-        kitty_source = dotfiles_dir / "kitty" / "kitty.conf"
-        if kitty_source.exists():
-            kitty_target = Path.home() / ".config" / "kitty" / "kitty.conf"
-            if self.create_symlink(kitty_source, kitty_target, "Kitty configuration"):
-                success_count += 1
-            total_steps += 1
-
-        # Kitty customizations directory
-        kitty_custom_source = dotfiles_dir / "kitty" / "kitty-customizations"
-        if kitty_custom_source.exists():
-            kitty_custom_target = (
-                Path.home() / ".config" / "kitty" / "kitty-customizations"
-            )
-            if self.create_symlink(
-                kitty_custom_source, kitty_custom_target, "Kitty customizations"
-            ):
-                success_count += 1
-            total_steps += 1
-
-        # tab_bar.py must be at the kitty config root (not in a subdirectory)
-        tab_bar_source = dotfiles_dir / "kitty" / "kitty-customizations" / "tab_bar.py"
-        if tab_bar_source.exists():
-            tab_bar_target = Path.home() / ".config" / "kitty" / "tab_bar.py"
-            if self.create_symlink(tab_bar_source, tab_bar_target, "Kitty tab bar"):
-                success_count += 1
-            total_steps += 1
+        # Kitty configuration and customizations directory
+        for spec in (KITTY_CONF, KITTY_CUSTOMIZATIONS):
+            source = dotfiles_dir / spec.source
+            if source.exists():
+                target = Path.home() / spec.target
+                if self.create_symlink(source, target, spec.description):
+                    success_count += 1
+                total_steps += 1
 
         return success_count, total_steps
