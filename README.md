@@ -15,13 +15,13 @@ cd ~/configs/dotfiles
 
 # Install dependencies and run
 uv sync
-uv run install-dotfiles
+uv run dot install
 
-# Check symlink status
-uv run install-dotfiles status
+# Check symlink status (--fix to create/repair any broken/missing symlink)
+uv run dot status
 
 # Full install, skip macOS system preferences
-uv run install-dotfiles install --skip-system
+uv run dot install --skip-system
 ```
 
 **Options:**
@@ -63,10 +63,10 @@ gh auth login      # authenticate GitHub CLI
 ## Development (installer)
 
 ```bash
-uv sync              # install deps
-uv run install-dotfiles install --skip-system
-uv run black .       # format
-uv run isort .       # sort imports
+uv sync --dev          # install deps + dev tools (pytest, black, isort, pre-commit)
+uv run dot install --skip-system
+uv run pytest           # run the installer test suite
+pre-commit run --all-files  # lint, format, and secret-scan everything
 ```
 
 ## Requirements
