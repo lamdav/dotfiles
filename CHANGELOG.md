@@ -1,3 +1,34 @@
+## [1.5.0] - 2026-11-01
+
+### 🚀 Features
+
+- Add pytest suite for installer, guard against tag collisions
+- Add detect-secrets pre-commit hook
+- Add mypy static type checking
+
+### 🐛 Bug Fixes
+
+- Bump transitive virtualenv/filelock (security)
+
+### 🚜 Refactor
+
+- Make pyproject.toml/uv.lock the single source of truth for tool versions
+
+### 📚 Documentation
+
+- Document tests/, CI, detect-secrets, and release tag-collision guard
+- Fix README referencing nonexistent install-dotfiles command
+
+### 🧪 Testing
+
+- Cover install() orchestration and status() --fix behavior
+
+### ⚙️ Miscellaneous Tasks
+
+- Add GitHub Actions workflow for pre-commit and pytest
+- Autoupdate pre-commit hooks, pin isort to latest stable
+- Check in Dependabot config
+- Group Dependabot PRs per ecosystem to cut CI runs
 ## [1.4.0] - 2026-10-31
 
 ### 🚀 Features
@@ -9,6 +40,10 @@
 - Correct git-cliff bump flags in dot release
 - Use --unreleased instead of --latest for release commit/tag body
 - Strip leading unreleased banner from release commit/tag body
+
+### ⚙️ Miscellaneous Tasks
+
+- Release v1.4.0
 ## [1.3.0] - 2026-10-20
 
 ### 🚀 Features
@@ -68,20 +103,6 @@
 
 ### 🚀 Features
 
-- Implement dot CLI with release workflow
-
-### 🐛 Bug Fixes
-
-- Show help when dot is invoked with no arguments
-
-### ⚙️ Miscellaneous Tasks
-
-- Remove bin/release in favor of upcoming dot CLI
-- Release v1.1.0
-## [1.0.1] - 2026-03-15
-
-### 🚀 Features
-
 - Add Kitty quick-access-terminal setup for Quake-style dropdown
 - Add mise, neovim, direnv, fzf, and zoxide integration
 - Add trouble.nvim, todo-comments.nvim, and oil.nvim
@@ -97,6 +118,7 @@
 - Add uv to macOS and Ubuntu installs, add layout uv to direnvrc
 - Migrate from poetry to uv, add uv zsh completion, drop rm -i alias
 - Extend layout uv to generate zsh completions for venv CLI tools
+- Implement dot CLI with release workflow
 
 ### 🐛 Bug Fixes
 
@@ -120,6 +142,7 @@
 - Correct delta deb filename and use jq for GitHub release parsing
 - Make layout uv completion work correctly in direnv bash context
 - Source direnv completion files instead of calling compdef directly
+- Show help when dot is invoked with no arguments
 
 ### 🚜 Refactor
 
@@ -156,3 +179,5 @@
 - Remove deprecated homebrew/cask-fonts tap
 - Add git-cliff versioning and release workflow
 - Release v1.0.1
+- Remove bin/release in favor of upcoming dot CLI
+- Release v1.1.0
