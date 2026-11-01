@@ -42,3 +42,9 @@ repos:
         name: Detect secrets
         entry: uv run detect-secrets-hook --baseline .secrets.baseline
         language: system
+      - id: mypy
+        name: mypy
+        entry: uv run mypy
+        language: system
+        types: [python]
+        pass_filenames: false # mypy needs the whole project in view to resolve imports

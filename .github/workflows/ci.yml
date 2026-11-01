@@ -4,7 +4,7 @@ name: CI
 # install` or `dot release` — nothing here touches a real home directory,
 # symlinks, brew, or macOS system preferences.
 #
-# Single job, uv-only: black/isort/detect-secrets run as local pre-commit
+# Single job, uv-only: black/isort/detect-secrets/mypy run as local pre-commit
 # hooks via `uv run`, sourcing their versions from pyproject.toml/uv.lock
 # instead of a separately pinned mirror repo — so this job needs `uv` and a
 # synced venv before `pre-commit` runs, not just a bare Python + pip install.

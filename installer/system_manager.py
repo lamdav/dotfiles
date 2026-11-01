@@ -77,7 +77,7 @@ class ConcreteSystemManager(SystemManager):
             if interactive:
                 # For interactive commands, don't capture output and show description
                 self.console.print(f"[cyan]{description or command}[/cyan]")
-                result = subprocess.run(command, shell=True, cwd=cwd)
+                result = subprocess.run(command, shell=True, text=True, cwd=cwd)
                 return result.returncode == 0
             else:
                 # For non-interactive commands, use progress indicator

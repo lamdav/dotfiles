@@ -468,9 +468,11 @@ pre-commit run --all-files   # run all hooks manually
 pre-commit autoupdate        # update hook versions — only touches pre-commit-hooks/shellcheck-py
 ```
 
-**Hooks:** trailing-whitespace, end-of-file-fixer, check-yaml, check-merge-conflict, shellcheck (all `rev:`-pinned, mirror repos) — then black, isort, detect-secrets (`repo: local`, see below).
+**Hooks:** trailing-whitespace, end-of-file-fixer, check-yaml, check-merge-conflict, shellcheck (all `rev:`-pinned, mirror repos) — then black, isort, detect-secrets, mypy (`repo: local`, see below).
 
-**Single source of truth for Python tool versions:** black, isort, and detect-secrets are declared as dev dependencies in `pyproject.toml`/`uv.lock` and run as `repo: local` hooks whose `entry` is `uv run <tool>` — there is no separate `rev:` pin for them. This exists because `uv.lock` and a `rev:`-pinned mirror repo previously drifted (black/isort resolved to different versions locally vs. under pre-commit) with no warning. `pre-commit autoupdate` has nothing to bump for these three; update their versions with `uv lock --upgrade-package <name>` (or `uv add --dev <name>` for a new tool) instead. shellcheck and the `pre-commit-hooks` repo have no project-dependency equivalent, so their `rev:` here is still their legitimate version source of truth.
+**Single source of truth for Python tool versions:** black, isort, detect-secrets, and mypy are declared as dev dependencies in `pyproject.toml`/`uv.lock` and run as `repo: local` hooks whose `entry` is `uv run <tool>` — there is no separate `rev:` pin for them. This exists because `uv.lock` and a `rev:`-pinned mirror repo previously drifted (black/isort resolved to different versions locally vs. under pre-commit) with no warning. `pre-commit autoupdate` has nothing to bump for these four; update their versions with `uv lock --upgrade-package <name>` (or `uv add --dev <name>` for a new tool) instead. shellcheck and the `pre-commit-hooks` repo have no project-dependency equivalent, so their `rev:` here is still their legitimate version source of truth.
+
+**mypy:** config in `[tool.mypy]` (`pyproject.toml`), scoped to `installer/` + `tests/`. Its hook sets `pass_filenames: false` — mypy needs the whole project in view to resolve imports, so it always checks its full configured scope rather than just the files pre-commit would otherwise pass it.
 
 **Gotcha:** shellcheck only runs on `.sh`/`.bash` files — `.zsh` files are excluded because shellcheck doesn't understand zsh-specific syntax (`precmd_functions`, `add-zsh-hook`, `N` glob qualifier, etc.).
 
@@ -483,13 +485,17 @@ pre-commit autoupdate        # update hook versions — only touches pre-commit-
 ```bash
 uv run pytest           # run the installer test suite
 uv run pytest -v        # verbose
+uv run mypy             # static type check (installer/ + tests/, see pyproject.toml)
 ```
 
 Tests live in `tests/`, covering `installer/main.py` (release command logic —
-all `subprocess.run` calls mocked, no real git commands run) and
+all `subprocess.run` calls mocked, no real git commands run),
 `installer/symlink_manager.py` (`create_symlink` against `tmp_path`, plus a
-sanity check that the `SymlinkSpec` tables have no duplicate targets). Nothing
-in the suite touches a real home directory or repository.
+sanity check that the `SymlinkSpec` tables have no duplicate targets), and
+`installer/dotfiles_installer.py` (`install()`'s skip-flag/macOS-only/success-
+counting orchestration via fake manager objects, and `status()`/`--fix`
+against a `tmp_path` home). Nothing in the suite touches a real home
+directory or repository.
 
 ---
 
