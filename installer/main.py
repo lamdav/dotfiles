@@ -19,6 +19,18 @@ console = Console()
 DOTFILES_DIR = Path(__file__).parent.parent.resolve()
 
 
+def _tag_exists(tag: str) -> bool:
+    """Check whether a git tag with this exact name already exists."""
+    return (
+        subprocess.run(
+            ["git", "rev-parse", "--quiet", "--verify", f"refs/tags/{tag}"],
+            capture_output=True,
+            cwd=DOTFILES_DIR,
+        ).returncode
+        == 0
+    )
+
+
 @app.command(rich_help_panel="Setup")
 def install(
     skip_packages: bool = typer.Option(
@@ -93,6 +105,16 @@ def release(
         new_version = result.stdout.strip()
     else:
         new_version = "v1.0.0"
+
+    if _tag_exists(new_version):
+        console.print(
+            f"[red]Error: tag {new_version} already exists.[/red]\n"
+            "If it's stale or points to an unreachable commit (e.g. after a "
+            "rebase orphaned it), fix or delete it first:\n"
+            f"  git tag -d {new_version}\n"
+            f"  git tag -a {new_version} <correct-commit>  # to move it, or omit to drop it"
+        )
+        raise typer.Exit(1)
 
     console.print(f"Releasing [bold]{new_version}[/bold]...")
 
