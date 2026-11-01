@@ -82,6 +82,41 @@ class SymlinkManager(ABC):
         pass
 
     @abstractmethod
+    def setup_mise_config(self, dotfiles_dir: Path) -> bool:
+        """Set up mise global configuration symlink."""
+        pass
+
+    @abstractmethod
+    def setup_direnv_config(self, dotfiles_dir: Path) -> bool:
+        """Set up direnv global configuration symlink."""
+        pass
+
+    @abstractmethod
+    def setup_nvim_config(self, dotfiles_dir: Path) -> bool:
+        """Set up Neovim configuration symlink."""
+        pass
+
+    @abstractmethod
+    def setup_borders_config(self, dotfiles_dir: Path) -> bool:
+        """Set up borders window border configuration symlink."""
+        pass
+
+    @abstractmethod
+    def setup_claude_config(self, dotfiles_dir: Path) -> bool:
+        """Set up Claude Code settings symlink."""
+        pass
+
+    @abstractmethod
+    def setup_glow_config(self, dotfiles_dir: Path) -> bool:
+        """Set up glow markdown viewer configuration symlink."""
+        pass
+
+    @abstractmethod
+    def setup_atuin_config(self, dotfiles_dir: Path) -> bool:
+        """Set up atuin shell history configuration and themes symlinks."""
+        pass
+
+    @abstractmethod
     def setup_kitty_config(self, dotfiles_dir: Path) -> Tuple[int, int]:
         """Set up kitty configuration symlinks. Returns (success_count, total_steps)."""
         pass
