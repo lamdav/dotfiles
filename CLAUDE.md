@@ -515,8 +515,11 @@ installer's Python code.
 
 **Dependabot** (`.github/dependabot.yml`): weekly version-update PRs for the
 `uv` ecosystem (`pyproject.toml`/`uv.lock`) and `github-actions`
-(`.github/workflows/*.yml`). This is separate from Dependabot *security*
-alerts/PRs, which GitHub runs regardless of this file.
+(`.github/workflows/*.yml`). Each ecosystem is grouped into a single PR
+(`patterns: ["*"]`) instead of one PR per dependency — CI runs once per
+group per week instead of once per bumped package. This is separate from
+Dependabot *security* alerts/PRs, which GitHub runs regardless of this file
+and are not grouped.
 
 ---
 
