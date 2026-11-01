@@ -235,17 +235,28 @@ class ConcreteMacOSManager(MacOSManager):
                         f"[red]✗ Failed to configure AeroSpace mode indicator: {e}[/red]"
                     )
 
-            # Restart Übersicht to recognize new widgets
+            # Restart Übersicht to recognize new widgets.
+            # Name-based matching (pkill -f / open -a) silently never worked here:
+            # macOS's filesystem stores "Übersicht" with a decomposed combining
+            # diaeresis (NFD), while a precomposed Ü (NFC) written in source never
+            # matches it byte-for-byte, so pkill found nothing (masked by
+            # `|| true`) and `open -a Übersicht` errored every time (masked by
+            # printing success unconditionally). The bundle ID is plain ASCII and
+            # immune to this, so resolve + kill the PID by bundle ID instead.
             console.print("Restarting Übersicht to recognize new widgets...")
-            # pkill returns 1 if no process matched (app not running) — that's fine
             system_manager.run_command(
-                "pkill -f Uebersicht || pkill -f Übersicht || true",
+                "pid=$(lsappinfo info -only pid tracesOf.Uebersicht 2>/dev/null | "
+                'grep -o \'[0-9]*\'); [ -n "$pid" ] && kill "$pid"',
                 "Stopping Übersicht...",
             )
-            system_manager.run_command("open -a Übersicht", "Starting Übersicht...")
-            console.print(
-                "[green]✓ Übersicht restarted. New widgets should now be visible.[/green]"
-            )
+            if system_manager.run_command(
+                "open -b tracesOf.Uebersicht", "Starting Übersicht..."
+            ):
+                console.print(
+                    "[green]✓ Übersicht restarted. New widgets should now be visible.[/green]"
+                )
+            else:
+                console.print("[red]✗ Failed to restart Übersicht[/red]")
 
         return success_count, total_steps
 
