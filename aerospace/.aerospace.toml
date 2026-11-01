@@ -1,6 +1,17 @@
 # Place a copy of this config to ~/.aerospace.toml
 # After that, you can edit ~/.aerospace.toml to your liking
 
+# Config version for compatibility and deprecations.
+# See: https://nikitabobko.github.io/AeroSpace/guide#config-version
+config-version = 2
+
+# v2 stops inferring 'persistent-workspaces' from the right-hand side of
+# workspace keybindings (v1's fallback) and defaults to an empty array
+# instead. List the same workspaces explicitly to keep v1's behavior —
+# this must match every workspace bound below and in
+# workspace-to-monitor-force-assignment.
+persistent-workspaces = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'S', 'F', 'M', 'T', 'Y']
+
 # You can use it to add commands that run after login to macOS user session.
 # 'start-at-login' needs to be 'true' for 'after-login-command' to work
 # Available commands: https://nikitabobko.github.io/AeroSpace/commands
