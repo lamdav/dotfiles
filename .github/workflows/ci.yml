@@ -1,0 +1,31 @@
+name: CI
+
+# Lints and tests the installer's Python code only. This never runs `dot
+# install` or `dot release` — nothing here touches a real home directory,
+# symlinks, brew, or macOS system preferences.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: pre-commit/action@v3.0.1
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          python-version: "3.12"
+      - run: uv sync --dev
+      - run: uv run pytest
