@@ -465,14 +465,16 @@ pre-commit is configured (`.pre-commit-config.yaml`) and installed in the git ho
 
 ```bash
 pre-commit run --all-files   # run all hooks manually
-pre-commit autoupdate        # update hook versions
+pre-commit autoupdate        # update hook versions — only touches pre-commit-hooks/shellcheck-py
 ```
 
-**Hooks:** trailing-whitespace, end-of-file-fixer, check-yaml, check-merge-conflict, black, isort, shellcheck, detect-secrets
+**Hooks:** trailing-whitespace, end-of-file-fixer, check-yaml, check-merge-conflict, shellcheck (all `rev:`-pinned, mirror repos) — then black, isort, detect-secrets (`repo: local`, see below).
+
+**Single source of truth for Python tool versions:** black, isort, and detect-secrets are declared as dev dependencies in `pyproject.toml`/`uv.lock` and run as `repo: local` hooks whose `entry` is `uv run <tool>` — there is no separate `rev:` pin for them. This exists because `uv.lock` and a `rev:`-pinned mirror repo previously drifted (black/isort resolved to different versions locally vs. under pre-commit) with no warning. `pre-commit autoupdate` has nothing to bump for these three; update their versions with `uv lock --upgrade-package <name>` (or `uv add --dev <name>` for a new tool) instead. shellcheck and the `pre-commit-hooks` repo have no project-dependency equivalent, so their `rev:` here is still their legitimate version source of truth.
 
 **Gotcha:** shellcheck only runs on `.sh`/`.bash` files — `.zsh` files are excluded because shellcheck doesn't understand zsh-specific syntax (`precmd_functions`, `add-zsh-hook`, `N` glob qualifier, etc.).
 
-**detect-secrets:** baseline at `.secrets.baseline`, generated via `detect-secrets scan >| .secrets.baseline` (use `>|`, not `>` — `no_clobber`). Its own heuristic filters (`is_lock_file`, `is_templated_secret`, `is_indirect_reference`, etc.) clear most false positives automatically at hook time — a fresh `scan` output rarely needs manual `is_secret` editing. If a hook run ever reports something already in the baseline as new, regenerate the baseline fresh rather than hand-editing it; the two code paths (`detect-secrets scan` vs. the `detect-secrets-hook` pre-commit uses) don't always agree on an edited file's exact entry shape.
+**detect-secrets:** baseline at `.secrets.baseline`, generated via `detect-secrets scan >| .secrets.baseline` (use `>|`, not `>` — `no_clobber`). Its own heuristic filters (`is_lock_file`, `is_templated_secret`, `is_indirect_reference`, etc.) clear most false positives automatically at hook time — a fresh `scan` output rarely needs manual `is_secret` editing. If a hook run ever reports something already in the baseline as new, regenerate the baseline fresh rather than hand-editing it; the two code paths (`detect-secrets scan` vs. the `detect-secrets-hook` the local hook invokes) don't always agree on an edited file's exact entry shape.
 
 ---
 
@@ -493,11 +495,16 @@ in the suite touches a real home directory or repository.
 
 ## CI (.github/workflows/ci.yml)
 
-Runs on every push to `master` and every PR: `pre-commit run --all-files` and
-`uv run pytest`. That's it — **CI never runs `dot install` or `dot release`**,
-since both mutate a real home directory, brew, or macOS system preferences and
-have no safe meaning on a hosted runner. Local pre-commit + manual testing is
-still the loop for anything beyond the installer's Python code.
+Single job on every push to `master` and every PR: `uv sync --dev`, then
+`uv run pre-commit run --all-files`, then `uv run pytest`. It runs through
+`uv` (not a bare `actions/setup-python` + `pre-commit/action`) because the
+local black/isort/detect-secrets hooks shell out to `uv run <tool>` and need
+the project's synced venv on PATH — a plain pre-commit install has no `uv` and
+would fail on those three hooks. **CI never runs `dot install` or
+`dot release`**, since both mutate a real home directory, brew, or macOS
+system preferences and have no safe meaning on a hosted runner. Local
+pre-commit + manual testing is still the loop for anything beyond the
+installer's Python code.
 
 ---
 

@@ -3,6 +3,11 @@ name: CI
 # Lints and tests the installer's Python code only. This never runs `dot
 # install` or `dot release` — nothing here touches a real home directory,
 # symlinks, brew, or macOS system preferences.
+#
+# Single job, uv-only: black/isort/detect-secrets run as local pre-commit
+# hooks via `uv run`, sourcing their versions from pyproject.toml/uv.lock
+# instead of a separately pinned mirror repo — so this job needs `uv` and a
+# synced venv before `pre-commit` runs, not just a bare Python + pip install.
 
 on:
   push:
@@ -10,16 +15,7 @@ on:
   pull_request:
 
 jobs:
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - uses: pre-commit/action@v3.0.1
-
-  test:
+  checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,4 +24,5 @@ jobs:
           enable-cache: true
           python-version: "3.12"
       - run: uv sync --dev
+      - run: uv run pre-commit run --all-files
       - run: uv run pytest

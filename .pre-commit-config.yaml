@@ -13,17 +13,6 @@ repos:
       - id: mixed-line-ending
         args: [--fix=lf]
 
-  - repo: https://github.com/psf/black
-    rev: 26.10.1
-    hooks:
-      - id: black
-        language_version: python3
-
-  - repo: https://github.com/PyCQA/isort
-    rev: 9.0.2
-    hooks:
-      - id: isort
-
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.11.0.1-1
     hooks:
@@ -32,8 +21,24 @@ repos:
         # zsh files use zsh-specific syntax not understood by shellcheck
         exclude: \.zsh$
 
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.5.0
+  # black, isort, and detect-secrets run via `uv run` against the project's
+  # own dev dependencies instead of pre-commit's separately pinned mirror
+  # repos — pyproject.toml/uv.lock is the single source of truth for their
+  # versions. shellcheck and the hooks above have no project-dependency
+  # equivalent, so their `rev:` here is still their legitimate version SOT.
+  - repo: local
     hooks:
+      - id: black
+        name: black
+        entry: uv run black
+        language: system
+        types: [python]
+      - id: isort
+        name: isort
+        entry: uv run isort
+        language: system
+        types: [python]
       - id: detect-secrets
-        args: ['--baseline', '.secrets.baseline']
+        name: Detect secrets
+        entry: uv run detect-secrets-hook --baseline .secrets.baseline
+        language: system
