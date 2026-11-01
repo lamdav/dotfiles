@@ -15,6 +15,7 @@ Comprehensive dotfiles for macOS (primary) and Ubuntu. Covers modular zsh, Kitty
 ```
 dotfiles/
 ├── .github/
+│   ├── dependabot.yml    Weekly updates: uv (pyproject.toml/uv.lock), github-actions
 │   └── workflows/ci.yml  CI: pre-commit + pytest on push/PR (lint/test only)
 ├── aerospace/          → ~/.aerospace.toml
 ├── atuin/
@@ -511,6 +512,11 @@ would fail on those three hooks. **CI never runs `dot install` or
 system preferences and have no safe meaning on a hosted runner. Local
 pre-commit + manual testing is still the loop for anything beyond the
 installer's Python code.
+
+**Dependabot** (`.github/dependabot.yml`): weekly version-update PRs for the
+`uv` ecosystem (`pyproject.toml`/`uv.lock`) and `github-actions`
+(`.github/workflows/*.yml`). This is separate from Dependabot *security*
+alerts/PRs, which GitHub runs regardless of this file.
 
 ---
 
