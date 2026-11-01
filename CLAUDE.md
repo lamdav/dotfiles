@@ -25,8 +25,7 @@ dotfiles/
 │   └── bordersrc       → ~/.config/borders/bordersrc
 ├── brew/               Modular Brewfiles (devtools, k8s, gui, apps, media, optional)
 ├── claude/
-│   ├── settings.json           → ~/.claude/settings.json
-│   └── conductor-workspace/    Agent-Deck conductor role config (not symlinked)
+│   └── settings.json           → ~/.claude/settings.json
 ├── colors/
 │   └── firewatch.conf  Kitty color scheme source
 ├── direnv/
@@ -409,6 +408,15 @@ Installs in phases: apt base tools → Neovim (unstable PPA) → eza → gh → 
 - `ubersicht/aerospace-mode.jsx` — contains `__HOME__` placeholder replaced with the actual home directory at install time. Do not symlink this file; run the installer to redeploy after edits.
 - `ubersicht/simple-bar/simplebarrc` — copied (not symlinked) to `~/.simplebarrc`. The live copy is modified at runtime by `sync-simplebar-displays.sh` to inject machine-specific `customAeroSpaceDisplayIndexes`. The dotfiles version is the stable baseline with `{}`. To persist UI setting changes back to dotfiles, manually diff and copy the relevant fields.
 
+**Gotcha:** `installer/interfaces.py`'s `SymlinkManager`/`MacOSManager` ABCs
+must declare every `setup_*` method `DotfilesInstaller.install()` actually
+calls — Python only enforces `@abstractmethod`s that are declared there, so a
+new method added to `ConcreteSymlinkManager` without a matching ABC entry
+compiles and runs fine until a different implementation swaps in and crashes
+at runtime. This exact drift happened (`mise`/`direnv`/`nvim`/`borders`/
+`claude`/`glow`/`atuin` were missing) and was fixed — keep them in sync when
+adding a new one.
+
 ---
 
 ## Versioning & Releases
@@ -469,7 +477,7 @@ pre-commit run --all-files   # run all hooks manually
 pre-commit autoupdate        # update hook versions — only touches pre-commit-hooks/shellcheck-py
 ```
 
-**Hooks:** trailing-whitespace, end-of-file-fixer, check-yaml, check-merge-conflict, shellcheck (all `rev:`-pinned, mirror repos) — then black, isort, detect-secrets, mypy (`repo: local`, see below).
+**Hooks:** trailing-whitespace, end-of-file-fixer, check-yaml, check-merge-conflict, check-added-large-files, mixed-line-ending, shellcheck (all `rev:`-pinned, mirror repos) — then black, isort, detect-secrets, mypy (`repo: local`, see below).
 
 **Single source of truth for Python tool versions:** black, isort, detect-secrets, and mypy are declared as dev dependencies in `pyproject.toml`/`uv.lock` and run as `repo: local` hooks whose `entry` is `uv run <tool>` — there is no separate `rev:` pin for them. This exists because `uv.lock` and a `rev:`-pinned mirror repo previously drifted (black/isort resolved to different versions locally vs. under pre-commit) with no warning. `pre-commit autoupdate` has nothing to bump for these four; update their versions with `uv lock --upgrade-package <name>` (or `uv add --dev <name>` for a new tool) instead. shellcheck and the `pre-commit-hooks` repo have no project-dependency equivalent, so their `rev:` here is still their legitimate version source of truth.
 
@@ -505,9 +513,9 @@ directory or repository.
 Single job on every push to `master` and every PR: `uv sync --dev`, then
 `uv run pre-commit run --all-files`, then `uv run pytest`. It runs through
 `uv` (not a bare `actions/setup-python` + `pre-commit/action`) because the
-local black/isort/detect-secrets hooks shell out to `uv run <tool>` and need
+local black/isort/detect-secrets/mypy hooks shell out to `uv run <tool>` and need
 the project's synced venv on PATH — a plain pre-commit install has no `uv` and
-would fail on those three hooks. **CI never runs `dot install` or
+would fail on those four hooks. **CI never runs `dot install` or
 `dot release`**, since both mutate a real home directory, brew, or macOS
 system preferences and have no safe meaning on a hosted runner. Local
 pre-commit + manual testing is still the loop for anything beyond the
