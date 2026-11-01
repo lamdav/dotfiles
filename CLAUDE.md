@@ -14,6 +14,8 @@ Comprehensive dotfiles for macOS (primary) and Ubuntu. Covers modular zsh, Kitty
 
 ```
 dotfiles/
+├── .github/
+│   └── workflows/ci.yml  CI: pre-commit + pytest on push/PR (lint/test only)
 ├── aerospace/          → ~/.aerospace.toml
 ├── atuin/
 │   ├── config.toml     → ~/.atuin/config.toml
@@ -46,6 +48,7 @@ dotfiles/
 │   └── init.lua        → ~/.config/nvim/  (symlink to whole dir)
 ├── scripts/
 │   └── setup-simple-bar.sh
+├── tests/              pytest suite for installer/ (mocked subprocess, tmp_path)
 ├── ubersicht/
 │   ├── simple-bar/simplebarrc  → COPIED (not symlinked) to ~/.simplebarrc
 │   │                              Modified at runtime by sync-simplebar-displays.sh
@@ -421,7 +424,12 @@ dot next               # preview next version; exits 1 if nothing to release
 ```
 
 `dot release` generates `CHANGELOG.md`, commits as `chore: release vX.Y.Z` with
-changelog body, and creates an annotated tag.
+changelog body, and creates an annotated tag. It refuses up front (clear error,
+no commit made) if the target tag name already exists — e.g. a stale tag left
+pointing at a commit orphaned by a rebase.
+
+`git-cliff`'s bump flag is `--bump <major|minor|patch>` (one flag, optional
+value) — there is no `--bump-major`/`--bump-minor`/`--bump-patch`.
 
 ---
 
@@ -445,6 +453,8 @@ changelog body, and creates an annotated tag.
 | Ubuntu: `fd` not found | `fd` is `fdfind` on Debian/Ubuntu — `linux/10_aliases.zsh` aliases it automatically |
 | Ubuntu: `bat` not found | `bat` is `batcat` on Debian/Ubuntu — `linux/10_aliases.zsh` aliases it automatically |
 | `dot next` exits 1 immediately | No unreleased conventional commits since last tag |
+| `dot release` errors "tag already exists" | A tag with that name is already present — often a stale one left pointing at a commit orphaned by a rebase. Fix or delete it (`git tag -d vX.Y.Z`) before releasing again |
+| detect-secrets flags a real false positive | Add an inline `# pragma: allowlist secret` comment on that line, or regenerate `.secrets.baseline` (`detect-secrets scan >\| .secrets.baseline`) |
 | glow TUI exits instead of scrolling left on wide code blocks | Upstream behavior, not configurable: glow's pager has no horizontal scroll; `h`/`left`/`delete` are hard-bound to "unload document" (`ui/ui.go`), which exits when there's no file list to fall back to (as with the `glow --tui <file>` alias). Use `batmd <file>` instead — it pipes through `bat`/`less`, which supports real left/right arrow panning |
 
 ---
@@ -458,9 +468,36 @@ pre-commit run --all-files   # run all hooks manually
 pre-commit autoupdate        # update hook versions
 ```
 
-**Hooks:** trailing-whitespace, end-of-file-fixer, check-yaml, check-merge-conflict, black, isort, shellcheck
+**Hooks:** trailing-whitespace, end-of-file-fixer, check-yaml, check-merge-conflict, black, isort, shellcheck, detect-secrets
 
 **Gotcha:** shellcheck only runs on `.sh`/`.bash` files — `.zsh` files are excluded because shellcheck doesn't understand zsh-specific syntax (`precmd_functions`, `add-zsh-hook`, `N` glob qualifier, etc.).
+
+**detect-secrets:** baseline at `.secrets.baseline`, generated via `detect-secrets scan >| .secrets.baseline` (use `>|`, not `>` — `no_clobber`). Its own heuristic filters (`is_lock_file`, `is_templated_secret`, `is_indirect_reference`, etc.) clear most false positives automatically at hook time — a fresh `scan` output rarely needs manual `is_secret` editing. If a hook run ever reports something already in the baseline as new, regenerate the baseline fresh rather than hand-editing it; the two code paths (`detect-secrets scan` vs. the `detect-secrets-hook` pre-commit uses) don't always agree on an edited file's exact entry shape.
+
+---
+
+## Testing
+
+```bash
+uv run pytest           # run the installer test suite
+uv run pytest -v        # verbose
+```
+
+Tests live in `tests/`, covering `installer/main.py` (release command logic —
+all `subprocess.run` calls mocked, no real git commands run) and
+`installer/symlink_manager.py` (`create_symlink` against `tmp_path`, plus a
+sanity check that the `SymlinkSpec` tables have no duplicate targets). Nothing
+in the suite touches a real home directory or repository.
+
+---
+
+## CI (.github/workflows/ci.yml)
+
+Runs on every push to `master` and every PR: `pre-commit run --all-files` and
+`uv run pytest`. That's it — **CI never runs `dot install` or `dot release`**,
+since both mutate a real home directory, brew, or macOS system preferences and
+have no safe meaning on a hosted runner. Local pre-commit + manual testing is
+still the loop for anything beyond the installer's Python code.
 
 ---
 
