@@ -7,12 +7,6 @@
 
 command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
 
-# Only runs (~50ms) when the yarn shim is missing — happens once per mise
-# node install, since the shim lives inside that specific version's dir
-if command -v corepack >/dev/null 2>&1 && ! command -v yarn >/dev/null 2>&1; then
-  corepack enable 2>/dev/null
-fi
-
 # =============================================================================
 # FZF (fuzzy finder)
 # =============================================================================

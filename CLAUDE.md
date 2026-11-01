@@ -160,6 +160,7 @@ mise replaces nvm, pyenv, and jabba entirely.
 ```toml
 [tools]
 node   = "lts"
+yarn   = "latest"
 python = "latest"
 go     = "latest"
 java   = "temurin-21"
@@ -168,6 +169,16 @@ java   = "temurin-21"
 "pypi:poetry"     = "latest"
 "pypi:commitizen" = "latest"
 ```
+
+**yarn is mise-managed directly, not via corepack.** Node dropped corepack
+from its default bundle starting with node 25 — `mise`'s own version
+metadata confirms it (`corepack is provided by: node@24.22.0, node@24.22.2`,
+not by the `node@26.x` that `node = "lts"` now resolves to). An earlier
+version of this setup deliberately avoided a standalone yarn install because
+it conflicted with corepack's per-project pinning (see `git show 0ea186a`) —
+that tradeoff no longer applies now that corepack itself isn't reliably
+available. If a fresh `corepack enable` ever starts working again on a future
+node version, don't reintroduce it alongside this — same conflict, inverted.
 
 Standalone Python CLI tools (pre-commit, poetry, commitizen) are installed via mise's `pypi:` backend, not pipx/brew — a pipx venv hard-links to a specific brew Python formula, so a `brew autoremove` that drops that formula silently breaks the venv. mise pins its own Python runtime instead, so `mise upgrade` is the only thing that moves it.
 

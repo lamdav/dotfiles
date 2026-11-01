@@ -1,5 +1,6 @@
 [tools]
 node    = "lts"      # LTS for stability
+yarn    = "latest"   # node 25+ dropped corepack from the default bundle — mise-managed directly
 python  = "latest"
 go      = "latest"
 java    = "temurin-21"  # LTS, replaces jabba
