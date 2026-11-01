@@ -1,3 +1,8 @@
+## [1.5.1] - 2026-11-01
+
+### 📚 Documentation
+
+- Fix CLAUDE.md currency gaps, drop dead Agent-Deck conductor config
 ## [1.5.0] - 2026-11-01
 
 ### 🚀 Features
@@ -29,6 +34,7 @@
 - Autoupdate pre-commit hooks, pin isort to latest stable
 - Check in Dependabot config
 - Group Dependabot PRs per ecosystem to cut CI runs
+- Release v1.5.0
 ## [1.4.0] - 2026-10-31
 
 ### 🚀 Features
