@@ -22,11 +22,35 @@ ITERM_PROFILES = SymlinkSpec(
     "iTerm2 profiles",
     "macos",
 )
+AEROSPACE_MODE_TRACKER = SymlinkSpec(
+    "ubersicht/simple-bar/aerospace-mode-tracker.sh",
+    ".config/ubersicht/simple-bar/aerospace-mode-tracker.sh",
+    "simple-bar script: aerospace-mode-tracker.sh",
+    "macos",
+)
+SYNC_SIMPLEBAR_DISPLAYS = SymlinkSpec(
+    "ubersicht/simple-bar/sync-simplebar-displays.sh",
+    ".config/ubersicht/simple-bar/sync-simplebar-displays.sh",
+    "simple-bar script: sync-simplebar-displays.sh",
+    "macos",
+)
+SYNC_AND_RELOAD = SymlinkSpec(
+    "ubersicht/simple-bar/sync-and-reload.sh",
+    ".config/ubersicht/simple-bar/sync-and-reload.sh",
+    "simple-bar script: sync-and-reload.sh",
+    "macos",
+)
 
 # macOS-only specs, kept separate from symlink_manager.SYMLINK_TARGETS since
 # they're set up by ConcreteMacOSManager rather than ConcreteSymlinkManager.
 # status() merges both lists when running on macOS.
-MACOS_SYMLINK_TARGETS = [AEROSPACE_CONFIG, ITERM_PROFILES]
+MACOS_SYMLINK_TARGETS = [
+    AEROSPACE_CONFIG,
+    ITERM_PROFILES,
+    AEROSPACE_MODE_TRACKER,
+    SYNC_SIMPLEBAR_DISPLAYS,
+    SYNC_AND_RELOAD,
+]
 
 
 class ConcreteMacOSManager(MacOSManager):
@@ -41,31 +65,28 @@ class ConcreteMacOSManager(MacOSManager):
             "\n[bold cyan]🪟 Setting up AeroSpace window manager...[/bold cyan]"
         )
         aerospace_source = dotfiles_dir / AEROSPACE_CONFIG.source
-        if aerospace_source.exists():
-            aerospace_target = Path.home() / AEROSPACE_CONFIG.target
-            ok = self.symlink_manager.create_symlink(
-                aerospace_source, aerospace_target, AEROSPACE_CONFIG.description
-            )
+        if not aerospace_source.exists():
+            return True  # Not an error if config doesn't exist
 
-            # Symlink scripts to ~/.config/ubersicht/simple-bar/
-            ubersicht_config_dir = Path.home() / ".config" / "ubersicht" / "simple-bar"
-            ubersicht_config_dir.mkdir(parents=True, exist_ok=True)
-            for script in (
-                "aerospace-mode-tracker.sh",
-                "sync-simplebar-displays.sh",
-                "sync-and-reload.sh",
-            ):
-                script_source = dotfiles_dir / "ubersicht" / "simple-bar" / script
-                if script_source.exists():
-                    script_source.chmod(script_source.stat().st_mode | 0o111)
-                    self.symlink_manager.create_symlink(
-                        script_source,
-                        ubersicht_config_dir / script,
-                        f"simple-bar script: {script}",
-                    )
+        aerospace_target = Path.home() / AEROSPACE_CONFIG.target
+        ok = self.symlink_manager.create_symlink(
+            aerospace_source, aerospace_target, AEROSPACE_CONFIG.description
+        )
 
-            return ok
-        return True  # Not an error if config doesn't exist
+        # These scripts need their target directory created first and need
+        # +x (git doesn't always preserve the executable bit across clones) —
+        # SymlinkSpec/create_symlink don't do either, so handle them inline.
+        for spec in (AEROSPACE_MODE_TRACKER, SYNC_SIMPLEBAR_DISPLAYS, SYNC_AND_RELOAD):
+            script_source = dotfiles_dir / spec.source
+            if script_source.exists():
+                script_target = Path.home() / spec.target
+                script_target.parent.mkdir(parents=True, exist_ok=True)
+                script_source.chmod(script_source.stat().st_mode | 0o111)
+                self.symlink_manager.create_symlink(
+                    script_source, script_target, spec.description
+                )
+
+        return ok
 
     def setup_iterm_config(self, dotfiles_dir: Path) -> bool:
         """Set up iTerm2 configuration symlink."""
