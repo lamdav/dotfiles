@@ -1,8 +1,31 @@
+## [1.5.2] - 2026-11-02
+
+### 🐛 Bug Fixes
+
+- Manage yarn via mise directly, corepack no longer ships with node
+- Restart Übersicht by bundle ID, not by name
+
+### 🚜 Refactor
+
+- Register simple-bar scripts as SymlinkSpecs
+
+### 📚 Documentation
+
+- Document today's AeroSpace/Übersicht findings in CLAUDE.md
+
+### ⚙️ Miscellaneous Tasks
+
+- Migrate aerospace config to config-version 2
+- Remove dead legacy installer scripts
 ## [1.5.1] - 2026-11-01
 
 ### 📚 Documentation
 
 - Fix CLAUDE.md currency gaps, drop dead Agent-Deck conductor config
+
+### ⚙️ Miscellaneous Tasks
+
+- Release v1.5.1
 ## [1.5.0] - 2026-11-01
 
 ### 🚀 Features
