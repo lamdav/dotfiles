@@ -369,7 +369,7 @@ aerospace mode main                        # force-reset to main mode
 **iTerm2 GlobalKeyMap** — iTerm2 can register global key intercepts even when it is not the focused app. Option+H and Option+L are commonly mapped to Emacs word-navigation escape sequences. Check: `defaults read com.googlecode.iterm2 GlobalKeyMap`. Fix: remove conflicting entries via iTerm2 → Preferences → Keys → Key Bindings.
 
 **Diagnosis approach** when a binding does nothing (mouse doesn't move, no visible effect):
-1. `aerospace list-mode` (or check `/tmp/aerospace-current-mode`) — confirm you are in `main` mode
+1. `aerospace list-modes --current` (or check `/tmp/aerospace-current-mode`, maintained by `aerospace-mode-tracker.sh` — not by AeroSpace itself) — confirm you are in `main` mode
 2. `aerospace focus left` from terminal — if CLI works but hotkey doesn't, the key is being intercepted
 3. Temporarily rebind the key to `workspace 1` and test — if workspace doesn't switch, key never reaches AeroSpace
 4. `pgrep skhd` — check for skhd
@@ -428,6 +428,20 @@ at runtime. This exact drift happened (`mise`/`direnv`/`nvim`/`borders`/
 `claude`/`glow`/`atuin` were missing) and was fixed — keep them in sync when
 adding a new one.
 
+**Gotcha:** Übersicht's app bundle is named with a *decomposed* combining
+diaeresis Ü (NFD — how macOS's filesystem stores it), while a precomposed Ü
+(NFC, how it's typically typed/written in source) never matches it
+byte-for-byte. Name-based lookups (`pkill -f Übersicht`, `open -a Übersicht`,
+`osascript ... app "Übersicht"`) silently fail every time as a result — this
+actually happened and went undetected because the failures were masked
+(`pkill ... || true`, an unconditional "✓ restarted" message). Use the bundle
+ID instead (`tracesOf.Uebersicht`, plain ASCII, immune to this) for any
+process control: resolve the PID via `lsappinfo info -only pid
+tracesOf.Uebersicht`, and relaunch via `open -b tracesOf.Uebersicht`. The
+`exec-on-workspace-change`/`on-focus-changed` widget-refresh calls in
+`aerospace/.aerospace.toml` already use `application id "tracesOf.Uebersicht"`
+correctly — only the installer's own restart step had this bug.
+
 ---
 
 ## Versioning & Releases
@@ -469,7 +483,8 @@ value) — there is no `--bump-major`/`--bump-minor`/`--bump-patch`.
 | Symlink broken | `dot status --fix` (re-creates broken/missing symlinks only; prompts before replacing a non-symlink file) |
 | AeroSpace hotkeys don't work (mouse doesn't move) | Key is intercepted before AeroSpace. Check: `pgrep skhd` (yabai leftover — `brew services stop skhd`); `defaults read com.googlecode.iterm2 GlobalKeyMap` (remove conflicting iTerm2 global bindings) |
 | AeroSpace hotkeys work via CLI but not keyboard | Same as above — another process has a CGEventTap for that key combination |
-| simple-bar mode indicator always shows "main" | `aerospace-mode.jsx` has wrong home path. Re-run installer or: `sed "s|__HOME__|$HOME|g" ~/configs/dotfiles/ubersicht/aerospace-mode.jsx > ~/Library/Application\ Support/Übersicht/widgets/aerospace-mode.jsx` |
+| simple-bar mode indicator always shows "main" | Either `aerospace-mode.jsx` has the wrong home path (re-run installer, or: `sed "s|__HOME__|$HOME|g" ~/configs/dotfiles/ubersicht/aerospace-mode.jsx > ~/Library/Application\ Support/Übersicht/widgets/aerospace-mode.jsx`), or `~/.config/ubersicht/simple-bar/` is missing its scripts entirely — check with `dot status` (`aerospace-mode-tracker.sh` etc. are tracked `SymlinkSpec`s; `--fix` repairs them) |
+| AeroSpace mode-switch keys (service/resize/media) seem unresponsive, but other hotkeys and `aerospace mode <x>` via the CLI work fine | Mode switching itself is working — only the status-bar *indicator* is stale. Means `aerospace-mode-tracker.sh` isn't actually running from the keybinding's `exec-and-forget`: check it's deployed (`dot status`) and that `/tmp/aerospace-current-mode` updates when you switch modes manually (`~/.config/ubersicht/simple-bar/aerospace-mode-tracker.sh set service`) |
 | Ubuntu: `fd` not found | `fd` is `fdfind` on Debian/Ubuntu — `linux/10_aliases.zsh` aliases it automatically |
 | Ubuntu: `bat` not found | `bat` is `batcat` on Debian/Ubuntu — `linux/10_aliases.zsh` aliases it automatically |
 | `dot next` exits 1 immediately | No unreleased conventional commits since last tag |
