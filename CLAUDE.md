@@ -46,8 +46,6 @@ dotfiles/
 │   └── config.toml     → ~/.config/mise/config.toml
 ├── nvim/
 │   └── init.lua        → ~/.config/nvim/  (symlink to whole dir)
-├── scripts/
-│   └── setup-simple-bar.sh
 ├── tests/              pytest suite for installer/ (mocked subprocess, tmp_path)
 ├── ubersicht/
 │   ├── simple-bar/simplebarrc  → COPIED (not symlinked) to ~/.simplebarrc
